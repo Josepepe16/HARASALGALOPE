@@ -28,6 +28,16 @@ public_folder: 'assets/img'
 locale: 'es'
 publish_mode: simple         # se publica al guardar, sin pasos intermedios
 
+# ── Cómo se ve el panel ──────────────────────────────────────────────────────
+# Para que el dueño abra algo con la marca del haras y no una herramienta
+# genérica. El logo va sobre el azul del haras: el original es blanco sobre
+# transparente y se perdería contra el fondo claro del panel.
+app_title: 'Haras Al Galope'
+logo:
+  src: logo.png
+  show_in_header: true
+site_url: 'https://josepepe16.github.io/HARASALGALOPE/'
+
 collections:
 
   # ── LO QUE MÁS SE TOCA ────────────────────────────────────────────────────

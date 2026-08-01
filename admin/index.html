@@ -5,13 +5,105 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
 <title>Panel — Haras Al Galope</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐎</text></svg>">
+<link rel="icon" href="logo.png">
+
+<style>
+/* ══════════════════════════════════════════════════════════════════════════
+   EL PANEL, CON LOS COLORES DEL HARAS
+
+   Sveltia arma toda su interfaz a partir de un sistema de variables --sui-*.
+   Se recolorea por ahí y no tocando sus clases: las clases llevan un hash
+   (svelte-7y4msj) que cambia en cada actualización, las variables no.
+
+   Si algún día renombran una variable, lo único que pasa es que el panel
+   vuelve a su celeste por defecto. No se rompe nada.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* El !important no es capricho: Sveltia inyecta su hoja de estilo cuando
+   arranca, o sea DESPUÉS de ésta, y con la misma especificidad gana la
+   última. Sin esto el panel se queda con su celeste de fábrica. */
+:root{
+  /* Todo el panel deriva de este número. 210 es el celeste de fábrica;
+     227 es el tono del azul del logo (#11256C). Con cambiarlo, los grises
+     dejan de ser neutros y se van a la familia del haras. */
+  --sui-base-hue: 227 !important;
+
+  /* El azul del logo puro es muy oscuro para un botón: no se lee como algo
+     apretable. Se sube la luminosidad y se mantiene el tono. */
+  --sui-primary-accent-color: hsl(227 68% 40%) !important;
+  --sui-primary-accent-color-dark: hsl(227 70% 32%) !important;
+  --sui-primary-accent-color-light: hsl(227 60% 55%) !important;
+
+  /* El dorado del haras para el foco del teclado. Es el detalle que hace que
+     no parezca un panel genérico: ningún otro sitio tiene este amarillo. */
+  --sui-focus-ring-color: rgba(212, 174, 99, .75) !important;
+  --sui-focus-ring-width: 2px !important;
+}
+
+/* ── La pantalla de entrada ────────────────────────────────────────────────
+   Se le pone atrás la foto de portada, oscurecida bajo un lavado azul, para
+   que el dueño abra algo que se parece a su haras y no una herramienta.
+
+   Sólo se aplica cuando existe el contenedor del login (:has). Adentro del
+   panel ya trabajando, una foto de fondo sería ruido. */
+body{
+  background:
+    linear-gradient(180deg, rgba(10,17,34,.78), rgba(17,37,108,.86)),
+    url('../assets/img/hero.jpg') center/cover no-repeat fixed #0a1122;
+}
+
+/* Sveltia pinta sus propios fondos opacos encima. Se los volvemos
+   transparentes nada más que en la pantalla de entrada.
+
+   La condición es la estructura exacta del login (el logo grande dentro del
+   contenedor centrado). Se escribe así de específica a propósito: si una
+   actualización la cambia, esto deja de aplicar y el panel se ve como el de
+   fábrica. Prefiero eso a que la foto se cuele detrás del editor. */
+.sui.app-shell:has(> .outer > .main > .container .inner > img.logo){
+  background: transparent;
+}
+.sui.app-shell:has(> .outer > .main > .container .inner > img.logo) > .outer,
+.sui.app-shell:has(> .outer > .main > .container .inner > img.logo) > .outer > .main{
+  background: transparent;
+}
+
+/* El logo, con un halo suave para que no quede pegado sobre la foto. */
+.container .inner > img.logo{
+  filter: drop-shadow(0 10px 34px rgba(0,0,0,.55));
+}
+
+/* Los textos de la pantalla de entrada van sobre foto: hay que aclararlos,
+   porque el panel los calcula para fondo claro. */
+.container .inner h1,
+.container .inner p{
+  color:#f2f5fa;
+  text-shadow:0 2px 18px rgba(0,0,0,.6);
+}
+
+/* Con el sistema en modo oscuro la foto ya contrasta sola: se baja el lavado
+   para que no quede una pantalla negra. */
+@media (prefers-color-scheme: dark){
+  body{
+    background:
+      linear-gradient(180deg, rgba(6,10,22,.82), rgba(13,23,48,.9)),
+      url('../assets/img/hero.jpg') center/cover no-repeat fixed #060a16;
+  }
+}
+
+/* En celular la foto fija se ve mal y consume batería: se ancla normal. */
+@media (max-width:640px){
+  body{ background-attachment: scroll }
+}
+</style>
 </head>
 <body>
-<!-- Sveltia CMS. Lee el mismo config.yml de al lado y anda bien en el
-     celular, que es donde el dueño va a cargar las fotos.
-     El login es con cuenta de GitHub; quien entre tiene que ser colaborador
-     del repositorio Josepepe16/HARASALGALOPE. -->
-<script src="https://unpkg.com/@sveltia/cms/dist/sveltia-cms.js"></script>
+<!-- Sveltia CMS. Lee el config.yml de al lado y anda bien en el celular, que
+     es donde el dueño va a cargar las fotos.
+
+     La versión va fijada a propósito: sin fijarla, unpkg sirve siempre la
+     última y el panel podría cambiar o romperse de un día para el otro sin
+     que nadie tocara nada. Para actualizarlo se sube este número a mano,
+     después de probarlo. -->
+<script src="https://unpkg.com/@sveltia/cms@^0.176.1/dist/sveltia-cms.js"></script>
 </body>
 </html>
