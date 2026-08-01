@@ -67,9 +67,29 @@ body{
   background: transparent;
 }
 
-/* El logo, con un halo suave para que no quede pegado sobre la foto. */
+/* En un celular acostado la pantalla de entrada no entra, y Sveltia la
+   recorta con overflow:hidden: los botones de iniciar sesión quedan abajo
+   del borde y no se puede llegar a ellos. Acá se deja bajar.
+   Sólo en la pantalla de entrada: adentro del editor no se toca nada. */
+.sui.app-shell:has(> .outer > .main > .container .inner > img.logo) > .outer > .main{
+  overflow-y: auto;
+}
+
+/* El logo, grande y con un halo suave para que no quede pegado sobre la foto.
+   Sveltia le fija 160px, que sobre una foto a pantalla completa queda perdido.
+   Se mide contra el alto de la ventana para que no se coma la pantalla en un
+   celular apaisado, y contra el ancho para que no se salga en uno angosto. */
 .container .inner > img.logo{
+  width: auto !important;
+  height: min(340px, 38vh) !important;
+  max-width: 84vw !important;
   filter: drop-shadow(0 10px 34px rgba(0,0,0,.55));
+}
+
+/* Pantalla baja (celular acostado): el logo cede lugar para que los botones
+   de iniciar sesión entren sin tener que bajar. */
+@media (max-height: 560px){
+  .container .inner > img.logo{ height: min(150px, 30vh) !important }
 }
 
 /* Los textos de la pantalla de entrada van sobre foto: hay que aclararlos,

@@ -123,7 +123,6 @@ Desde el panel es el campo "Encuadre". A mano, es `pos` en `galeria.json` y
       puedo reconocer: decime qué foto es cada uno y las cargo.
 - [ ] Email propio del haras
 - [ ] Facebook (Instagram ya está cargado)
-- [ ] Dirección exacta y coordenadas del establecimiento (ver abajo)
 - [ ] Fichas de los padrillos Fuego Fling Fame, Jess Bikini JNN y Breeze Winner
 - [ ] La historia real del haras en la sección "El Haras" (`index.html`)
 - [ ] Una foto mejor de Jess Bikini JNN — la que hay es de 547×365, se ve blanda
