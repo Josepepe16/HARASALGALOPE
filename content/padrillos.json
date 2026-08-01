@@ -2,7 +2,7 @@
   "items": [
     {
       "nombre": "Favorito Verde",
-      "foto": "/assets/img/padrillo-favorito-verde.jpg",
+      "foto": "assets/img/padrillo-favorito-verde.jpg",
       "indice": "AAAT 104",
       "titular": "La incorporación",
       "etiqueta": "Nueva adquisición",
@@ -32,7 +32,7 @@
     },
     {
       "nombre": "Invictus Beduino",
-      "foto": "/assets/img/padrillo-invictus-beduino.jpg",
+      "foto": "assets/img/padrillo-invictus-beduino.jpg",
       "indice": "AAAT 104",
       "titular": "El padrillo que cambió la vara",
       "etiqueta": "",
@@ -78,7 +78,7 @@
     },
     {
       "nombre": "Calcol 36",
-      "foto": "/assets/img/padrillo-calcol-36.jpg",
+      "foto": "assets/img/padrillo-calcol-36.jpg",
       "indice": "AAAT 104",
       "titular": "Sangre para carrera y para tambores",
       "etiqueta": "",
@@ -128,7 +128,7 @@
     },
     {
       "nombre": "Fuego Fling Fame",
-      "foto": "/assets/img/padrillo-fuego-fling-fame.jpg",
+      "foto": "assets/img/padrillo-fuego-fling-fame.jpg",
       "indice": "",
       "titular": "Sangre de tambores",
       "etiqueta": "",
@@ -158,7 +158,7 @@
     },
     {
       "nombre": "Jess Bikini JNN",
-      "foto": "/assets/img/padrillo-jess-bikini-jnn.jpg",
+      "foto": "assets/img/padrillo-jess-bikini-jnn.jpg",
       "indice": "",
       "titular": "Servicios disponibles",
       "etiqueta": "",
@@ -184,7 +184,7 @@
     },
     {
       "nombre": "Breeze Winner",
-      "foto": "/assets/img/padrillo-breeze-winner.jpg",
+      "foto": "assets/img/padrillo-breeze-winner.jpg",
       "indice": "",
       "titular": "Paint Horse — color, función y velocidad",
       "etiqueta": "",

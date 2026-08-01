@@ -21,7 +21,9 @@ backend:
 
 # Las fotos que suban van todas a la misma carpeta que las actuales.
 media_folder: 'assets/img'
-public_folder: '/assets/img'
+# Relativa a propósito: así el sitio funciona igual en la raíz de un dominio
+# que dentro de un subdirectorio (GitHub Pages sirve en /HARASALGALOPE/).
+public_folder: 'assets/img'
 
 locale: 'es'
 publish_mode: simple         # se publica al guardar, sin pasos intermedios

@@ -23,8 +23,8 @@
     "lng": -56.7132,
     "zoom": 11
   },
-  "logo": "/assets/img/logo.png",
-  "fotoPortada": "/assets/img/hero.jpg",
-  "fotoHaras": "/assets/img/haras.jpg",
+  "logo": "assets/img/logo.png",
+  "fotoPortada": "assets/img/hero.jpg",
+  "fotoHaras": "assets/img/haras.jpg",
   "fotoHarasPos": "60% 45%"
 }
