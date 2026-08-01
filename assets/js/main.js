@@ -464,6 +464,78 @@ window.iniciarSitio = function () {
       </a>
     </div>`).join('');
 
+  /* ─────────────── Centro reproductivo ───────────────
+     Si en el panel se apaga la sección, o no hay contenido, no se dibuja
+     nada: la sección y su enlace del menú quedan ocultos. */
+  (function reproduccion() {
+    const sec = $('#reproduccion');
+    if (!sec) return;
+    const R = typeof REPRO === 'object' && REPRO ? REPRO : null;
+    if (!R || R.activa === false || !(R.procedimientos || []).length) return;
+
+    const poner = (id, txt) => { const e = $(id); if (e) e.textContent = txt || ''; };
+
+    poner('#reproEyebrow', R.eyebrow);
+    poner('#reproIntro', R.intro);
+    poner('#reproRol', R.rol);
+    poner('#reproVet', R.responsable);
+    poner('#reproCifra', R.cifra);
+    poner('#reproCifraTxt', R.cifraTexto);
+    poner('#reproTitLista', R.tituloProcedimientos || 'Lo que hacemos');
+    poner('#reproTitRecursos', R.tituloRecursos || 'Con qué contamos');
+
+    $('#reproTitulo').innerHTML = R.tituloItalica
+      ? `${esc(R.titulo)} <span class="ital">${esc(R.tituloItalica)}</span>`
+      : esc(R.titulo || '');
+
+    $('#reproProcedimientos').innerHTML = (R.procedimientos || [])
+      .map((p) => `<li>${esc(p)}</li>`).join('');
+
+    $('#reproRecursos').innerHTML = (R.recursos || []).map((r) => `
+      <div>
+        <dt>${esc(r.titulo)}</dt>
+        <dd>${esc(r.texto)}</dd>
+      </div>`).join('');
+
+    /* Contacto propio del centro. Si todavía no se cargó un número para la
+       veterinaria, la consulta va al teléfono del haras — pero con el mensaje
+       ya escrito, así quien la recibe sabe que es por reproducción. */
+    // Retrato de quien está a cargo, si se cargó uno en el panel
+    if (R.fotoResponsable) {
+      const rt = $('#reproRetrato');
+      rt.innerHTML = `<img src="${esc(R.fotoResponsable)}" alt="${esc(R.responsable || '')}"
+        loading="lazy" decoding="async" width="96" height="96"
+        ${R.fotoResponsablePos ? `style="--pos:${esc(R.fotoResponsablePos)}"` : ''}>`;
+      rt.hidden = false;
+    }
+
+    // Las fotos del trabajo en el centro
+    const fotos = (R.fotos || []).filter((f) => f && f.foto);
+    if (fotos.length) {
+      const caja = $('#reproFotos');
+      caja.innerHTML = fotos.map((f) => `
+        <figure>
+          <img src="${esc(f.foto)}" alt="${esc(f.alt || '')}" loading="lazy" decoding="async"
+               ${f.pos ? `style="--pos:${esc(f.pos)}"` : ''}>
+          ${f.pie ? `<figcaption>${esc(f.pie)}</figcaption>` : ''}
+        </figure>`).join('');
+      caja.hidden = false;
+    }
+
+    const k = R.contacto || {};
+    const intl = k.intl || (SITE.contactos[0] || {}).intl;
+    if (intl) {
+      const msg = k.mensaje || `Hola ${SITE.nombre}, quería consultar por el centro reproductivo.`;
+      $('#reproCta').innerHTML = `
+        <a class="btn btn--gold btn--full" href="https://wa.me/${esc(intl)}?text=${encodeURIComponent(msg)}"
+           target="_blank" rel="noopener">${esc(k.textoBoton || 'Consultar por el centro')}</a>`;
+    }
+
+    sec.hidden = false;
+    $$('[data-repro-nav]').forEach((a) => { a.hidden = false; });
+  })();
+
+
   $('#placeTxt').textContent = SITE.direccion;
 
   /* El mapa se pide por recuadro (bbox), no por zoom, así que hay que

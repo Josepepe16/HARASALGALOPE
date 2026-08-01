@@ -246,6 +246,75 @@ singletons:
             summary: '{{fields.texto}}'
             fields: [{ label: 'Detalle', name: texto, widget: string }]
 
+  - name: reproduccion
+    label: 'Centro reproductivo'
+    icon: vaccines
+    file: 'content/reproduccion.json'
+    fields:
+      - { label: 'Mostrar la sección en el sitio', name: activa, widget: boolean, default: true,
+          hint: 'Si la apagás, la sección y su enlace del menú desaparecen.' }
+      - { label: 'Volanta', name: eyebrow, widget: string,
+          hint: 'La línea chica dorada de arriba del título.' }
+      - { label: 'Título', name: titulo, widget: string }
+      - { label: 'Última palabra del título', name: tituloItalica, widget: string, required: false,
+          hint: 'Se muestra en dorado, como en el resto de los títulos del sitio.' }
+      - { label: 'Bajada', name: intro, widget: text }
+      - { label: 'Quién está a cargo', name: responsable, widget: string,
+          hint: 'Por ejemplo: Vet. Fernanda Duarte' }
+      - { label: 'Rol', name: rol, widget: string,
+          hint: 'La línea chica de arriba del nombre.' }
+      - { label: 'Foto de quien está a cargo', name: fotoResponsable, widget: image, required: false,
+          hint: 'Se muestra redonda y chica. Si no cargás ninguna, no aparece nada.' }
+      - { label: 'Encuadre de esa foto', name: fotoResponsablePos, widget: string, required: false,
+          hint: 'Sólo si queda mal centrada. Por defecto toma un poco arriba del centro, que es donde suele estar la cara.' }
+      - { label: 'Número grande', name: cifra, widget: string,
+          hint: 'Por ejemplo: +100' }
+      - { label: 'Qué cuenta ese número', name: cifraTexto, widget: string,
+          hint: 'Por ejemplo: yeguas por temporada' }
+      - { label: 'Título de la primera columna', name: tituloProcedimientos, widget: string,
+          hint: 'Por ejemplo: Lo que hacemos' }
+      - label: 'Primera columna — la lista'
+        name: procedimientos
+        widget: list
+        summary: '{{fields.texto}}'
+        hint: 'Un renglón por procedimiento. Se arrastran para ordenar.'
+        fields:
+          - { label: 'Procedimiento', name: texto, widget: string }
+      - { label: 'Título de la segunda columna', name: tituloRecursos, widget: string,
+          hint: 'Por ejemplo: Con qué contamos' }
+      - label: 'Segunda columna — con qué contamos'
+        name: recursos
+        widget: list
+        summary: '{{fields.titulo}}'
+        fields:
+          - { label: 'Título', name: titulo, widget: string }
+          - { label: 'Texto', name: texto, widget: text }
+      - label: 'Fotos del centro'
+        name: fotos
+        widget: list
+        summary: '{{fields.pie}}'
+        required: false
+        hint: 'Fotos del trabajo: la veterinaria, la ecografía, la colecta, las yeguas. Van en una fila abajo de todo. Si no cargás ninguna, esa fila no aparece.'
+        fields:
+          - { label: 'Foto', name: foto, widget: image }
+          - { label: 'Pie de foto', name: pie, widget: string, required: false,
+              hint: 'El texto que se ve encima de la foto. Se puede dejar vacío.' }
+          - { label: 'Descripción', name: alt, widget: string,
+              hint: 'Qué se ve. Lo leen los buscadores y los lectores de pantalla.' }
+          - { label: 'Encuadre', name: pos, widget: string, required: false,
+              hint: 'Sólo si queda mal centrada. Ejemplos: 50% 30% (sube), 70% 50% (corre a la derecha).' }
+
+      - label: 'Contacto del centro'
+        name: contacto
+        widget: object
+        fields:
+          - { label: 'WhatsApp del centro', name: intl, widget: string, required: false,
+              hint: 'El número sin espacios y con 598 adelante: 59899345641. Si lo dejás vacío, la consulta va al teléfono del haras.' }
+          - { label: 'Mensaje que sale escrito', name: mensaje, widget: text, required: false,
+              hint: 'Lo que aparece ya tipeado en WhatsApp cuando alguien toca el botón.' }
+          - { label: 'Texto del botón', name: textoBoton, widget: string, required: false,
+              hint: 'Si lo dejás vacío dice “Consultar por el centro”.' }
+
   - name: sitio
     label: 'Datos del haras'
     icon: home_work

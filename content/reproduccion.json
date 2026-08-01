@@ -1,0 +1,55 @@
+{
+  "activa": true,
+  "eyebrow": "Centro reproductivo",
+  "titulo": "Reproducción",
+  "tituloItalica": "equina",
+  "responsable": "Vet. Fernanda Duarte",
+  "rol": "A cargo de:",
+  "fotoResponsable": "",
+  "fotoResponsablePos": "",
+  "intro": "Trabajamos con yeguas de todas las razas, propias y de terceros, con las técnicas que hoy usa la cría de alto rendimiento.",
+  "cifra": "+100",
+  "cifraTexto": "yeguas por temporada",
+  "tituloProcedimientos": "Lo que hacemos",
+  "procedimientos": [
+    {
+      "texto": "Transferencia de embriones"
+    },
+    {
+      "texto": "Inseminación con semen fresco"
+    },
+    {
+      "texto": "Inseminación con semen congelado"
+    },
+    {
+      "texto": "Colecta y congelación de semen de tu padrillo"
+    },
+    {
+      "texto": "Programa de luz para adelantar el ciclo de las yeguas"
+    },
+    {
+      "texto": "Se reciben yeguas de toda raza"
+    }
+  ],
+  "tituloRecursos": "Con qué contamos",
+  "recursos": [
+    {
+      "titulo": "Banco de semen",
+      "texto": "Padrillos del haras y padrillos extranjeros."
+    },
+    {
+      "titulo": "Yeguas receptoras",
+      "texto": "Plantel propio de receptoras de embriones."
+    },
+    {
+      "titulo": "Envíos a todo el país",
+      "texto": "Semen fresco y congelado a cualquier punto del Uruguay."
+    }
+  ],
+  "fotos": [],
+  "contacto": {
+    "intl": "",
+    "mensaje": "Hola, quería consultar por el centro reproductivo del Haras Al Galope.",
+    "textoBoton": "Consultar por el centro"
+  }
+}

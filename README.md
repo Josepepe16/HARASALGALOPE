@@ -9,7 +9,7 @@ haras-al-galope/
 ├── index.html              La página. Casi nunca hay que tocarla.
 ├── PANEL.md                Cómo entrar y usar el panel. ← EMPEZÁ POR ACÁ
 ├── README.md               Esto.
-├── content/                ← TODO EL CONTENIDO ESTÁ ACÁ (8 archivos)
+├── content/                ← TODO EL CONTENIDO ESTÁ ACÁ (9 archivos)
 ├── admin/                  El panel de administración.
 └── assets/
     ├── css/style.css       Diseño y colores.
@@ -26,7 +26,7 @@ haras-al-galope/
 <https://josepepe16.github.io/HARASALGALOPE/admin/>. Ver [PANEL.md](PANEL.md)
 para saber cómo entrar.
 
-Si preferís editar a mano, todo está en **`content/`**, en ocho archivos:
+Si preferís editar a mano, todo está en **`content/`**, en nueve archivos:
 
 | Archivo | Qué tiene |
 |---|---|
@@ -37,6 +37,7 @@ Si preferís editar a mano, todo está en **`content/`**, en ocho archivos:
 | `caballos.json` | El palmarés |
 | `galeria.json` | Las fotos y cuántas se ven al entrar |
 | `novedades.json` | Las tarjetas de Novedades |
+| `reproduccion.json` | El centro reproductivo |
 | `servicios.json` | Los cuatro servicios |
 
 Son archivos JSON: respetá las **comillas**, las **comas** y las **llaves**.
@@ -145,15 +146,13 @@ Desde el panel es el campo "Encuadre". A mano, es `pos` en `galeria.json` y
 
 ### Coordenadas del mapa
 
-Entrá a [Google Maps](https://maps.google.com), buscá el establecimiento,
-hacé clic derecho sobre el punto exacto y copiá los dos números que aparecen
-arriba de todo. Van en `content/sitio.json` (o en el panel, "Datos del haras"):
+Ya están puestas: **-34.6085, -56.5179**, con zoom 13.
 
-```json
-"mapa": { "lat": -34.3376, "lng": -56.7132, "zoom": 11 }
-```
-
-Subí el `zoom` a 13 o 14 para acercar más.
+Salieron del enlace de Google Maps que pasó el cliente. Ojo con una cosa:
+Google lo resuelve como *"Libertad, 80100 Departamento de San José"*, o sea
+**el pueblo, no el establecimiento**. Si el haras queda en la campaña y se
+quiere el punto exacto, hay que soltar el pin ahí y volver a copiar los
+números — se cambian desde el panel, en "Datos del haras".
 
 ---
 

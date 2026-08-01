@@ -66,6 +66,7 @@
     <nav class="nav__links" id="navLinks" aria-label="Principal">
       <a href="#haras">El Haras</a>
       <a href="#padrillos">Padrillos</a>
+      <a href="#reproduccion" data-repro-nav hidden>Reproducción</a>
       <a href="#caballos">Caballos</a>
       <a href="#galeria">Galería</a>
       <a href="#servicios">Servicios</a>
@@ -201,6 +202,52 @@
     </header>
 
     <div class="padrillos" id="padrillosGrid"><!-- render: main.js --></div>
+  </div>
+</section>
+
+
+<!-- ═══════════ Centro reproductivo ═══════════
+     Todo lo dibuja main.js desde content/reproduccion.json. Si en el panel se
+     apaga la sección, este bloque queda oculto y desaparece del menú. -->
+<section class="sec repro" id="reproduccion" hidden>
+  <div class="wrap">
+    <header class="sechead repro__head">
+      <p class="eyebrow" id="reproEyebrow"></p>
+      <h2 id="reproTitulo"></h2>
+      <p class="sechead__sub" id="reproIntro"></p>
+    </header>
+
+    <div class="repro__grid">
+      <!-- La tarjeta que manda: el número, quién está a cargo y el contacto.
+           Va con borde dorado porque es de acá de donde sale una consulta. -->
+      <aside class="repro__firma">
+        <p class="repro__cifra"><b id="reproCifra"></b><span id="reproCifraTxt"></span></p>
+
+        <!-- El retrato aparece sólo si se cargó una foto en el panel -->
+        <div class="repro__vetbox">
+          <figure class="repro__retrato" id="reproRetrato" hidden></figure>
+          <p class="repro__rol" id="reproRol"></p>
+          <p class="repro__vet" id="reproVet"></p>
+        </div>
+
+        <div class="repro__cta" id="reproCta"><!-- render: main.js --></div>
+      </aside>
+
+      <div class="repro__cols">
+        <div class="repro__col">
+          <h3 class="repro__h" id="reproTitLista"></h3>
+          <ul class="repro__lista" id="reproProcedimientos"></ul>
+        </div>
+
+        <div class="repro__col">
+          <h3 class="repro__h" id="reproTitRecursos"></h3>
+          <dl class="repro__recursos" id="reproRecursos"></dl>
+        </div>
+      </div>
+    </div>
+
+    <!-- Fotos del trabajo en el centro. Si no se cargó ninguna, no se dibuja. -->
+    <div class="repro__fotos" id="reproFotos" hidden><!-- render: main.js --></div>
   </div>
 </section>
 
@@ -367,6 +414,7 @@
     <nav class="foot__nav" aria-label="Pie de página">
       <a href="#haras">El Haras</a>
       <a href="#padrillos">Padrillos</a>
+      <a href="#reproduccion" data-repro-nav hidden>Reproducción</a>
       <a href="#caballos">Caballos</a>
       <a href="#galeria">Galería</a>
       <a href="#servicios">Servicios</a>

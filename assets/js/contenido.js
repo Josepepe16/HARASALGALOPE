@@ -9,8 +9,8 @@
 (function () {
   'use strict';
 
-  var ARCHIVOS = ['sitio', 'remate', 'cinta', 'padrillos',
-                  'caballos', 'servicios', 'novedades', 'galeria'];
+  var ARCHIVOS = ['sitio', 'remate', 'cinta', 'padrillos', 'caballos',
+                  'servicios', 'novedades', 'galeria', 'reproduccion'];
 
   // El panel guarda las listas como objetos ({texto: '...'}) porque así puede
   // mostrar un formulario por fila. Acá se vuelven a texto plano.
@@ -87,6 +87,27 @@
     });
 
     window.NOVEDADES = ((c.novedades || {}).items || []);
+
+    var rp = c.reproduccion || {};
+    window.REPRO = {
+      activa: rp.activa !== false,
+      eyebrow: rp.eyebrow,
+      titulo: rp.titulo,
+      tituloItalica: rp.tituloItalica,
+      responsable: rp.responsable,
+      rol: rp.rol,
+      intro: rp.intro,
+      cifra: rp.cifra,
+      cifraTexto: rp.cifraTexto,
+      tituloProcedimientos: rp.tituloProcedimientos,
+      tituloRecursos: rp.tituloRecursos,
+      procedimientos: planas(rp.procedimientos, 'texto'),
+      recursos: (rp.recursos || []),
+      fotoResponsable: rp.fotoResponsable,
+      fotoResponsablePos: rp.fotoResponsablePos,
+      fotos: (rp.fotos || []),
+      contacto: rp.contacto || {}
+    };
 
     var g = c.galeria || {};
     window.GALERIA_VISIBLES = g.visibles || 7;
