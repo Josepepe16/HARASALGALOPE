@@ -8,15 +8,16 @@
   "lugar": "San José, Uruguay",
   "rematador": "Juan Francisco Chiruchi — Escritorio Rural",
   "link": "https://jfchiruchi.com/remate/30808",
+  "premio": "U$S 10.000 en premios para los potrillos rematados",
   "transmite": [
     {
-      "nombre": "ClicRural"
+      "nombre": "Campo TV"
     },
     {
-      "nombre": "VTV"
+      "nombre": "DirecTV"
     },
     {
-      "nombre": "jfchiruchi.com"
+      "nombre": "jfchiruchi.com/vivo"
     }
   ],
   "invitados": [
@@ -33,10 +34,9 @@
       "nombre": "Don Segundo"
     },
     {
-      "nombre": "PT La Aurora"
+      "nombre": "RT La Aurora"
     }
   ],
-  "premio": "U$S 10.000 en premios para los potrillos rematados",
   "condiciones": [
     {
       "texto": "Venta por cuota: plazo de 18 cuotas, con los gastos pagos junto a la primera."
