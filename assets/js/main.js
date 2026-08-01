@@ -465,9 +465,31 @@ window.iniciarSitio = function () {
     </div>`).join('');
 
   $('#placeTxt').textContent = SITE.direccion;
-  $('#map').innerHTML =
-    `<iframe title="Ubicación de ${esc(SITE.nombre)}" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
-      src="https://www.openstreetmap.org/export/embed.html?bbox=${SITE.mapa.lng - 0.35}%2C${SITE.mapa.lat - 0.22}%2C${SITE.mapa.lng + 0.35}%2C${SITE.mapa.lat + 0.22}&layer=mapnik"></iframe>`;
+
+  /* El mapa se pide por recuadro (bbox), no por zoom, así que hay que
+     traducirlo. Antes el recuadro estaba fijo en ±0.35°, unos 64 km de ancho:
+     el campo "Zoom" del panel no hacía nada.
+
+     En Mercator, a zoom Z el mundo mide 256·2^Z píxeles y abarca 360°. De ahí
+     salen los grados por píxel; la latitud además se comprime con el coseno. */
+  (function mapa() {
+    const caja = $('#map');
+    if (!caja || !SITE.mapa) return;
+
+    const { lat, lng } = SITE.mapa;
+    const z = Math.min(18, Math.max(5, SITE.mapa.zoom || 13));
+    const ancho = Math.max(320, caja.clientWidth || 640);
+    const alto = Math.max(220, caja.clientHeight || 420);
+    const grados = 360 / (256 * Math.pow(2, z));
+
+    const dLng = (ancho * grados) / 2;
+    const dLat = (alto * grados * Math.cos((lat * Math.PI) / 180)) / 2;
+    const bbox = [lng - dLng, lat - dLat, lng + dLng, lat + dLat].join(',');
+
+    caja.innerHTML =
+      `<iframe title="Ubicación de ${esc(SITE.nombre)}" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+        src="https://www.openstreetmap.org/export/embed.html?bbox=${encodeURIComponent(bbox)}&layer=mapnik&marker=${encodeURIComponent(lat + ',' + lng)}"></iframe>`;
+  })();
 
   // WhatsApp flotante
   const wa = $('#waFloat');
