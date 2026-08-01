@@ -13,6 +13,12 @@ window.iniciarSitio = function () {
     ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
   const horse = '<svg aria-hidden="true"><use href="#i-shoe"/></svg>';
 
+  /* Una ruta relativa metida en una variable CSS la resuelve el navegador
+     contra la HOJA DE ESTILO que la usa, no contra la página. Como --foto se
+     escribe acá pero se usa en style.css, quedaba assets/css/assets/img/...
+     Pasarla a absoluta la vuelve inmune a quién la consuma. */
+  const urlAbs = (u) => (u ? new URL(u, document.baseURI).href : '');
+
 
   /* ─────────────── Navegación ─────────────── */
   const nav = $('#nav'), burger = $('#burger'), links = $('#navLinks');
@@ -173,7 +179,7 @@ window.iniciarSitio = function () {
   $('#padrillosGrid').innerHTML = PADRILLOS.map((p, i) => `
     <button class="pad${p.destacado ? ' pad--star' : ''}" data-pad="${i}" type="button">
       <span class="pad__img" data-photo="${esc(p.foto || '')}"
-            ${p.foto ? `style="--foto:url('${esc(p.foto)}')"` : ''}>
+            ${p.foto ? `style="--foto:url('${esc(urlAbs(p.foto))}')"` : ''}>
         ${horse}
         ${p.destacado ? `<span class="pad__star">${esc(p.etiqueta || 'Destacado')}</span>` : ''}
       </span>
@@ -195,7 +201,7 @@ window.iniciarSitio = function () {
     const p = PADRILLOS[i];
     mbody.innerHTML = `
       <div class="mhead" data-photo="${esc(p.foto || '')}"
-           ${p.foto ? `style="--foto:url('${esc(p.foto)}')"` : ''}>${horse}</div>
+           ${p.foto ? `style="--foto:url('${esc(urlAbs(p.foto))}')"` : ''}>${horse}</div>
       <div class="mbody">
         <h3 id="modalTitle">${esc(p.nombre)}</h3>
         <p class="pad__idx">${esc(p.indice || p.titular || '')}</p>
