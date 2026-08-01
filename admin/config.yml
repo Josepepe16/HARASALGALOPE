@@ -4,8 +4,13 @@
 #  Cada "collection" es una pantalla del panel.
 # ============================================================================
 
+# El login es con cuenta de GitHub. Netlify hace de intermediario del login,
+# así no hay que levantar ningún servidor propio.
+# (Antes usábamos git-gateway, pero Netlify lo cerró para configuraciones
+#  nuevas: ya no se puede habilitar.)
 backend:
-  name: git-gateway          # guarda los cambios en el repositorio del sitio
+  name: github
+  repo: Josepepe16/HARASALGALOPE
   branch: main
   commit_messages:
     create: 'Agrega {{collection}} “{{slug}}”'
@@ -55,7 +60,8 @@ collections:
             summary: '{{fields.fecha}} — {{fields.titulo}}'
             hint: 'Poné la más nueva arriba de todo.'
             fields:
-              - { label: 'Fecha', name: fecha, widget: date, format: 'YYYY-MM-DD' }
+              - { label: 'Fecha', name: fecha, widget: datetime, type: date,
+                  format: 'YYYY-MM-DD' }
               - { label: 'Etiqueta', name: etiqueta, widget: string,
                   hint: 'Una palabra: Remate, Carrera, Maroñas, Tambores…' }
               - { label: 'Título', name: titulo, widget: string }

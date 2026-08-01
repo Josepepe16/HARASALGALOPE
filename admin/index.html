@@ -8,20 +8,10 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐎</text></svg>">
 </head>
 <body>
-<!-- Login. Netlify Identity maneja los usuarios: el dueño entra con su mail
-     y una contraseña que elige él; nadie más puede editar. -->
-<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-<script src="https://unpkg.com/decap-cms@^3.3.0/dist/decap-cms.js"></script>
-<script>
-  // Al aceptar la invitación por mail, Netlify vuelve al sitio con un token.
-  // Esto lo lleva derecho al panel en vez de dejarlo en la portada.
-  if (window.netlifyIdentity) {
-    window.netlifyIdentity.on('init', (user) => {
-      if (!user) {
-        window.netlifyIdentity.on('login', () => { document.location.href = '/admin/'; });
-      }
-    });
-  }
-</script>
+<!-- Sveltia CMS. Lee el mismo config.yml de al lado y anda bien en el
+     celular, que es donde el dueño va a cargar las fotos.
+     El login es con cuenta de GitHub; quien entre tiene que ser colaborador
+     del repositorio Josepepe16/HARASALGALOPE. -->
+<script src="https://unpkg.com/@sveltia/cms/dist/sveltia-cms.js"></script>
 </body>
 </html>
