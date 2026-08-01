@@ -14,7 +14,12 @@
 <meta property="og:locale" content="es_UY">
 <meta property="og:image" content="assets/img/og.jpg">
 
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐎</text></svg>">
+<!-- El logo sin fondo. Como es transparente, la tinta tiene que cambiar según
+     dónde se apoye: el azul se pierde en una pestaña oscura y el blanco en una
+     clara. El navegador elige según el tema del sistema. -->
+<link rel="icon" type="image/png" href="assets/img/icono.png">
+<link rel="icon" type="image/png" href="assets/img/icono-claro.png" media="(prefers-color-scheme: dark)">
+<link rel="apple-touch-icon" href="assets/img/icono.png">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

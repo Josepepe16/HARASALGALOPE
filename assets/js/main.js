@@ -307,6 +307,12 @@ window.iniciarSitio = function () {
       `<span class="cinta__item">${esc(t)}</span>`).join('');
     banda.hidden = false;
 
+    // El color lo elige el panel. Si no viene, queda el verde del afiche de
+    // Favorito Verde, que es el que está puesto en el CSS.
+    if (typeof CINTA_COLOR === 'string' && /^#[0-9a-f]{3,8}$/i.test(CINTA_COLOR)) {
+      banda.style.setProperty('--verde', CINTA_COLOR);
+    }
+
     // Si el sistema pide menos movimiento, no se desliza: se van turnando
     // los mensajes en el lugar. Así la cinta no queda muerta.
     const quieto = matchMedia('(prefers-reduced-motion: reduce)');

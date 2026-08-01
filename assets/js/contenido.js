@@ -46,7 +46,9 @@
       condiciones: planas(r.condiciones, 'texto')
     });
 
-    window.CINTA = planas((c.cinta || {}).mensajes, 'texto');
+    var cn = c.cinta || {};
+    window.CINTA = planas(cn.mensajes, 'texto');
+    window.CINTA_COLOR = cn.color || '';
 
     window.PADRILLOS = ((c.padrillos || {}).items || []).map(function (p, i) {
       return {
