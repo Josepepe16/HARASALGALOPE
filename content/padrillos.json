@@ -1,0 +1,220 @@
+{
+  "items": [
+    {
+      "nombre": "Favorito Verde",
+      "foto": "/assets/img/padrillo-favorito-verde.jpg",
+      "indice": "AAAT 104",
+      "titular": "La incorporación",
+      "etiqueta": "Nueva adquisición",
+      "destacado": true,
+      "padre": "Favorito Cartel",
+      "madre": "Yashira Vista",
+      "resumen": "El padrillo que el haras está promocionando esta temporada. Cruza de Favorito Cartel sobre una hija de Corona Cartel.",
+      "ficha": [
+        {
+          "dato": "Padre",
+          "valor": "Favorito Cartel AAAT 104"
+        },
+        {
+          "dato": "Madre",
+          "valor": "Yashira Vista AAAT 104 — ganadora en Brasil"
+        },
+        {
+          "dato": "Abuela",
+          "valor": "Strawberry Cartel, por Corona Cartel"
+        },
+        {
+          "dato": "Servicios",
+          "valor": "Disponibles — consultar condiciones"
+        }
+      ],
+      "hijos": []
+    },
+    {
+      "nombre": "Invictus Beduino",
+      "foto": "/assets/img/padrillo-invictus-beduino.jpg",
+      "indice": "AAAT 104",
+      "titular": "El padrillo que cambió la vara",
+      "etiqueta": "",
+      "destacado": true,
+      "padre": "Separatist",
+      "madre": "Beduinos Baby Filly",
+      "resumen": "Su primera generación corrió 11 hijos y ganaron 7. De ahí salió Galope Cuarteto, invicto y campeón del Potro de Futuro 2024.",
+      "ficha": [
+        {
+          "dato": "Padre",
+          "valor": "Separatist AAAT 101 — 3 veces campeón AQHA, 16 victorias, U$S 889.044"
+        },
+        {
+          "dato": "Madre",
+          "valor": "Beduinos Baby Filly AAAT 119 — 9 victorias, líder de generación 2000"
+        },
+        {
+          "dato": "Récords",
+          "valor": "Su madre fue recordista de 402 y 503 m en Sorocaba"
+        },
+        {
+          "dato": "1ª generación",
+          "valor": "11 hijos corridos, 7 ganadores"
+        }
+      ],
+      "hijos": [
+        {
+          "nombre": "Galope Cuarteto"
+        },
+        {
+          "nombre": "Galope Juanra"
+        },
+        {
+          "nombre": "Galope Música Ligera"
+        },
+        {
+          "nombre": "Galope Picardía"
+        },
+        {
+          "nombre": "Galope Bohemio"
+        }
+      ]
+    },
+    {
+      "nombre": "Calcol 36",
+      "foto": "/assets/img/padrillo-calcol-36.jpg",
+      "indice": "AAAT 104",
+      "titular": "Sangre para carrera y para tambores",
+      "etiqueta": "",
+      "destacado": true,
+      "padre": "Tres Seis (USA)",
+      "madre": "Visual Image (USA)",
+      "resumen": "Versátil como su padre Tres Seis. En tambores sus hijos llevan producido más de U$S 45.000 en premios.",
+      "ficha": [
+        {
+          "dato": "Campaña",
+          "valor": "3 victorias, 2 segundos y 2 terceros en Sorocaba"
+        },
+        {
+          "dato": "Clásicos",
+          "valor": "Finalista South American Racing Challenger 2019 · 3° GP Presidente Hípico del Oeste"
+        },
+        {
+          "dato": "Padre",
+          "valor": "Tres Seis (USA) AAA-97 — AQHA Racing Champion 2 años, U$S 856.901 en premios"
+        },
+        {
+          "dato": "Madre",
+          "valor": "Visual Image (USA) — campeona Congreso ABQM 2012 en Tres Tambores"
+        },
+        {
+          "dato": "Hermano de",
+          "valor": "Ochoa AAA-99, el Cuarto de Milla que más facturó de todos los tiempos (U$S 2.781.365)"
+        }
+      ],
+      "hijos": [
+        {
+          "nombre": "Galope Filoso"
+        },
+        {
+          "nombre": "Galope Miami 36"
+        },
+        {
+          "nombre": "Galope Galán 36"
+        },
+        {
+          "nombre": "Galope Gatillo 36"
+        },
+        {
+          "nombre": "Galope Polémico"
+        }
+      ]
+    },
+    {
+      "nombre": "Fuego Fling Fame",
+      "foto": "/assets/img/padrillo-fuego-fling-fame.jpg",
+      "indice": "",
+      "titular": "Sangre de tambores",
+      "etiqueta": "",
+      "destacado": true,
+      "padre": "A Streak of Fling",
+      "madre": "Lulu Ta Fame HTT",
+      "resumen": "Ganador de Potros por un Sueño 2024, en su 11ª edición, con Emiliano Ramos en la monta. Cruza de velocidad para tres tambores.",
+      "ficha": [
+        {
+          "dato": "Padre",
+          "valor": "A Streak of Fling, por Streakin Six en Moon Fling"
+        },
+        {
+          "dato": "Madre",
+          "valor": "Lulu Ta Fame HTT, por Dash Ta Fame en Tiny Martha Jean"
+        },
+        {
+          "dato": "Campaña",
+          "valor": "Ganador Potros por un Sueño 2024 — U$S 8.000"
+        },
+        {
+          "dato": "Jinete",
+          "valor": "Emiliano Ramos"
+        }
+      ],
+      "hijos": []
+    },
+    {
+      "nombre": "Jess Bikini JNN",
+      "foto": "/assets/img/padrillo-jess-bikini-jnn.jpg",
+      "indice": "",
+      "titular": "Servicios disponibles",
+      "etiqueta": "",
+      "destacado": true,
+      "padre": "",
+      "madre": "",
+      "resumen": "Servicios disponibles. Consultanos por su pedigrí y condiciones.",
+      "ficha": [
+        {
+          "dato": "Padre",
+          "valor": "A confirmar"
+        },
+        {
+          "dato": "Madre",
+          "valor": "A confirmar"
+        },
+        {
+          "dato": "Campaña",
+          "valor": "A confirmar"
+        }
+      ],
+      "hijos": []
+    },
+    {
+      "nombre": "Breeze Winner",
+      "foto": "/assets/img/padrillo-breeze-winner.jpg",
+      "indice": "",
+      "titular": "Paint Horse — color, función y velocidad",
+      "etiqueta": "",
+      "destacado": true,
+      "padre": "Delicate Breeze",
+      "madre": "Dinastía Toll BRZ",
+      "resumen": "El padrillo Paint del haras. Suma color a la misma sangre de velocidad: su padre es hijo de Mr Jess Perry, gran jefe de raza.",
+      "ficha": [
+        {
+          "dato": "Raza",
+          "valor": "Paint Horse"
+        },
+        {
+          "dato": "Padre",
+          "valor": "Delicate Breeze, hijo de Mr Jess Perry (1992)"
+        },
+        {
+          "dato": "Madre",
+          "valor": "Dinastía Toll BRZ AAAT 108 — líder de generación en Brasil"
+        },
+        {
+          "dato": "Línea materna",
+          "valor": "Ganadora de 5, entre ellas el GP Rainha de Velocidade en Sorocaba"
+        }
+      ],
+      "hijos": [
+        {
+          "nombre": "Galope Polero"
+        }
+      ]
+    }
+  ]
+}

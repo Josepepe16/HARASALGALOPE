@@ -1,0 +1,30 @@
+{
+  "nombre": "Haras Al Galope",
+  "lema": "Criamos para llegar primero",
+  "ubicacion": "Libertad, San José, Uruguay",
+  "direccion": "Libertad, San José, Uruguay",
+  "desde": 2020,
+  "contactos": [
+    {
+      "nombre": "Ing. Agr. Ignacio Bidegain",
+      "rol": "Propietario",
+      "tel": "099 345 641",
+      "intl": "59899345641"
+    }
+  ],
+  "email": "",
+  "redes": {
+    "instagram": "https://www.instagram.com/harasalgalope/",
+    "facebook": "",
+    "youtube": ""
+  },
+  "mapa": {
+    "lat": -34.3376,
+    "lng": -56.7132,
+    "zoom": 11
+  },
+  "logo": "/assets/img/logo.png",
+  "fotoPortada": "/assets/img/hero.jpg",
+  "fotoHaras": "/assets/img/haras.jpg",
+  "fotoHarasPos": "60% 45%"
+}

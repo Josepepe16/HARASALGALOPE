@@ -1,0 +1,275 @@
+# ============================================================================
+#  PANEL DE ADMINISTRACIÓN — Haras Al Galope
+#  Define qué puede editar el dueño desde harasalgalope.com/admin
+#  Cada "collection" es una pantalla del panel.
+# ============================================================================
+
+backend:
+  name: git-gateway          # guarda los cambios en el repositorio del sitio
+  branch: main
+  commit_messages:
+    create: 'Agrega {{collection}} “{{slug}}”'
+    update: 'Actualiza {{collection}} “{{slug}}”'
+    delete: 'Borra {{collection}} “{{slug}}”'
+    uploadMedia: 'Sube la imagen {{path}}'
+    deleteMedia: 'Borra la imagen {{path}}'
+
+# Las fotos que suban van todas a la misma carpeta que las actuales.
+media_folder: 'assets/img'
+public_folder: '/assets/img'
+
+locale: 'es'
+publish_mode: simple         # se publica al guardar, sin pasos intermedios
+
+collections:
+
+  # ── LO QUE MÁS SE TOCA ────────────────────────────────────────────────────
+  - name: cinta
+    label: 'Cinta de novedades'
+    label_singular: 'Cinta'
+    description: 'La franja verde que pasa abajo de la pantalla.'
+    files:
+      - name: cinta
+        label: 'Mensajes de la cinta'
+        file: 'content/cinta.json'
+        fields:
+          - label: 'Mensajes'
+            name: mensajes
+            widget: list
+            summary: '{{fields.texto}}'
+            hint: 'Se van turnando en bucle. Si la dejás vacía, la cinta desaparece del sitio.'
+            fields:
+              - { label: 'Texto', name: texto, widget: string }
+
+  - name: novedades
+    label: 'Novedades'
+    description: 'Las tarjetas de la sección Novedades.'
+    files:
+      - name: novedades
+        label: 'Novedades'
+        file: 'content/novedades.json'
+        fields:
+          - label: 'Novedades'
+            name: items
+            widget: list
+            summary: '{{fields.fecha}} — {{fields.titulo}}'
+            hint: 'Poné la más nueva arriba de todo.'
+            fields:
+              - { label: 'Fecha', name: fecha, widget: date, format: 'YYYY-MM-DD' }
+              - { label: 'Etiqueta', name: etiqueta, widget: string,
+                  hint: 'Una palabra: Remate, Carrera, Maroñas, Tambores…' }
+              - { label: 'Título', name: titulo, widget: string }
+              - { label: 'Texto', name: texto, widget: text }
+              - { label: 'Link (opcional)', name: link, widget: string, required: false }
+              - { label: 'Texto del link', name: linkTexto, widget: string, required: false,
+                  hint: 'Por ejemplo: Ver el remate' }
+
+  - name: galeria
+    label: 'Galería de fotos'
+    files:
+      - name: galeria
+        label: 'Galería'
+        file: 'content/galeria.json'
+        fields:
+          - { label: 'Cuántas se ven al entrar', name: visibles, widget: number,
+              value_type: int, min: 1, max: 40,
+              hint: 'El resto queda detrás del botón “Ver más fotos”.' }
+          - label: 'Fotos'
+            name: items
+            widget: list
+            summary: '{{fields.alt}}'
+            hint: 'Arrastrá para cambiar el orden. La primera se muestra al doble de tamaño.'
+            fields:
+              - { label: 'Foto', name: foto, widget: image }
+              - { label: 'Descripción', name: alt, widget: string,
+                  hint: 'Qué se ve. Lo leen los buscadores y los lectores de pantalla.' }
+              - { label: 'Encuadre', name: pos, widget: string, required: false,
+                  hint: 'Sólo si queda mal centrada. Ejemplos: 50% 30% (sube), 70% 50% (corre a la derecha).' }
+
+  # ── EL REMATE ─────────────────────────────────────────────────────────────
+  - name: remate
+    label: 'Remate'
+    files:
+      - name: remate
+        label: 'Próximo remate'
+        file: 'content/remate.json'
+        fields:
+          - { label: 'Título', name: titulo, widget: string, hint: 'Por ejemplo: 7° Remate Anual' }
+          - { label: 'Subtítulo', name: subtitulo, widget: string }
+          - { label: 'Fecha y hora exactas', name: fechaISO, widget: datetime,
+              format: "YYYY-MM-DDTHH:mm:ss-03:00", date_format: 'DD/MM/YYYY', time_format: 'HH:mm',
+              hint: 'Esto maneja la cuenta regresiva de la portada. Cuando pasa, cambia sola.' }
+          - { label: 'Fecha escrita', name: fechaTexto, widget: string,
+              hint: 'Como se muestra. Por ejemplo: Jueves 14 de agosto de 2026' }
+          - { label: 'Hora escrita', name: hora, widget: string }
+          - { label: 'Modalidad', name: modalidad, widget: string }
+          - { label: 'Lugar', name: lugar, widget: string }
+          - { label: 'Rematador', name: rematador, widget: string }
+          - { label: 'Link al remate', name: link, widget: string }
+          - { label: 'Premios', name: premio, widget: string, required: false }
+          - label: 'Transmite'
+            name: transmite
+            widget: list
+            summary: '{{fields.nombre}}'
+            fields: [{ label: 'Nombre', name: nombre, widget: string }]
+          - label: 'Haras invitados'
+            name: invitados
+            widget: list
+            summary: '{{fields.nombre}}'
+            fields: [{ label: 'Nombre', name: nombre, widget: string }]
+          - label: 'Condiciones de venta'
+            name: condiciones
+            widget: list
+            summary: '{{fields.texto}}'
+            fields: [{ label: 'Condición', name: texto, widget: text }]
+
+  # ── LOS CABALLOS ──────────────────────────────────────────────────────────
+  - name: padrillos
+    label: 'Padrillos'
+    files:
+      - name: padrillos
+        label: 'Padrillos'
+        file: 'content/padrillos.json'
+        fields:
+          - label: 'Padrillos'
+            name: items
+            widget: list
+            summary: '{{fields.nombre}}'
+            hint: 'Arrastrá para cambiar el orden en que aparecen.'
+            fields:
+              - { label: 'Nombre', name: nombre, widget: string }
+              - { label: 'Foto', name: foto, widget: image, required: false,
+                  hint: 'Cualquier foto sirve: el sitio la acomoda sola, no hace falta recortarla.' }
+              - { label: 'Índice de velocidad', name: indice, widget: string, required: false,
+                  hint: 'Por ejemplo: AAAT 104' }
+              - { label: 'Bajada', name: titular, widget: string, required: false,
+                  hint: 'Se muestra si no hay índice de velocidad.' }
+              - { label: 'Mostrar cartelito', name: destacado, widget: boolean, default: true }
+              - { label: 'Texto del cartelito', name: etiqueta, widget: string, required: false,
+                  hint: 'Si lo dejás vacío dice “Destacado”.' }
+              - { label: 'Padre', name: padre, widget: string, required: false }
+              - { label: 'Madre', name: madre, widget: string, required: false }
+              - { label: 'Reseña', name: resumen, widget: text }
+              - label: 'Ficha'
+                name: ficha
+                widget: list
+                summary: '{{fields.dato}}: {{fields.valor}}'
+                hint: 'Las filas de la ficha completa que se abre al tocar la tarjeta.'
+                fields:
+                  - { label: 'Dato', name: dato, widget: string, hint: 'Padre, Madre, Campaña…' }
+                  - { label: 'Valor', name: valor, widget: text }
+              - label: 'Hijos destacados'
+                name: hijos
+                widget: list
+                summary: '{{fields.nombre}}'
+                required: false
+                fields: [{ label: 'Nombre', name: nombre, widget: string }]
+
+  - name: caballos
+    label: 'Palmarés'
+    description: 'Los caballos con campaña que se muestran en “El palmarés”.'
+    files:
+      - name: caballos
+        label: 'Caballos'
+        file: 'content/caballos.json'
+        fields:
+          - label: 'Caballos'
+            name: items
+            widget: list
+            summary: '{{fields.nombre}} — {{fields.titulo}}'
+            fields:
+              - { label: 'Nombre', name: nombre, widget: string }
+              - label: 'Categoría'
+                name: categoria
+                widget: select
+                options:
+                  - { label: 'Carrera', value: carrera }
+                  - { label: 'Tambores', value: tambores }
+                  - { label: 'Madres', value: madres }
+              - { label: 'Sexo', name: sexo, widget: select, required: false,
+                  options: ['Macho', 'Hembra'] }
+              - { label: 'Año de nacimiento', name: anio, widget: number, required: false,
+                  value_type: int, min: 1990, max: 2100 }
+              - { label: 'Padre', name: padre, widget: string, required: false }
+              - { label: 'Madre', name: madre, widget: string, required: false }
+              - { label: 'Logro principal', name: titulo, widget: string, required: false,
+                  hint: 'Se muestra destacado. Por ejemplo: Campeón 8° Potro del Futuro' }
+              - label: 'Logros'
+                name: logros
+                widget: list
+                summary: '{{fields.texto}}'
+                fields: [{ label: 'Logro', name: texto, widget: text }]
+
+  # ── LO QUE CASI NO CAMBIA ─────────────────────────────────────────────────
+  - name: servicios
+    label: 'Servicios'
+    files:
+      - name: servicios
+        label: 'Servicios'
+        file: 'content/servicios.json'
+        fields:
+          - label: 'Servicios'
+            name: items
+            widget: list
+            summary: '{{fields.titulo}}'
+            fields:
+              - label: 'Ícono'
+                name: icono
+                widget: select
+                options:
+                  - { label: 'Padrillo', value: stallion }
+                  - { label: 'Martillo de remate', value: gavel }
+                  - { label: 'Trofeo', value: trophy }
+                  - { label: 'Planilla', value: clipboard }
+              - { label: 'Título', name: titulo, widget: string }
+              - { label: 'Texto', name: texto, widget: text }
+              - label: 'Detalles'
+                name: detalles
+                widget: list
+                summary: '{{fields.texto}}'
+                fields: [{ label: 'Detalle', name: texto, widget: string }]
+
+  - name: sitio
+    label: 'Datos del haras'
+    description: 'Contactos, redes, ubicación y las fotos fijas.'
+    files:
+      - name: sitio
+        label: 'Datos generales'
+        file: 'content/sitio.json'
+        fields:
+          - { label: 'Nombre', name: nombre, widget: string }
+          - { label: 'Lema', name: lema, widget: string }
+          - { label: 'Ubicación', name: ubicacion, widget: string }
+          - { label: 'Dirección', name: direccion, widget: string }
+          - { label: 'Desde el año', name: desde, widget: number, value_type: int }
+          - { label: 'Email', name: email, widget: string, required: false }
+          - label: 'Teléfonos'
+            name: contactos
+            widget: list
+            summary: '{{fields.nombre}} — {{fields.tel}}'
+            fields:
+              - { label: 'Nombre', name: nombre, widget: string }
+              - { label: 'Rol', name: rol, widget: string }
+              - { label: 'Teléfono', name: tel, widget: string, hint: 'Como se muestra: 099 345 641' }
+              - { label: 'Para WhatsApp', name: intl, widget: string,
+                  hint: 'El mismo número sin espacios y con 598 adelante: 59899345641' }
+          - label: 'Redes'
+            name: redes
+            widget: object
+            fields:
+              - { label: 'Instagram', name: instagram, widget: string, required: false }
+              - { label: 'Facebook', name: facebook, widget: string, required: false }
+              - { label: 'YouTube', name: youtube, widget: string, required: false }
+          - label: 'Mapa'
+            name: mapa
+            widget: object
+            fields:
+              - { label: 'Latitud', name: lat, widget: number, value_type: float }
+              - { label: 'Longitud', name: lng, widget: number, value_type: float }
+              - { label: 'Zoom', name: zoom, widget: number, value_type: int, min: 5, max: 18 }
+          - { label: 'Logo', name: logo, widget: image }
+          - { label: 'Foto de portada', name: fotoPortada, widget: image,
+              hint: 'La grande del principio. Conviene una apaisada y tranquila.' }
+          - { label: 'Foto de “El Haras”', name: fotoHaras, widget: image }
+          - { label: 'Encuadre de esa foto', name: fotoHarasPos, widget: string, required: false,
+              hint: 'El marco es cuadrado. Sólo tocalo si queda mal: 50% 30% sube el encuadre, 70% 50% lo corre a la derecha.' }

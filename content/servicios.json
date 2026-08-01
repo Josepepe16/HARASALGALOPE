@@ -1,0 +1,80 @@
+{
+  "items": [
+    {
+      "icono": "stallion",
+      "titulo": "Servicios de padrillo",
+      "texto": "Monta natural e inseminación con nuestros padrillos. Sangre norteamericana y brasileña seleccionada para velocidad, disponible para criadores de todo el país.",
+      "detalles": [
+        {
+          "texto": "Favorito Verde"
+        },
+        {
+          "texto": "Invictus Beduino"
+        },
+        {
+          "texto": "Calcol 36"
+        },
+        {
+          "texto": "Fuego Fling Fame"
+        },
+        {
+          "texto": "Jess Bikini JNN"
+        },
+        {
+          "texto": "Breeze Winner"
+        }
+      ]
+    },
+    {
+      "icono": "gavel",
+      "titulo": "Venta de productos",
+      "texto": "Potrillos y potrancas Cuarto de Milla definitivos, con pedigrí completo y preparación previa. Se venden en nuestro remate anual y también en venta particular.",
+      "detalles": [
+        {
+          "texto": "Remate anual en agosto"
+        },
+        {
+          "texto": "Venta particular todo el año"
+        },
+        {
+          "texto": "Financiación en cuotas"
+        }
+      ]
+    },
+    {
+      "icono": "trophy",
+      "titulo": "Polla de Potrillos",
+      "texto": "Organizamos nuestra propia carrera junto a Haras La Manada, para los productos de ambos criaderos. Una vidriera para la generación y un premio que se reparte entre criadores y entrenadores.",
+      "detalles": [
+        {
+          "texto": "U$S 10.000 en premios"
+        },
+        {
+          "texto": "U$S 7.000 al primero · 1.500 al segundo · 500 al tercero"
+        },
+        {
+          "texto": "U$S 1.000 al entrenador vencedor"
+        },
+        {
+          "texto": "Se corre desde 2020 — 6ª edición en marzo de 2026"
+        }
+      ]
+    },
+    {
+      "icono": "clipboard",
+      "titulo": "Asesoramiento a criadores",
+      "texto": "Te ayudamos a elegir el cruzamiento según el objetivo: carrera corta, tambores o reproducción. Lectura de pedigrí y planificación de servicio.",
+      "detalles": [
+        {
+          "texto": "Selección de cruzamiento"
+        },
+        {
+          "texto": "Lectura de pedigrí"
+        },
+        {
+          "texto": "Planificación reproductiva"
+        }
+      ]
+    }
+  ]
+}

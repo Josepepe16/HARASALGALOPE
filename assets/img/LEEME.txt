@@ -1,0 +1,28 @@
+FOTOS DEL SITIO — Haras Al Galope
+=================================
+
+Dejá las imágenes en esta carpeta con EXACTAMENTE estos nombres.
+El sitio las toma solo si existen; si falta alguna, queda el marco con la
+herradura y no se rompe nada.
+
+  haras.jpg                        Foto principal del establecimiento.
+                                   Vertical, ideal 1000 x 1250 px.
+
+  padrillo-invictus-beduino.jpg    Fotos de los padrillos.
+  padrillo-calcol-36.jpg           Horizontal, ideal 1200 x 900 px.
+  padrillo-fuego-fling-fame.jpg    De perfil, cuerpo entero, fondo limpio.
+  padrillo-jess-bikini-jnn.jpg
+  padrillo-breeze-winner.jpg
+
+  og.jpg                           La que se ve al compartir el link por
+                                   WhatsApp o Facebook. 1200 x 630 px.
+                                   Además hay que descomentar la etiqueta
+                                   og:image en index.html (está marcada).
+
+CONSEJOS
+--------
+- Guardalas como JPG de buena calidad pero livianas: menos de 400 KB cada una.
+  Podés comprimirlas gratis en https://squoosh.app
+- Los nombres van todos en minúscula y sin espacios ni tildes.
+- Si agregás un padrillo nuevo en data.js, la foto tiene que llamarse
+  padrillo- + el "id" que le pusiste + .jpg

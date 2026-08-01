@@ -1,0 +1,60 @@
+{
+  "titulo": "7° Remate Anual",
+  "subtitulo": "Haras Al Galope e Invitados",
+  "fechaISO": "2026-08-14T19:00:00-03:00",
+  "fechaTexto": "Jueves 14 de agosto de 2026",
+  "hora": "19:00 h",
+  "modalidad": "Remate virtual",
+  "lugar": "San José, Uruguay",
+  "rematador": "Juan Francisco Chiruchi — Escritorio Rural",
+  "link": "https://jfchiruchi.com/remate/30808",
+  "transmite": [
+    {
+      "nombre": "ClicRural"
+    },
+    {
+      "nombre": "VTV"
+    },
+    {
+      "nombre": "jfchiruchi.com"
+    }
+  ],
+  "invitados": [
+    {
+      "nombre": "Haras La Manada"
+    },
+    {
+      "nombre": "El Josefino"
+    },
+    {
+      "nombre": "El Mayoral"
+    },
+    {
+      "nombre": "Don Segundo"
+    },
+    {
+      "nombre": "PT La Aurora"
+    }
+  ],
+  "premio": "U$S 10.000 en premios para los potrillos rematados",
+  "condiciones": [
+    {
+      "texto": "Venta por cuota: plazo de 18 cuotas, con los gastos pagos junto a la primera."
+    },
+    {
+      "texto": "Descuento de 1 cuota para pagos al contado."
+    },
+    {
+      "texto": "Quienes ganen la preoferta y compren, la última cuota va de regalo."
+    },
+    {
+      "texto": "Comisión del comprador: 10% más impuestos."
+    },
+    {
+      "texto": "El flete corre por cuenta del comprador."
+    },
+    {
+      "texto": "Pasados los 12 días del remate, la mantención es de U$S 14 por día."
+    }
+  ]
+}

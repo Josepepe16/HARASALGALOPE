@@ -1,0 +1,303 @@
+{
+  "items": [
+    {
+      "nombre": "Galope Callejero",
+      "categoria": "carrera",
+      "sexo": "Macho",
+      "anio": null,
+      "padre": "",
+      "madre": "",
+      "titulo": "Campeón 8° Potro del Futuro — Maroñas 2026",
+      "logros": [
+        {
+          "texto": "Ganó la final del 8° Potro del Futuro en el Hipódromo Nacional de Maroñas"
+        },
+        {
+          "texto": "Domingo 26 de julio de 2026, sobre 365 metros"
+        },
+        {
+          "texto": "Conducido por C. Moreno"
+        },
+        {
+          "texto": "Finalista de la 6ª Polla de Potrillos"
+        }
+      ]
+    },
+    {
+      "nombre": "Galope Gran Cañón",
+      "categoria": "carrera",
+      "sexo": "Macho",
+      "anio": null,
+      "padre": "",
+      "madre": "",
+      "titulo": "Campeón 6ª Polla de Potrillos",
+      "logros": [
+        {
+          "texto": "Campeón de la 6ª Polla de Potrillos Haras Al Galope y La Manada"
+        },
+        {
+          "texto": "Disputada en el Hipódromo de Flores, marzo de 2026"
+        }
+      ]
+    },
+    {
+      "nombre": "Galope Gran Estafa",
+      "categoria": "carrera",
+      "sexo": "Hembra",
+      "anio": null,
+      "padre": "",
+      "madre": "",
+      "titulo": "Ganadora 1ª clasificatoria, Potro del Futuro 2026",
+      "logros": [
+        {
+          "texto": "Ganó la 1ª clasificatoria del 8° Potro del Futuro 2026"
+        },
+        {
+          "texto": "Finalista en Maroñas, en la final del 26 de julio de 2026"
+        },
+        {
+          "texto": "Finalista de la 6ª Polla de Potrillos"
+        }
+      ]
+    },
+    {
+      "nombre": "Galope Cuarteto",
+      "categoria": "carrera",
+      "sexo": "Macho",
+      "anio": 2021,
+      "padre": "Invictus Beduino",
+      "madre": "Lady Quick Jet",
+      "titulo": "Campeón Potro de Futuro 2024",
+      "logros": [
+        {
+          "texto": "Corrió 4, ganó 4 — invicto"
+        },
+        {
+          "texto": "Ganador Potro de Futuro 2024"
+        },
+        {
+          "texto": "Ganador Polla Haras Al Galope 2024"
+        },
+        {
+          "texto": "Hoy corre bajo el nombre de El Clon"
+        }
+      ]
+    },
+    {
+      "nombre": "Galope Nolediosa",
+      "categoria": "carrera",
+      "sexo": "Hembra",
+      "anio": 2019,
+      "padre": "Keep Winning Dash",
+      "madre": "LP The Queen",
+      "titulo": "Challenger Maroñas 2024",
+      "logros": [
+        {
+          "texto": "Ganadora de 12 carreras"
+        },
+        {
+          "texto": "Primera hembra y primer producto nacional en ganar el Challenger de Maroñas"
+        },
+        {
+          "texto": "Copa Vértigo 2023 — Mercedes"
+        },
+        {
+          "texto": "Clásicos en Lago Belén, Salto y Carril 5"
+        }
+      ]
+    },
+    {
+      "nombre": "Galope Juanra",
+      "categoria": "carrera",
+      "sexo": "Macho",
+      "anio": 2021,
+      "padre": "Invictus Beduino",
+      "madre": "Back Up Jess",
+      "titulo": "Recordista de Paysandú",
+      "logros": [
+        {
+          "texto": "3 corridas: 2 ganadas y 1 segundo"
+        },
+        {
+          "texto": "Récord en Paysandú — clasificatoria Potro de Futuro 2024"
+        },
+        {
+          "texto": "Ganador de terno en la Polla Haras Al Galope 2024"
+        }
+      ]
+    },
+    {
+      "nombre": "Galope Música Ligera",
+      "categoria": "carrera",
+      "sexo": "Hembra",
+      "anio": 2021,
+      "padre": "Invictus Beduino",
+      "madre": "Ypiocá Vista",
+      "titulo": "La mejor hembra del Potro de Futuro 2024",
+      "logros": [
+        {
+          "texto": "Ganadora de 2 pencas"
+        },
+        {
+          "texto": "4ª en la final del Potro de Futuro 2024"
+        },
+        {
+          "texto": "2ª en la clasificatoria del Potro de Futuro 2024"
+        }
+      ]
+    },
+    {
+      "nombre": "Galope Filoso",
+      "categoria": "carrera",
+      "sexo": "Macho",
+      "anio": null,
+      "padre": "Calcol 36",
+      "madre": "",
+      "titulo": "Ganador de 9",
+      "logros": [
+        {
+          "texto": "9 carreras ganadas"
+        }
+      ]
+    },
+    {
+      "nombre": "Galope Yimy",
+      "categoria": "carrera",
+      "sexo": "Macho",
+      "anio": 2018,
+      "padre": "Gross Oreille",
+      "madre": "LP The Queen",
+      "titulo": "Ganador de la 1ª Polla Haras Al Galope",
+      "logros": [
+        {
+          "texto": "Ganador de la primera Polla Haras Al Galope, 2020"
+        }
+      ]
+    },
+    {
+      "nombre": "Galope Secreto de Oro",
+      "categoria": "carrera",
+      "sexo": "Macho",
+      "anio": null,
+      "padre": "",
+      "madre": "Crifina By Dash",
+      "titulo": "Recordista del año 2023",
+      "logros": [
+        {
+          "texto": "Recordista del año 2023 en Florida"
+        },
+        {
+          "texto": "Corrió 5 carreras en Argentina: 1 primero, 2 segundos y 1 tercero"
+        },
+        {
+          "texto": "Compite bajo el nombre de Luriel"
+        }
+      ]
+    },
+    {
+      "nombre": "Galope Nórdica",
+      "categoria": "madres",
+      "sexo": "Hembra",
+      "anio": 2020,
+      "padre": "Nordick Only",
+      "madre": "Ypiocá Vista",
+      "titulo": "Precio récord en remates del haras",
+      "logros": [
+        {
+          "texto": "Precio récord histórico en los remates de Haras Al Galope"
+        }
+      ]
+    },
+    {
+      "nombre": "Galope Suspiro 36",
+      "categoria": "tambores",
+      "sexo": "Macho",
+      "anio": null,
+      "padre": "Calcol 36",
+      "madre": "MF Rubio",
+      "titulo": "Campeón Milagrosa 2026",
+      "logros": [
+        {
+          "texto": "Campeón de la Milagrosa 2026"
+        },
+        {
+          "texto": "Propietario y jinete: Enrique Pérez"
+        }
+      ]
+    },
+    {
+      "nombre": "Galope Galán 36",
+      "categoria": "tambores",
+      "sexo": "Macho",
+      "anio": null,
+      "padre": "Calcol 36",
+      "madre": "",
+      "titulo": "Ganador Cardona 2024",
+      "logros": [
+        {
+          "texto": "Ganador en Cardona 2024 — premio Saveiro, U$S 17.000"
+        }
+      ]
+    },
+    {
+      "nombre": "Galope Miami 36",
+      "categoria": "tambores",
+      "sexo": "Hembra",
+      "anio": null,
+      "padre": "Calcol 36",
+      "madre": "",
+      "titulo": "Ganadora Milagrosa 2020",
+      "logros": [
+        {
+          "texto": "Ganadora Milagrosa 2020 — U$S 10.000"
+        },
+        {
+          "texto": "Rienderos del Uruguay, 5 Tanques 2023"
+        },
+        {
+          "texto": "Fiesta del Queso 2024"
+        },
+        {
+          "texto": "Parque Roosevelt 2023 y 2024"
+        }
+      ]
+    },
+    {
+      "nombre": "Galope Gatillo 36",
+      "categoria": "tambores",
+      "sexo": "Macho",
+      "anio": null,
+      "padre": "Calcol 36",
+      "madre": "",
+      "titulo": "Múltiple placé en fiestas",
+      "logros": [
+        {
+          "texto": "2° en Cardona 2020 — tráiler U$S 3.500"
+        },
+        {
+          "texto": "3° en Milagrosa 2020 — U$S 5.000"
+        },
+        {
+          "texto": "3° Campeonato Anual Milagrosa 2021"
+        }
+      ]
+    },
+    {
+      "nombre": "Ypiocá Vista",
+      "categoria": "madres",
+      "sexo": "Hembra",
+      "anio": null,
+      "padre": "No Secrets Here",
+      "madre": "Recoleta Vista",
+      "titulo": "Madre fundacional",
+      "logros": [
+        {
+          "texto": "Hija de No Secrets Here AAAT 104 — ganador del All American Futurity G1 en tiempo récord"
+        },
+        {
+          "texto": "Madre de Galope Nórdica, Galope Música Ligera y Galope Amor Francés"
+        }
+      ]
+    }
+  ]
+}
