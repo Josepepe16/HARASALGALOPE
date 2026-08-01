@@ -2,11 +2,12 @@
 
 Sitio estático (HTML + CSS + JavaScript, sin dependencias ni compilación) con
 un panel de administración propio para que el dueño edite todo sin tocar código.
+Publicado gratis en GitHub Pages.
 
 ```
 haras-al-galope/
 ├── index.html              La página. Casi nunca hay que tocarla.
-├── PANEL.md                Cómo poner en marcha el panel. ← EMPEZÁ POR ACÁ
+├── PANEL.md                Cómo entrar y usar el panel. ← EMPEZÁ POR ACÁ
 ├── README.md               Esto.
 ├── content/                ← TODO EL CONTENIDO ESTÁ ACÁ (8 archivos)
 ├── admin/                  El panel de administración.
@@ -21,8 +22,9 @@ haras-al-galope/
 
 ## 1. Cómo actualizar el contenido
 
-**Lo normal es hacerlo desde el panel**, en `tudominio.com/admin`. Ver
-[PANEL.md](PANEL.md) para montarlo.
+**Lo normal es hacerlo desde el panel**, en
+<https://josepepe16.github.io/HARASALGALOPE/admin/>. Ver [PANEL.md](PANEL.md)
+para saber cómo entrar.
 
 Si preferís editar a mano, todo está en **`content/`**, en ocho archivos:
 
@@ -156,18 +158,24 @@ Subí el `zoom` a 13 o 14 para acercar más.
 
 ---
 
-## 4. Cómo publicarlo
+## 4. Dónde está publicado
 
-**Con panel:** hay que conectar Netlify a un repositorio de GitHub. Los cuatro
-pasos están en [PANEL.md](PANEL.md).
+El sitio vive en **GitHub Pages**, gratis y sin límites de despliegue:
 
-**Sin panel:** entrá a <https://app.netlify.com/drop> y arrastrá la carpeta
-`haras-al-galope` entera. Te da una dirección en un minuto, sin cuenta.
+```
+https://josepepe16.github.io/HARASALGALOPE/
+```
 
-Para que quede `harasalgalope.com` hay que comprar el dominio (en Uruguay,
-`.com.uy` se gestiona en <https://nic.com.uy>) y conectarlo desde Netlify.
+Se publica solo: cada cambio que llega al repositorio `Josepepe16/HARASALGALOPE`
+en la rama `main` republica el sitio en menos de un minuto. No hay que subir
+nada a mano.
 
----
+Para un dominio propio (`harasalgalope.com`) hay que comprarlo — en Uruguay el
+`.com.uy` se gestiona en <https://nic.com.uy> — y apuntarlo desde
+**Settings → Pages → Custom domain**. El certificado lo pone GitHub, gratis.
+
+**Las rutas del sitio son relativas a propósito.** Así funciona igual dentro de
+un subdirectorio que en la raíz de un dominio propio, sin tocar una línea.
 
 ## 5. Probarlo en tu computadora
 
