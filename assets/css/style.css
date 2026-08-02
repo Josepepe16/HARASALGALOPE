@@ -930,15 +930,20 @@ h3{ font-size:clamp(1.05rem,1.6vw,1.25rem); line-height:1.25 }
   display:block;
 }
 
-/* La tira de fotos del trabajo. Van todas al mismo alto para que la fila
-   quede pareja aunque las suban en tamaños distintos. */
+/* La tira de fotos del trabajo. Con separación en vez de la grilla de líneas
+   de 1px: como la cantidad de fotos la decide el panel, la última fila casi
+   nunca queda completa, y con líneas el hueco se ve como un bloque macizo.
+   Así, sobra espacio y no se nota. Es el mismo lenguaje que la galería. */
 .repro__fotos{
   margin-top:clamp(1.4rem,3vw,2.2rem);
-  display:grid; gap:1px; background:var(--line-2);
-  border:1px solid var(--line-2);
+  display:grid; gap:12px;
   grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
 }
-.repro__fotos figure{ margin:0; position:relative; background:var(--card) }
+.repro__fotos figure{
+  margin:0; position:relative; overflow:hidden;
+  border:1px solid var(--line-2); border-radius:var(--r);
+  background:var(--card-2);
+}
 .repro__fotos img{
   display:block; width:100%; aspect-ratio:4/3;
   object-fit:cover; object-position:var(--pos, 50% 50%);
@@ -1001,6 +1006,20 @@ h3{ font-size:clamp(1.05rem,1.6vw,1.25rem); line-height:1.25 }
 
 /* En celular las etiquetas en mayúscula quedaban en 12,8px, por debajo de lo
    que usa el resto del sitio. Se suben junto con el cuerpo. */
+/* En el celular, apiladas, siete fotos son casi dos mil píxeles de scroll en
+   el medio de la página. Se pasan a una tira que se desliza con el dedo: una
+   sola fila, las fotos siguen grandes y se ve que hay más a la derecha. */
+@media (max-width:760px){
+  .repro__fotos{
+    grid-auto-flow:column; grid-template-columns:none;
+    grid-auto-columns:78%;
+    overflow-x:auto; scroll-snap-type:x mandatory;
+    padding-bottom:.5rem;                 /* aire para la barra de scroll */
+    scrollbar-width:thin;
+  }
+  .repro__fotos figure{ scroll-snap-align:center }
+}
+
 @media (max-width:640px){
   .repro__firma{ padding:1.5rem 1.25rem }
   .repro__col{ padding:1.6rem 1.25rem }
