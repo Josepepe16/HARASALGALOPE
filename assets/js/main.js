@@ -500,6 +500,13 @@ window.iniciarSitio = function () {
     /* Contacto propio del centro. Si todavía no se cargó un número para la
        veterinaria, la consulta va al teléfono del haras — pero con el mensaje
        ya escrito, así quien la recibe sabe que es por reproducción. */
+    /* Borrar una foto de la biblioteca del panel NO la saca de acá: la ficha
+       sigue apuntando a un archivo que ya no existe. En vez de mostrar el
+       cuadrito roto, se esconde. */
+    const siFalta = (img, quitar) => {
+      img.addEventListener('error', () => { quitar.hidden = true; }, { once: true });
+    };
+
     // Retrato de quien está a cargo, si se cargó uno en el panel
     if (R.fotoResponsable) {
       const rt = $('#reproRetrato');
@@ -507,6 +514,7 @@ window.iniciarSitio = function () {
         loading="lazy" decoding="async" width="96" height="96"
         ${R.fotoResponsablePos ? `style="--pos:${esc(R.fotoResponsablePos)}"` : ''}>`;
       rt.hidden = false;
+      siFalta(rt.querySelector('img'), rt);
     }
 
     // Las fotos del trabajo en el centro
@@ -520,6 +528,16 @@ window.iniciarSitio = function () {
           ${f.pie ? `<figcaption>${esc(f.pie)}</figcaption>` : ''}
         </figure>`).join('');
       caja.hidden = false;
+
+      // Cada foto que no exista se esconde sola; si no queda ninguna, se
+      // esconde la tira entera para no dejar un espacio vacío.
+      $$('figure', caja).forEach((fig) => {
+        const img = fig.querySelector('img');
+        img.addEventListener('error', () => {
+          fig.hidden = true;
+          if (!$$('figure:not([hidden])', caja).length) caja.hidden = true;
+        }, { once: true });
+      });
     }
 
     const k = R.contacto || {};
