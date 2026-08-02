@@ -201,6 +201,16 @@ body{
 
   boton.addEventListener('click', async function () {
     var original = texto.textContent;
+
+    /* La pestaña se abre ACÁ, en el mismo instante del clic, aunque todavía
+       esté vacía. Si se abriera después de esperar los pedidos, el navegador
+       ya no la considera abierta por el usuario y la bloquea como si fuera
+       publicidad. Es el error que tenía: parecía que el botón no hacía nada.
+
+       El nombre 'sitioHaras' hace que reutilice siempre la misma pestaña en
+       vez de llenar el navegador de pestañas repetidas. */
+    var ventana = window.open('', 'sitioHaras');
+
     boton.disabled = true;
     texto.textContent = 'Refrescando…';
 
@@ -215,10 +225,21 @@ body{
       }));
     } catch (e) { /* si algo falla igual conviene abrir el sitio */ }
 
-    texto.textContent = 'Listo';
-    boton.classList.add('listo');
-    // la marca de tiempo asegura que la pestaña nueva no salga de la caché
-    window.open('../?actualizado=' + Date.now(), '_blank', 'noopener');
+    // la marca de tiempo asegura que la pestaña no salga de la caché
+    var destino = new URL('../?actualizado=' + Date.now(), location.href).href;
+
+    if (ventana && !ventana.closed) {
+      ventana.location.replace(destino);
+      try { ventana.focus(); } catch (e) {}
+      texto.textContent = 'Listo';
+      boton.classList.add('listo');
+    } else {
+      // el navegador bloqueó la ventana: se le da un enlace para que la abra él
+      texto.textContent = 'Abrir el sitio';
+      boton.classList.add('listo');
+      boton.disabled = false;
+      window.open(destino, 'sitioHaras');
+    }
 
     setTimeout(function () {
       texto.textContent = original;

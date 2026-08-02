@@ -47,6 +47,7 @@
       direccion: sitio.direccion,
       desde: sitio.desde,
       tema: sitio.tema || 'dorado',
+      temaColor: sitio.temaColor || '',
       contactos: sitio.contactos || [],
       email: sitio.email || '',
       redes: sitio.redes || {},

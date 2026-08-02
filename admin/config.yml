@@ -340,7 +340,11 @@ singletons:
           - { label: 'Verde — como el afiche de Favorito Verde', value: verde }
           - { label: 'Cobre', value: cobre }
           - { label: 'Plata', value: plata }
+          - { label: 'El mío — elijo yo el color', value: personalizado }
         hint: 'Cambia el color de los detalles: botones, títulos destacados y bordes. El azul marino del logo no se toca. El color de la cinta se elige aparte, en "Cinta de abajo".'
+      - { label: 'Mi color', name: temaColor, widget: color, allow_input: true,
+          default: '#d4ae63', required: false,
+          hint: 'Sólo se usa si arriba elegiste "El mío". Podés poner cualquier color: el sitio le ajusta el brillo solo para que los textos se sigan leyendo sobre fondo oscuro y sobre fondo claro.' }
       - { label: 'Email', name: email, widget: string, required: false }
       - label: 'Teléfonos'
         name: contactos

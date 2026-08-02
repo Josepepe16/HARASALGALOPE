@@ -128,12 +128,85 @@ window.iniciarSitio = function () {
      el dorado, que es el que está escrito en el CSS. */
   (function tema() {
     const t = String(SITE.tema || '').toLowerCase();
-    if (['verde', 'cobre', 'plata'].indexOf(t) >= 0) {
-      document.documentElement.dataset.tema = t;
-    } else {
-      delete document.documentElement.dataset.tema;
+    const raiz = document.documentElement;
+
+    if (t === 'personalizado' && /^#[0-9a-f]{6}$/i.test(SITE.temaColor || '')) {
+      raiz.dataset.tema = 'personalizado';
+      paletaPropia(SITE.temaColor);
+      return;
     }
+    if (['verde', 'cobre', 'plata'].indexOf(t) >= 0) raiz.dataset.tema = t;
+    else delete raiz.dataset.tema;
   })();
+
+  /* ─────────────── Tema propio ───────────────
+     Del color que se elige en el panel se toma sólo el TONO. Las cinco
+     luminosidades que hacen falta no se copian de ese color: se recalculan
+     para que igualen el brillo del dorado original, que ya está verificado.
+
+     Es la parte importante. Si se usara el color tal cual, un amarillo claro
+     sobre papel o un azul oscuro sobre el fondo negro dejarían de leerse. Así
+     el dueño elige cualquier color y el contraste se sostiene solo. */
+  function paletaPropia(hex) {
+    const aRgb = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
+    const lum = (c) => {
+      const a = c.map((v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); });
+      return 0.2126 * a[0] + 0.7152 * a[1] + 0.0722 * a[2];
+    };
+    const aHsl = ([r, g, b]) => {
+      r /= 255; g /= 255; b /= 255;
+      const mx = Math.max(r, g, b), mn = Math.min(r, g, b), l = (mx + mn) / 2;
+      if (mx === mn) return [0, 0, l];
+      const d = mx - mn;
+      const s = d / (1 - Math.abs(2 * l - 1));
+      let h;
+      if (mx === r) h = ((g - b) / d) % 6;
+      else if (mx === g) h = (b - r) / d + 2;
+      else h = (r - g) / d + 4;
+      return [(h * 60 + 360) % 360, s, l];
+    };
+    const aRgbDesdeHsl = (h, s, l) => {
+      const c = (1 - Math.abs(2 * l - 1)) * s, x = c * (1 - Math.abs(((h / 60) % 2) - 1)), m = l - c / 2;
+      const t = h < 60 ? [c, x, 0] : h < 120 ? [x, c, 0] : h < 180 ? [0, c, x]
+              : h < 240 ? [0, x, c] : h < 300 ? [x, 0, c] : [c, 0, x];
+      return t.map((v) => Math.round((v + m) * 255));
+    };
+    const aHex = (c) => '#' + c.map((v) => v.toString(16).padStart(2, '0')).join('');
+
+    // la luminosidad de ese tono que iguala el brillo pedido
+    const conBrillo = (h, s, objetivo) => {
+      let mejor = null, dif = 9;
+      for (let l = 0.02; l < 0.99; l += 0.004) {
+        const c = aRgbDesdeHsl(h, s, l);
+        const d = Math.abs(lum(c) - objetivo);
+        if (d < dif) { dif = d; mejor = c; }
+      }
+      return mejor;
+    };
+
+    const [h, s] = aHsl(aRgb(hex));
+    const sat = Math.max(0.12, Math.min(0.85, s));   // ni gris total ni flúor
+
+    // los brillos del dorado original, ya verificados contra los dos fondos
+    const oscuro   = conBrillo(h, sat, 0.452);
+    const claro    = conBrillo(h, sat * 0.75, 0.767);
+    const apagado  = conBrillo(h, sat * 0.70, 0.171);
+    const papel    = conBrillo(h, sat, 0.111);
+    const papel2   = conBrillo(h, sat, 0.085);
+
+    const hoja = document.createElement('style');
+    hoja.id = 'tema-propio';
+    hoja.textContent =
+      ':root[data-tema="personalizado"]{'
+      + '--acento-rgb:' + oscuro.join(',') + ';'
+      + '--gold:' + aHex(oscuro) + ';'
+      + '--gold-2:' + aHex(claro) + ';'
+      + '--gold-dim:' + aHex(apagado) + '}'
+      + ':root[data-tema="personalizado"] .sec--light{'
+      + '--gold:' + aHex(papel) + ';'
+      + '--gold-2:' + aHex(papel2) + '}';
+    document.head.appendChild(hoja);
+  }
 
 
   /* ─────────────── Imágenes que manda el panel ───────────────
