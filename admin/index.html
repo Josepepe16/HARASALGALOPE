@@ -190,7 +190,10 @@ body{
     'assets/css/style.css', 'assets/js/main.js', 'assets/js/contenido.js',
     'content/sitio.json', 'content/remate.json', 'content/cinta.json',
     'content/padrillos.json', 'content/caballos.json', 'content/servicios.json',
-    'content/novedades.json', 'content/galeria.json', 'content/reproduccion.json'
+    'content/novedades.json', 'content/galeria.json', 'content/reproduccion.json',
+    // También los del panel: cuando se agrega un campo nuevo, el navegador
+    // sigue mostrando el formulario viejo hasta que vence la caché.
+    'admin/config.yml', 'admin/index.html'
   ];
 
   var boton = document.getElementById('refrescar');
