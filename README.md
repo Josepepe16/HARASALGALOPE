@@ -118,10 +118,6 @@ Desde el panel es el campo "Encuadre". A mano, es `pos` en `galeria.json` y
 
 ## 3. Qué falta completar
 
-- [ ] **Identificar los padrillos en las fotos.** Del archivo de Instagram
-      solo pude ubicar con certeza a Favorito Verde. A Invictus Beduino,
-      Calcol 36, Fuego Fling Fame, Jess Bikini JNN y Breeze Winner no los
-      puedo reconocer: decime qué foto es cada uno y las cargo.
 - [ ] Email propio del haras
 - [ ] Facebook (Instagram ya está cargado)
 - [ ] Fichas de los padrillos Fuego Fling Fame, Jess Bikini JNN y Breeze Winner
@@ -143,6 +139,7 @@ Desde el panel es el campo "Encuadre". A mano, es `pos` en `galeria.json` y
 - Campeones 2026: Galope Callejero, Galope Gran Cañón, Galope Gran Estafa,
   Galope Suspiro 36
 - La Polla va por su 6ª edición con U$S 10.000 en premios (no 7.500)
+- Las fotos de los seis padrillos, confirmadas por el cliente
 
 ### Coordenadas del mapa
 
