@@ -114,6 +114,35 @@ body{
 @media (max-width:640px){
   body{ background-attachment: scroll }
 }
+
+/* ── Botón para ir al sitio ────────────────────────────────────────────────
+   Sveltia tiene su propio enlace al sitio, pero queda escondido en un menú.
+   Este está siempre a la vista. Va abajo a la izquierda: la derecha es donde
+   el panel pone sus botones de guardar y publicar. */
+.ver-sitio{
+  position:fixed; left:16px; bottom:16px; z-index:9999;
+  display:inline-flex; align-items:center; gap:.5rem;
+  min-height:44px;                     /* zona de toque cómoda */
+  padding:.7rem 1.2rem; border-radius:999px;
+  background:#11256C; color:#f2f5fa; text-decoration:none;
+  border:1px solid rgba(212,174,99,.55);
+  font:600 .88rem/1 system-ui, sans-serif; letter-spacing:.04em;
+  box-shadow:0 6px 24px rgba(0,0,0,.35);
+  transition:background-color .2s, transform .2s, border-color .2s;
+  /* en iPhone, arriba de la barra de gestos */
+  bottom:calc(16px + env(safe-area-inset-bottom, 0px));
+}
+.ver-sitio:hover, .ver-sitio:focus-visible{
+  background:#1a3490; border-color:#d4ae63; transform:translateY(-2px);
+}
+.ver-sitio:focus-visible{ outline:2px solid #d4ae63; outline-offset:2px }
+.ver-sitio svg{ width:15px; height:15px; fill:none;
+  stroke:#d4ae63; stroke-width:2; stroke-linecap:round; stroke-linejoin:round }
+
+/* Toque mínimo cómodo en el celular */
+@media (max-width:640px){
+  .ver-sitio{ padding:.85rem 1.2rem; font-size:.95rem }
+}
 </style>
 </head>
 <body>
@@ -125,5 +154,15 @@ body{
      que nadie tocara nada. Para actualizarlo se sube este número a mano,
      después de probarlo. -->
 <script src="https://unpkg.com/@sveltia/cms@^0.176.1/dist/sveltia-cms.js"></script>
+
+<!-- Va en una pestaña nueva a propósito: si abriera el sitio en la misma, se
+     perdería lo que se esté editando sin guardar. -->
+<a class="ver-sitio" href="../" target="_blank" rel="noopener">
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+    <path d="M15 3h6v6"/><path d="M10 14 21 3"/>
+  </svg>
+  Ver la web
+</a>
 </body>
 </html>
