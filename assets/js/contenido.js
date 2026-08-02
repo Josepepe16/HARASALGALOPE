@@ -12,6 +12,23 @@
   var ARCHIVOS = ['sitio', 'remate', 'cinta', 'padrillos', 'caballos',
                   'servicios', 'novedades', 'galeria', 'reproduccion'];
 
+  /* Las rutas de las fotos dependen de dónde esté publicado el sitio, y el
+     panel las guarda desde /admin/, un nivel más adentro. Para que ninguna de
+     las dos cosas importe, acá se reducen todas a la misma forma —relativa al
+     sitio— sea cual sea la que vino guardada:
+
+       /assets/img/x.jpg                  (Netlify, en la raíz)
+       assets/img/x.jpg                   (relativa)
+       /HARASALGALOPE/assets/img/x.jpg    (GitHub Pages, con subdirectorio)
+
+     Así el día que se conecte un dominio propio tampoco hay que tocar nada. */
+  function ruta(v) {
+    if (typeof v !== 'string' || !v) return v;
+    if (/^(data:|https?:|\/\/)/.test(v)) return v;      // ya es absoluta o embebida
+    var m = v.match(/(?:^|\/)assets\/img\/([^/?#]+)$/);
+    return m ? 'assets/img/' + m[1] : v;
+  }
+
   // El panel guarda las listas como objetos ({texto: '...'}) porque así puede
   // mostrar un formulario por fila. Acá se vuelven a texto plano.
   function planas(lista, campo) {
@@ -33,9 +50,9 @@
       email: sitio.email || '',
       redes: sitio.redes || {},
       mapa: sitio.mapa || {},
-      logo: sitio.logo,
-      fotoPortada: sitio.fotoPortada,
-      fotoHaras: sitio.fotoHaras,
+      logo: ruta(sitio.logo),
+      fotoPortada: ruta(sitio.fotoPortada),
+      fotoHaras: ruta(sitio.fotoHaras),
       fotoHarasPos: sitio.fotoHarasPos
     };
 
@@ -53,7 +70,7 @@
     window.PADRILLOS = ((c.padrillos || {}).items || []).map(function (p, i) {
       return {
         id: 'p' + i,
-        foto: p.foto || '',
+        foto: ruta(p.foto) || '',
         nombre: p.nombre,
         indice: p.indice,
         titular: p.titular,
@@ -103,16 +120,18 @@
       tituloRecursos: rp.tituloRecursos,
       procedimientos: planas(rp.procedimientos, 'texto'),
       recursos: (rp.recursos || []),
-      fotoResponsable: rp.fotoResponsable,
+      fotoResponsable: ruta(rp.fotoResponsable),
       fotoResponsablePos: rp.fotoResponsablePos,
-      fotos: (rp.fotos || []),
+      fotos: (rp.fotos || []).map(function (f) {
+        return { foto: ruta(f.foto), pie: f.pie, alt: f.alt, pos: f.pos };
+      }),
       contacto: rp.contacto || {}
     };
 
     var g = c.galeria || {};
     window.GALERIA_VISIBLES = g.visibles || 7;
     window.GALERIA = (g.items || []).map(function (f) {
-      return { src: f.foto, alt: f.alt, pos: f.pos || '' };
+      return { src: ruta(f.foto), alt: f.alt, pos: f.pos || '' };
     });
   }
 

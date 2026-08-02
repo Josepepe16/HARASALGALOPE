@@ -23,8 +23,8 @@
     "lng": -56.5178505,
     "zoom": 13
   },
-  "logo": "assets/img/logo.png",
-  "fotoPortada": "assets/img/hero.jpg",
-  "fotoHaras": "assets/img/haras.jpg",
+  "logo": "/HARASALGALOPE/assets/img/logo.png",
+  "fotoPortada": "/HARASALGALOPE/assets/img/hero.jpg",
+  "fotoHaras": "/HARASALGALOPE/assets/img/haras.jpg",
   "fotoHarasPos": "60% 45%"
 }

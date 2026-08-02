@@ -23,9 +23,15 @@ backend:
 
 # Las fotos que suban van todas a la misma carpeta que las actuales.
 media_folder: 'assets/img'
-# Relativa a propósito: así el sitio funciona igual en la raíz de un dominio
-# que dentro de un subdirectorio (GitHub Pages sirve en /HARASALGALOPE/).
-public_folder: 'assets/img'
+# Tiene que ser absoluta desde la raíz del dominio, INCLUYENDO el nombre del
+# repositorio: el panel se sirve desde /admin/, un nivel más adentro que el
+# sitio, y una ruta relativa ahí apunta a /admin/assets/img/… que no existe.
+# Por eso en el panel se veían las fotos rotas.
+#
+# El sitio no depende de esto: contenido.js normaliza cualquier forma que
+# venga guardada. Si algún día se conecta un dominio propio y el sitio pasa a
+# estar en la raíz, acá va simplemente /assets/img
+public_folder: '/HARASALGALOPE/assets/img'
 
 locale: 'es'
 publish_mode: simple         # se publica al guardar, sin pasos intermedios
