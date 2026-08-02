@@ -46,6 +46,7 @@
       ubicacion: sitio.ubicacion,
       direccion: sitio.direccion,
       desde: sitio.desde,
+      tema: sitio.tema || 'dorado',
       contactos: sitio.contactos || [],
       email: sitio.email || '',
       redes: sitio.redes || {},

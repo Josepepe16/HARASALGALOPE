@@ -11,6 +11,15 @@
   --ink-3:    #1a2542;
   --green:    #1d3272;
   --green-2:  #1d3a8f;
+  /* El acento del sitio. Lo cambia el tema que se elige en el panel.
+     La versión en números sueltos es para los brillos y tintes translúcidos:
+     rgba() no acepta un color hex como primer argumento. */
+  --acento-rgb: 200,164,92;
+  /* El color que va ENCIMA del acento. En lo oscuro el acento es claro, así
+     que arriba va tinta; en las secciones de papel el acento es oscuro y
+     arriba tiene que ir claro. Sin esto, el chip activo quedaba oscuro sobre
+     oscuro (2,89:1). */
+  --sobre-acento: var(--ink);
   --gold:     #d4ae63;
   --gold-2:   #f2e2b8;
   --gold-dim: #8a6f38;
@@ -19,7 +28,7 @@
   --body:     #c7d2e6;   /* texto secundario */
   --sand:     #a8b5d0;
   --muted:    #9dabc7;
-  --line:     rgba(200,164,92,.20);
+  --line:     rgba(var(--acento-rgb),.20);
   --line-2:   rgba(242,245,250,.10);
   --card:     #101a30;   /* fondo de tarjetas */
   --card-2:   #1a2542;
@@ -48,6 +57,38 @@
 
   --ease: cubic-bezier(.22,.61,.36,1);
 }
+
+/* ══════════════════ TEMAS ══════════════════
+   El tema se elige desde el panel y sólo cambia el ACENTO: el azul marino
+   del logo es la identidad del haras y no se toca.
+
+   Los valores no están elegidos a ojo. Se calcularon buscando, en cada tono,
+   la luminosidad que iguala el brillo del dorado original, y después se
+   verificó uno por uno que pasen contraste en los dos fondos —el oscuro y el
+   de papel— incluido el caso peor: el acento como FONDO de botón con texto
+   oscuro encima. Los cuatro pasan con 4,5:1 o más.
+
+   Si se agrega un tema nuevo hay que rehacer esa cuenta, no copiar un color
+   que se vea lindo: sobre papel casi cualquier tono claro deja de leerse. */
+
+:root[data-tema="verde"]{
+  --acento-rgb: 90,200,130;
+  --gold:#5ac882; --gold-2:#cfe9d9; --gold-dim:#3e8056;
+}
+:root[data-tema="verde"] .sec--light{ --gold:#246b3e; --gold-2:#1f5d36 }
+
+:root[data-tema="cobre"]{
+  --acento-rgb: 225,166,141;
+  --gold:#e1a68d; --gold-2:#f0e0d9; --gold-dim:#a56246;
+}
+:root[data-tema="cobre"] .sec--light{ --gold:#944827; --gold-2:#833f23 }
+
+:root[data-tema="plata"]{
+  --acento-rgb: 167,180,199;
+  --gold:#a7b4c7; --gold-2:#dfe3e8; --gold-dim:#647489;
+}
+:root[data-tema="plata"] .sec--light{ --gold:#4c5f77; --gold-2:#435369 }
+
 
 *,*::before,*::after{ box-sizing:border-box }
 
@@ -84,7 +125,7 @@ button{ font:inherit; color:inherit; cursor:pointer }
 
 .skip{
   position:absolute; left:-9999px; top:0; z-index:200;
-  background:var(--gold); color:var(--ink); padding:.7rem 1.2rem;
+  background:var(--gold); color:var(--sobre-acento); padding:.7rem 1.2rem;
 }
 .skip:focus{ left:0 }
 
@@ -124,8 +165,8 @@ h3{ font-size:clamp(1.05rem,1.6vw,1.25rem); line-height:1.25 }
   background:transparent; white-space:nowrap;
   transition:background-color .3s var(--ease), color .3s var(--ease), border-color .3s var(--ease);
 }
-.btn:hover{ background:var(--gold); color:var(--ink) }
-.btn--gold{ background:var(--gold); color:var(--ink); border-color:var(--gold) }
+.btn:hover{ background:var(--gold); color:var(--sobre-acento) }
+.btn--gold{ background:var(--gold); color:var(--sobre-acento); border-color:var(--gold) }
 .btn--gold:hover{ background:var(--gold-2); border-color:var(--gold-2) }
 .btn--ghost{ border-color:var(--line-2); color:var(--cream) }
 .btn--ghost:hover{ border-color:var(--cream); background:var(--cream); color:var(--ink) }
@@ -207,7 +248,7 @@ h3{ font-size:clamp(1.05rem,1.6vw,1.25rem); line-height:1.25 }
 .hero__sky{
   position:absolute; inset:0;
   background:
-    radial-gradient(120% 80% at 78% 8%,  rgba(200,164,92,.28) 0%, transparent 55%),
+    radial-gradient(120% 80% at 78% 8%,  rgba(var(--acento-rgb),.28) 0%, transparent 55%),
     radial-gradient(90%  70% at 20% 92%, rgba(29,58,143,.55)  0%, transparent 60%),
     linear-gradient(170deg, #0a1122 0%, #16264f 42%, #1d3272 70%, #0a1122 100%);
 }
@@ -231,7 +272,7 @@ h3{ font-size:clamp(1.05rem,1.6vw,1.25rem); line-height:1.25 }
 .hero__horse{
   position:absolute; right:-8%; top:50%; translate:0 -50%;
   width:min(60vw,660px); height:auto; aspect-ratio:1;
-  fill:rgba(200,164,92,.09);
+  fill:rgba(var(--acento-rgb),.09);
   filter:drop-shadow(0 30px 60px rgba(0,0,0,.5));
   animation:drift 18s ease-in-out infinite;
 }
@@ -349,6 +390,7 @@ h3{ font-size:clamp(1.05rem,1.6vw,1.25rem); line-height:1.25 }
   --sand:    #55627e;
   --gold:    #77591a;
   --gold-2:  #63501f;
+  --sobre-acento: var(--paper);
   --line:    rgba(17,37,108,.20);
   --line-2:  rgba(13,23,48,.13);
   --card:    #ffffff;
@@ -399,14 +441,14 @@ h3{ font-size:clamp(1.05rem,1.6vw,1.25rem); line-height:1.25 }
   position:relative; overflow:hidden; border-radius:var(--r);
   border:1px solid var(--line);
   background:
-    radial-gradient(90% 70% at 70% 15%, rgba(200,164,92,.16), transparent 60%),
+    radial-gradient(90% 70% at 70% 15%, rgba(var(--acento-rgb),.16), transparent 60%),
     linear-gradient(160deg, #1a2542, #0d1730 70%);
   display:grid; place-items:center; aspect-ratio:4/3;
 }
 /* Cuadrado, no vertical: las fotos del haras son apaisadas o cuadradas, y
    un marco muy vertical obliga a descartar medio ancho y amplía de más. */
 .photo--square{ aspect-ratio:1/1 }
-.photo > svg{ width:36%; height:auto; aspect-ratio:1; fill:rgba(200,164,92,.16) }
+.photo > svg{ width:36%; height:auto; aspect-ratio:1; fill:rgba(var(--acento-rgb),.16) }
 
 /* ENCUADRE DE LAS FOTOS
    La foto se recorta sola para llenar el marco. Si queda mal centrada (por
@@ -448,7 +490,7 @@ h3{ font-size:clamp(1.05rem,1.6vw,1.25rem); line-height:1.25 }
 .pad__img{
   position:relative; aspect-ratio:4/3; overflow:hidden;
   background:
-    radial-gradient(80% 70% at 65% 20%, rgba(200,164,92,.2), transparent 62%),
+    radial-gradient(80% 70% at 65% 20%, rgba(var(--acento-rgb),.2), transparent 62%),
     linear-gradient(155deg,#1d2c58,#0d1730 75%);
   display:grid; place-items:center; isolation:isolate;
 }
@@ -461,8 +503,8 @@ h3{ font-size:clamp(1.05rem,1.6vw,1.25rem); line-height:1.25 }
 }
 .pad__img:not([style*="--foto"])::after,
 .mhead:not([style*="--foto"])::after{ display:none }
-.pad__img > svg{ width:38%; height:auto; aspect-ratio:1; fill:rgba(200,164,92,.2); transition:transform .45s var(--ease) }
-.pad:hover .pad__img > svg{ transform:scale(1.06); fill:rgba(200,164,92,.3) }
+.pad__img > svg{ width:38%; height:auto; aspect-ratio:1; fill:rgba(var(--acento-rgb),.2); transition:transform .45s var(--ease) }
+.pad:hover .pad__img > svg{ transform:scale(1.06); fill:rgba(var(--acento-rgb),.3) }
 
 .pad__lot{
   /* z-index: la foto se inserta después que las etiquetas y, sin esto, las
@@ -507,7 +549,7 @@ h3{ font-size:clamp(1.05rem,1.6vw,1.25rem); line-height:1.25 }
   transition:color .25s var(--ease), border-color .25s var(--ease), background-color .25s var(--ease);
 }
 .chip:hover{ color:var(--cream); border-color:var(--sand) }
-.chip.is-on{ background:var(--gold); border-color:var(--gold); color:var(--ink) }
+.chip.is-on{ background:var(--gold); border-color:var(--gold); color:var(--sobre-acento) }
 
 .horses{ display:grid; grid-template-columns:repeat(auto-fill,minmax(235px,1fr)); gap:1rem }
 
@@ -609,7 +651,7 @@ h3{ font-size:clamp(1.05rem,1.6vw,1.25rem); line-height:1.25 }
 /* ══════════════════ REMATE ══════════════════ */
 .sec--auction{
   background:
-    radial-gradient(80% 100% at 85% 0%, rgba(200,164,92,.13), transparent 60%),
+    radial-gradient(80% 100% at 85% 0%, rgba(var(--acento-rgb),.13), transparent 60%),
     linear-gradient(165deg,#101d40,#0a1122 65%);
   border-block:1px solid var(--line);
 }
@@ -658,7 +700,7 @@ h3{ font-size:clamp(1.05rem,1.6vw,1.25rem); line-height:1.25 }
 .new__meta{ display:flex; align-items:center; gap:.8rem; margin-bottom:1.1rem; flex-wrap:wrap }
 .new__tag{
   font-family:var(--cond); font-weight:600; font-size:.7rem; letter-spacing:.16em; text-transform:uppercase;
-  background:rgba(200,164,92,.12); color:var(--gold);
+  background:rgba(var(--acento-rgb),.12); color:var(--gold);
   border:1px solid var(--line); padding:.22rem .6rem; border-radius:2px;
 }
 .new__date{ font-family:var(--cond); font-weight:600; font-size:.82rem; letter-spacing:.1em; color:var(--muted) }
@@ -788,11 +830,11 @@ h3{ font-size:clamp(1.05rem,1.6vw,1.25rem); line-height:1.25 }
   /* misma proporción que la tarjeta: la foto entra igual de completa */
   position:relative; aspect-ratio:4/3; display:grid; place-items:center; overflow:hidden;
   background:
-    radial-gradient(80% 80% at 70% 20%, rgba(200,164,92,.22), transparent 62%),
+    radial-gradient(80% 80% at 70% 20%, rgba(var(--acento-rgb),.22), transparent 62%),
     linear-gradient(150deg,#1d2c58,#0d1730 75%);
   border-bottom:1px solid var(--line);
 }
-.mhead > svg{ width:24%; height:auto; aspect-ratio:1; fill:rgba(200,164,92,.22) }
+.mhead > svg{ width:24%; height:auto; aspect-ratio:1; fill:rgba(var(--acento-rgb),.22) }
 .mbody{ padding:2rem 2rem 2.4rem }
 .mbody h3{ font-size:clamp(1.7rem,4vw,2.3rem); margin:0 0 .4rem }
 .mbody .pad__idx{ margin-bottom:1.4rem }
@@ -884,7 +926,7 @@ h3{ font-size:clamp(1.05rem,1.6vw,1.25rem); line-height:1.25 }
    izquierda: distinto del remate, que lo tiene arriba a la derecha. */
 .sec--dark.repro, .repro{
   background:
-    radial-gradient(70% 90% at 12% 10%, rgba(200,164,92,.15), transparent 62%),
+    radial-gradient(70% 90% at 12% 10%, rgba(var(--acento-rgb),.15), transparent 62%),
     linear-gradient(200deg,#12203f,#0a1122 68%);
   border-block:1px solid var(--line);
 }
@@ -900,7 +942,7 @@ h3{ font-size:clamp(1.05rem,1.6vw,1.25rem); line-height:1.25 }
 /* La tarjeta de la veterinaria: borde dorado y fondo propio. Es el ancla
    visual de la sección y de donde sale la consulta. */
 .repro__firma{
-  background:linear-gradient(170deg, rgba(212,174,99,.09), rgba(10,17,34,.55));
+  background:linear-gradient(170deg, rgba(var(--acento-rgb),.09), rgba(10,17,34,.55));
   border:1px solid var(--gold-dim);
   padding:clamp(1.6rem,3vw,2.2rem);
   display:flex; flex-direction:column; gap:1.5rem;
@@ -916,7 +958,7 @@ h3{ font-size:clamp(1.05rem,1.6vw,1.25rem); line-height:1.25 }
   letter-spacing:.15em; text-transform:uppercase; color:var(--gold-2);
 }
 
-.repro__vetbox{ padding-top:1.4rem; border-top:1px solid rgba(212,174,99,.28) }
+.repro__vetbox{ padding-top:1.4rem; border-top:1px solid rgba(var(--acento-rgb),.28) }
 
 /* El retrato de quien está a cargo. Cuadrado y recortado al centro, para que
    cualquier foto que suban desde el panel entre igual. */

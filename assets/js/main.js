@@ -123,6 +123,19 @@ window.iniciarSitio = function () {
   }
 
 
+  /* El tema que se eligió en el panel. Sólo cambia el acento; el azul del
+     logo queda igual. Si viene un nombre que no existe, se ignora y queda
+     el dorado, que es el que está escrito en el CSS. */
+  (function tema() {
+    const t = String(SITE.tema || '').toLowerCase();
+    if (['verde', 'cobre', 'plata'].indexOf(t) >= 0) {
+      document.documentElement.dataset.tema = t;
+    } else {
+      delete document.documentElement.dataset.tema;
+    }
+  })();
+
+
   /* ─────────────── Imágenes que manda el panel ───────────────
      Logo, foto de portada y foto de "El Haras". Si el panel no trae alguna,
      se deja lo que ya estaba en el HTML y no se rompe nada. */

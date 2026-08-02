@@ -331,6 +331,16 @@ singletons:
       - { label: 'Ubicación', name: ubicacion, widget: string }
       - { label: 'Dirección', name: direccion, widget: string }
       - { label: 'Desde el año', name: desde, widget: number, value_type: int }
+      - label: 'Tema de colores'
+        name: tema
+        widget: select
+        default: dorado
+        options:
+          - { label: 'Dorado — el de siempre', value: dorado }
+          - { label: 'Verde — como el afiche de Favorito Verde', value: verde }
+          - { label: 'Cobre', value: cobre }
+          - { label: 'Plata', value: plata }
+        hint: 'Cambia el color de los detalles: botones, títulos destacados y bordes. El azul marino del logo no se toca. El color de la cinta se elige aparte, en "Cinta de abajo".'
       - { label: 'Email', name: email, widget: string, required: false }
       - label: 'Teléfonos'
         name: contactos

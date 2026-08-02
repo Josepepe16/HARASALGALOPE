@@ -115,12 +115,14 @@ body{
   body{ background-attachment: scroll }
 }
 
-/* ── Botón para ir al sitio ────────────────────────────────────────────────
-   Sveltia tiene su propio enlace al sitio, pero queda escondido en un menú.
-   Este está siempre a la vista. Va abajo a la izquierda: la derecha es donde
-   el panel pone sus botones de guardar y publicar. */
+/* ── Botones propios ───────────────────────────────────────────────────────
+   Van abajo a la izquierda: la derecha es donde el panel pone sus botones de
+   guardar y publicar. */
+.barra-propia{
+  position:fixed; left:16px; bottom:calc(16px + env(safe-area-inset-bottom, 0px));
+  z-index:9999; display:flex; gap:8px; flex-wrap:wrap;
+}
 .ver-sitio{
-  position:fixed; left:16px; bottom:16px; z-index:9999;
   display:inline-flex; align-items:center; gap:.5rem;
   min-height:44px;                     /* zona de toque cómoda */
   padding:.7rem 1.2rem; border-radius:999px;
@@ -129,8 +131,6 @@ body{
   font:600 .88rem/1 system-ui, sans-serif; letter-spacing:.04em;
   box-shadow:0 6px 24px rgba(0,0,0,.35);
   transition:background-color .2s, transform .2s, border-color .2s;
-  /* en iPhone, arriba de la barra de gestos */
-  bottom:calc(16px + env(safe-area-inset-bottom, 0px));
 }
 .ver-sitio:hover, .ver-sitio:focus-visible{
   background:#1a3490; border-color:#d4ae63; transform:translateY(-2px);
@@ -138,6 +138,8 @@ body{
 .ver-sitio:focus-visible{ outline:2px solid #d4ae63; outline-offset:2px }
 .ver-sitio svg{ width:15px; height:15px; fill:none;
   stroke:#d4ae63; stroke-width:2; stroke-linecap:round; stroke-linejoin:round }
+.ver-sitio[disabled]{ opacity:.65; pointer-events:none }
+.ver-sitio.listo{ background:#0f5c2e; border-color:#3e9e63 }
 
 /* Toque mínimo cómodo en el celular */
 @media (max-width:640px){
@@ -155,14 +157,73 @@ body{
      después de probarlo. -->
 <script src="https://unpkg.com/@sveltia/cms@^0.176.1/dist/sveltia-cms.js"></script>
 
-<!-- Va en una pestaña nueva a propósito: si abriera el sitio en la misma, se
-     perdería lo que se esté editando sin guardar. -->
-<a class="ver-sitio" href="../" target="_blank" rel="noopener">
-  <svg viewBox="0 0 24 24" aria-hidden="true">
-    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
-    <path d="M15 3h6v6"/><path d="M10 14 21 3"/>
-  </svg>
-  Ver la web
-</a>
+<div class="barra-propia">
+  <!-- Va en una pestaña nueva a propósito: si abriera el sitio en la misma, se
+       perdería lo que se esté editando sin guardar. -->
+  <a class="ver-sitio" href="../" target="_blank" rel="noopener">
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+      <path d="M15 3h6v6"/><path d="M10 14 21 3"/>
+    </svg>
+    Ver la web
+  </a>
+
+  <button class="ver-sitio" id="refrescar" type="button">
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M21 12a9 9 0 1 1-2.6-6.4"/><path d="M21 3v6h-6"/>
+    </svg>
+    <span>Refrescar</span>
+  </button>
+</div>
+
+<script>
+/* ── Refrescar la caché ────────────────────────────────────────────────────
+   El navegador guarda el sitio unos diez minutos. Después de publicar un
+   cambio, eso hace que uno lo vaya a mirar y siga viendo lo viejo — y crea
+   que no se guardó.
+
+   Este botón vuelve a pedir cada archivo del sitio salteando la caché
+   (cache:'reload' obliga a ir al servidor), y recién ahí abre la web. */
+(function () {
+  var ARCHIVOS = [
+    '', 'index.html',
+    'assets/css/style.css', 'assets/js/main.js', 'assets/js/contenido.js',
+    'content/sitio.json', 'content/remate.json', 'content/cinta.json',
+    'content/padrillos.json', 'content/caballos.json', 'content/servicios.json',
+    'content/novedades.json', 'content/galeria.json', 'content/reproduccion.json'
+  ];
+
+  var boton = document.getElementById('refrescar');
+  var texto = boton.querySelector('span');
+
+  boton.addEventListener('click', async function () {
+    var original = texto.textContent;
+    boton.disabled = true;
+    texto.textContent = 'Refrescando…';
+
+    try {
+      // por si alguna vez se agrega un service worker
+      if (window.caches && caches.keys) {
+        var llaves = await caches.keys();
+        await Promise.all(llaves.map(function (k) { return caches.delete(k); }));
+      }
+      await Promise.all(ARCHIVOS.map(function (f) {
+        return fetch('../' + f, { cache: 'reload' }).catch(function () {});
+      }));
+    } catch (e) { /* si algo falla igual conviene abrir el sitio */ }
+
+    texto.textContent = 'Listo';
+    boton.classList.add('listo');
+    // la marca de tiempo asegura que la pestaña nueva no salga de la caché
+    window.open('../?actualizado=' + Date.now(), '_blank', 'noopener');
+
+    setTimeout(function () {
+      texto.textContent = original;
+      boton.classList.remove('listo');
+      boton.disabled = false;
+    }, 2500);
+  });
+})();
+</script>
 </body>
 </html>
