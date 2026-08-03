@@ -300,7 +300,7 @@ window.iniciarSitio = function () {
             <h4>Hijos destacados</h4>
             <ul>${p.hijos.map((h) => `<li>${esc(h)}</li>`).join('')}</ul>
           </div>` : ''}
-        <a class="btn btn--gold btn--full" href="${waLink('Hola, quiero consultar por el servicio de ' + p.nombre + '.')}"
+        <a class="btn btn--gold btn--full" href="${waLink('Hola, quiero consultar por el servicio de ' + p.nombre + '.', 'PAD-' + p.nombre)}"
            target="_blank" rel="noopener">Consultar servicio por WhatsApp</a>
       </div>`;
 
@@ -533,10 +533,32 @@ window.iniciarSitio = function () {
     </article>`).join('');
 
 
-  /* ─────────────── Contacto ─────────────── */
-  function waLink(msg) {
+  /* ─────────────── Contacto ───────────────
+     Cada mensaje termina con un código entre corchetes que dice de dónde
+     salió: [WEB-PAD-FAVORITO-VERDE], [WEB-REMATE], [WEB-FORMULARIO]…
+
+     Es la única forma de atribución que este sitio puede tener gratis y que
+     ningún bloqueador de publicidad puede romper: el dato viaja adentro del
+     propio mensaje, así que llega al teléfono aunque no haya ninguna
+     herramienta de medición instalada.
+
+     Va al final y entre corchetes a propósito: se lee como algo del sistema
+     y la gente no lo borra antes de enviar. */
+  // El rango de acentos se arma desde una cadena y no como caracteres sueltos
+  // en el archivo: escritos literalmente son invisibles y se rompen si alguna
+  // herramienta reguarda el archivo con otra codificación.
+  const ACENTOS = new RegExp('[\\u0300-\\u036f]', 'g');
+
+  const codigo = (t) => '[WEB-' + String(t || 'SITIO')
+    .toUpperCase()
+    .normalize('NFD').replace(ACENTOS, '')
+    .replace(/[^A-Z0-9]+/g, '-').replace(/^-|-$/g, '')
+    .slice(0, 28) + ']';
+
+  function waLink(msg, origen) {
     const c = SITE.contactos[0];
-    return `https://wa.me/${c.intl}?text=${encodeURIComponent(msg)}`;
+    const texto = msg + '\n\n' + codigo(origen);
+    return `https://wa.me/${c.intl}?text=${encodeURIComponent(texto)}`;
   }
 
   $('#contactCards').innerHTML = SITE.contactos.map((c) => `
@@ -545,7 +567,8 @@ window.iniciarSitio = function () {
         <p class="card__name">${esc(c.nombre)}</p>
         <span class="card__rol">${esc(c.rol)}</span>
       </div>
-      <a class="card__tel" href="https://wa.me/${esc(c.intl)}" target="_blank" rel="noopener">
+      <a class="card__tel" href="${waLink('Hola ' + SITE.nombre + ', quería hacer una consulta.', 'CONTACTO')}"
+         target="_blank" rel="noopener">
         ${esc(c.tel)}
       </a>
     </div>`).join('');
@@ -629,7 +652,10 @@ window.iniciarSitio = function () {
     const k = R.contacto || {};
     const intl = k.intl || (SITE.contactos[0] || {}).intl;
     if (intl) {
-      const msg = k.mensaje || `Hola ${SITE.nombre}, quería consultar por el centro reproductivo.`;
+      // Arma la URL aparte de waLink() porque puede ir a otro teléfono —el de
+      // la veterinaria—, pero lleva el mismo código de origen que el resto.
+      const msg = (k.mensaje || `Hola ${SITE.nombre}, quería consultar por el centro reproductivo.`)
+        + '\n\n' + codigo('REPRODUCCION');
       $('#reproCta').innerHTML = `
         <a class="btn btn--gold btn--full" href="https://wa.me/${esc(intl)}?text=${encodeURIComponent(msg)}"
            target="_blank" rel="noopener">${esc(k.textoBoton || 'Consultar por el centro')}</a>`;
@@ -669,7 +695,7 @@ window.iniciarSitio = function () {
 
   // WhatsApp flotante
   const wa = $('#waFloat');
-  wa.href = waLink(`Hola ${SITE.nombre}, quería hacer una consulta.`);
+  wa.href = waLink(`Hola ${SITE.nombre}, quería hacer una consulta.`, 'FLOTANTE');
   addEventListener('scroll', () => wa.classList.toggle('show', window.scrollY > 600), { passive: true });
 
   // Redes en el pie
@@ -709,7 +735,7 @@ window.iniciarSitio = function () {
       `Consulta por: ${f.elements.tema.value}\n\n` +
       (f.elements.msg.value.trim() || '(sin mensaje)');
 
-    window.open(waLink(msg), '_blank', 'noopener');
+    window.open(waLink(msg, 'FORM-' + f.elements.tema.value), '_blank', 'noopener');
   });
 
   $('#form').addEventListener('input', (e) => e.target.classList.remove('err'));
