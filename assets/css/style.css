@@ -472,7 +472,11 @@ h3{ font-size:clamp(1.05rem,1.6vw,1.25rem); line-height:1.25 }
 
 
 /* ══════════════════ PADRILLOS ══════════════════ */
-.padrillos{ display:grid; grid-template-columns:repeat(auto-fit,minmax(215px,1fr)); gap:1rem }
+/* Tres columnas y no cuatro: son SEIS padrillos, y con cuatro quedaban dos
+   solos en la segunda fila al lado de un hueco del ancho de media pantalla.
+   Con tres van 3 y 3. El mínimo de 320px es el que fuerza esas tres columnas
+   dentro del contenedor de 1180px. */
+.padrillos{ display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:1rem }
 
 .pad{
   position:relative; display:flex; flex-direction:column; text-align:left;
