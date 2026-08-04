@@ -1,1134 +1,571 @@
 /* ==========================================================================
    HARAS AL GALOPE — hoja de estilo
-   Paleta tomada del logo del haras: azul marino #11256C + blanco, con el
-   dorado como único acento. Todos los colores salen de las variables de
-   abajo: cambiando esas seis líneas se recolorea el sitio entero.
+
+   El sitio está compuesto como un CATÁLOGO DE REMATE IMPRESO, no como una
+   landing page. Papel claro, tinta marino, filetes opacos, tablas de verdad.
+
+   Reglas duras que no se negocian (el cliente pidió que no se note que lo
+   hizo una IA, y estos son los tics delatores):
+
+     · letter-spacing positivo ....... PROHIBIDO. Cero. Es el más delator.
+     · grillas auto-fit / minmax ..... PROHIBIDO. Cero. Nada de tarjetas.
+     · border-radius ................. 0 en todo el sitio, sin excepción.
+     · box-shadow, gradientes, filtros PROHIBIDOS.
+     · transiciones y animaciones .... sólo la cinta de abajo.
+     · encabezado volanta→título→bajada repetido: no existe el componente.
+       Ocho de las catorce secciones NO tienen título de ningún tipo.
+
+   Antes de publicar se corre la verificación de assets/css/VERIFICAR.md.
    ========================================================================== */
 
 :root{
-  --ink:      #0a1122;
-  --ink-2:    #101a30;
-  --ink-3:    #1a2542;
-  --green:    #1d3272;
-  --green-2:  #1d3a8f;
-  /* El acento del sitio. Lo cambia el tema que se elige en el panel.
-     La versión en números sueltos es para los brillos y tintes translúcidos:
-     rgba() no acepta un color hex como primer argumento. */
-  --acento-rgb: 200,164,92;
-  /* El color que va ENCIMA del acento. En lo oscuro el acento es claro, así
-     que arriba va tinta; en las secciones de papel el acento es oscuro y
-     arriba tiene que ir claro. Sin esto, el chip activo quedaba oscuro sobre
-     oscuro (2,89:1). */
-  --sobre-acento: var(--ink);
-  --gold:     #d4ae63;
-  --gold-2:   #f2e2b8;
-  --gold-dim: #8a6f38;
-  --cream:    #f2f5fa;   /* títulos */
-  --body-hi:  #d5deef;   /* texto principal */
-  --body:     #c7d2e6;   /* texto secundario */
-  --sand:     #a8b5d0;
-  --muted:    #9dabc7;
-  --line:     rgba(var(--acento-rgb),.20);
-  --line-2:   rgba(242,245,250,.10);
-  --card:     #101a30;   /* fondo de tarjetas */
-  --card-2:   #1a2542;
+  /* ── campos ─────────────────────────────────────────────────────────── */
+  --papel:   #FBFBFD;   /* fondo por defecto, 12 de 14 secciones */
+  --plata:   #E3E7F2;   /* campo de Reproducción y fila patrón de la vara */
+  --marino:  #11256C;   /* membrete, banda del palmarés, sección Remate */
+  --tinta:   #0B1436;   /* zócalo de la cinta, y el negro del texto */
 
-  /* Verde tomado del afiche de Favorito Verde: se muestreó del fondo, que va
-     de #004614 a #026024. Este es el punto medio. Lo usa la cinta. */
-  --verde:    #03571f;
+  /* ── texto sobre papel ──────────────────────────────────────────────── */
+  --txt-1:   #0B1436;   /* cuerpo         17,40:1 */
+  --txt-2:   #4A5573;   /* secundario      7,16:1 */
+  --txt-3:   #11256C;   /* institucional  13,50:1 */
 
-  /* Tonos claros, para las secciones que van sobre papel */
-  --paper:    #eef1f8;
-  --paper-2:  #e3e8f4;
-  --tinta:    #0d1730;
+  /* ── texto sobre plata (Reproducción) ───────────────────────────────── */
+  --txtp-1:  #0B1436;   /* 14,54:1 */
+  --txtp-2:  #4A5573;   /*  5,98:1 */
+  --txtp-3:  #11256C;   /* 11,28:1 */
 
-  /* Anton es la tipografia del logo del haras: la usan los titulos.
-     Tiene UN SOLO peso (400); pedirle mas hace que el navegador la
-     falsifique, asi que va siempre en 400. */
-  --display: 'Anton', 'Arial Narrow', Impact, sans-serif;
-  /* De Bodoni queda solo la italica, para el lema y las cursivas. */
-  --serif: 'Bodoni Moda', 'Didot', Georgia, serif;
-  --sans:  'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --cond:  'Barlow Condensed', 'Arial Narrow', sans-serif;
+  /* ── texto sobre marino ─────────────────────────────────────────────── */
+  --txtm-1:  #EEF1F8;   /* 12,34:1 */
+  --txtm-2:  #9AA6C6;   /*  5,74:1 */
+  --txtm-3:  #D4AE63;   /*  6,67:1 — el dorado vive SÓLO acá */
 
-  --wrap: 1180px;
-  --pad: clamp(1.25rem, 4vw, 3rem);
-  --r: 3px;
+  /* ── acentos ────────────────────────────────────────────────────────── */
+  --dorado:  #D4AE63;   /* sólo sobre marino o tinta */
+  --bronce:  #8A6A1F;   /* el dorado cuando es texto sobre papel: 4,88:1 */
+  --verde:   #03571f;   /* la cinta, y la marca marginal de novedades */
+  --lema:    #E8CE95;   /* el dorado claro del lema */
 
-  --ease: cubic-bezier(.22,.61,.36,1);
+  /* ── filetes: cuatro calibres, cada uno con UN significado ──────────── */
+  --capilar:   #6E7BA3;  /* conductor de puntos, marco de foto */
+  --capilar-m: #7E8CB4;  /* el capilar cuando va sobre marino */
+  --hilo:      #0B1436;  /* debajo del encabezado de una tabla */
+  --filete:    #11256C;  /* cierra un bloque */
+
+  /* ── tipografía ─────────────────────────────────────────────────────── */
+  --anton:  'Anton', 'Haettenschweiler', Impact, sans-serif;
+  --texto:  'Archivo', 'Helvetica Neue', Arial, sans-serif;
+  --didone: 'Bodoni Moda', Georgia, serif;
+
+  /* ── espaciado, múltiplos de 4 ──────────────────────────────────────── */
+  --e1: 4px;  --e2: 8px;   --e3: 12px;  --e4: 20px;
+  --e5: 32px; --e6: 52px;  --e7: 84px;  --e8: 136px;
+
+  --ancho: 1180px;
+  --canal: 28px;          /* el canalón izquierdo; crece a 72px en escritorio */
+  --borde: 18px;
 }
-
-/* ══════════════════ TEMAS ══════════════════
-   El tema se elige desde el panel y sólo cambia el ACENTO: el azul marino
-   del logo es la identidad del haras y no se toca.
-
-   Los valores no están elegidos a ojo. Se calcularon buscando, en cada tono,
-   la luminosidad que iguala el brillo del dorado original, y después se
-   verificó uno por uno que pasen contraste en los dos fondos —el oscuro y el
-   de papel— incluido el caso peor: el acento como FONDO de botón con texto
-   oscuro encima. Los cuatro pasan con 4,5:1 o más.
-
-   Si se agrega un tema nuevo hay que rehacer esa cuenta, no copiar un color
-   que se vea lindo: sobre papel casi cualquier tono claro deja de leerse. */
-
-:root[data-tema="verde"]{
-  --acento-rgb: 90,200,130;
-  --gold:#5ac882; --gold-2:#cfe9d9; --gold-dim:#3e8056;
-}
-:root[data-tema="verde"] .sec--light{ --gold:#246b3e; --gold-2:#1f5d36 }
-
-:root[data-tema="cobre"]{
-  --acento-rgb: 225,166,141;
-  --gold:#e1a68d; --gold-2:#f0e0d9; --gold-dim:#a56246;
-}
-:root[data-tema="cobre"] .sec--light{ --gold:#944827; --gold-2:#833f23 }
-
-:root[data-tema="plata"]{
-  --acento-rgb: 167,180,199;
-  --gold:#a7b4c7; --gold-2:#dfe3e8; --gold-dim:#647489;
-}
-:root[data-tema="plata"] .sec--light{ --gold:#4c5f77; --gold-2:#435369 }
-
 
 *,*::before,*::after{ box-sizing:border-box }
 
-/* El navegador ya no adivina: hay secciones claras y oscuras a propósito. */
-html{ color-scheme:light dark }
-/* Saca el retardo de 300 ms al tocar en móvil. */
-a,button,label,summary,input,select,textarea{ touch-action:manipulation }
-
-/* El atributo hidden tiene que ganar siempre. Sin esto, cualquier regla de
-   autor con display (por ejemplo .modal{display:grid}) lo pisa y el elemento
-   queda visible aunque el HTML diga hidden. */
-[hidden]{ display:none !important }
-html{ scroll-behavior:smooth; scroll-padding-top:84px; -webkit-text-size-adjust:100% }
+html{
+  -webkit-text-size-adjust:100%;
+  scroll-behavior:smooth;
+  color-scheme:light;
+}
 @media (prefers-reduced-motion: reduce){ html{ scroll-behavior:auto } }
+
+/* El atributo hidden tiene que ganar siempre, pase lo que pase. */
+[hidden]{ display:none !important }
 
 body{
   margin:0;
-  background:var(--ink);
-  color:var(--cream);
-  font-family:var(--sans);
-  /* El mínimo es 16px: por debajo de eso el texto se lee chico en el celular
-     y además iOS hace zoom solo al tocar un campo de formulario. */
-  font-size:clamp(16px,.5vw + 13.6px,16.5px);
-  line-height:1.62;
-  font-weight:500;
+  background:var(--papel);
+  color:var(--txt-1);
+  font-family:var(--texto);
+  font-size:17px;          /* piso 16px en todo el sitio, sin excepción */
+  line-height:1.50;
+  font-weight:400;
+  font-feature-settings:'tnum' 1;
+  padding-bottom:calc(48px + env(safe-area-inset-bottom, 0px));
   -webkit-font-smoothing:antialiased;
-  overflow-x:hidden;
 }
+
 img,svg{ max-width:100%; display:block }
 a{ color:inherit; text-decoration:none }
-button{ font:inherit; color:inherit; cursor:pointer }
+button{ font:inherit; color:inherit; background:none; border:0; cursor:pointer }
+table{ border-collapse:collapse; width:100% }
 
-.wrap{ width:100%; max-width:var(--wrap); margin-inline:auto; padding-inline:var(--pad) }
+/* El foco SIEMPRE visible. outline:none está prohibido en esta hoja. */
+:focus-visible{ outline:3px solid var(--filete); outline-offset:2px }
 
-.skip{
-  position:absolute; left:-9999px; top:0; z-index:200;
-  background:var(--gold); color:var(--sobre-acento); padding:.7rem 1.2rem;
-}
-.skip:focus{ left:0 }
-
-:focus-visible{ outline:2px solid var(--gold); outline-offset:3px; border-radius:2px }
-
-/* ---------- Tipografía base ---------- */
+/* Anton tiene un solo peso. Pedirle más hace que el navegador lo falsifique. */
 h1,h2,h3{
-  font-family:var(--display); font-weight:400; line-height:1.04; margin:0;
-  letter-spacing:0; text-wrap:balance;   /* evita la última línea huérfana */
-}
-h1{ font-size:clamp(2.6rem,8vw,5.6rem) }
-h2{ font-size:clamp(1.85rem,4vw,3rem) }
-h3{ font-size:clamp(1.05rem,1.6vw,1.25rem); line-height:1.25 }
-/* Anton no tiene cursiva: el acento del título lo da el color. */
-.ital{ color:var(--gold-2) }
-
-.prose p{ margin:0 0 1.1em; color:var(--body-hi); max-width:62ch }
-.prose strong{ color:var(--cream); font-weight:700 }
-
-/* ---------- Animación de entrada ----------
-   Ojo: el estado oculto SOLO se aplica si el JS está vivo (clase .js en
-   <html>). Si el JS falla o está desactivado, el contenido se ve igual.
-   Nunca se debe poder llegar a una página en blanco por esto. */
-.js .reveal{ opacity:0; transform:translateY(10px); transition:opacity .32s var(--ease), transform .32s var(--ease) }
-.js .reveal.in{ opacity:1; transform:none }
-@media (prefers-reduced-motion: reduce){
-  .js .reveal{ opacity:1; transform:none; transition:none }
-}
-
-/* ---------- Botones ---------- */
-.btn{
-  display:inline-flex; align-items:center; gap:.5rem;
-  font-family:var(--cond); font-size:1rem; font-weight:700;
-  letter-spacing:.14em; text-transform:uppercase;
-  padding:.95rem 1.9rem; border-radius:var(--r);
-  border:1px solid var(--gold); color:var(--gold);
-  background:transparent; white-space:nowrap;
-  transition:background-color .3s var(--ease), color .3s var(--ease), border-color .3s var(--ease);
-}
-.btn:hover{ background:var(--gold); color:var(--sobre-acento) }
-.btn--gold{ background:var(--gold); color:var(--sobre-acento); border-color:var(--gold) }
-.btn--gold:hover{ background:var(--gold-2); border-color:var(--gold-2) }
-.btn--ghost{ border-color:var(--line-2); color:var(--cream) }
-.btn--ghost:hover{ border-color:var(--cream); background:var(--cream); color:var(--ink) }
-.btn--sm{ padding:.6rem 1.2rem; font-size:.88rem }
-.btn--full{ width:100%; justify-content:center }
-
-
-/* ══════════════════ NAV ══════════════════ */
-.nav{
-  position:fixed; inset:0 0 auto; z-index:100;
-  transition:background-color .3s var(--ease), border-color .3s var(--ease);
-  background:transparent; border-bottom:1px solid transparent;
-}
-.nav.stuck{
-  background:rgba(10,17,34,.86);
-  backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
-  border-bottom-color:var(--line);
-}
-.nav__in{ display:flex; align-items:center; justify-content:space-between; gap:1rem; height:74px }
-
-.brand{ display:flex; align-items:center; gap:.8rem; flex-shrink:0 }
-.brand__mark{ width:32px; height:32px; fill:var(--gold); flex-shrink:0 }
-.brand__logo{ height:44px; width:auto; flex-shrink:0 }
-@media (max-width:420px){
-  .brand__logo{ height:36px }
-  .brand__txt{ display:none }   /* en pantallas chicas alcanza con el logo */
-}
-.brand__txt{ display:flex; flex-direction:column; line-height:1.15 }
-.brand__txt strong{ font-family:var(--display); font-size:1.12rem; font-weight:400; letter-spacing:.01em }
-.brand__txt em{
-  font-family:var(--cond); font-style:normal; font-size:.7rem; font-weight:600;
-  letter-spacing:.2em; text-transform:uppercase; color:var(--sand);
-}
-
-.nav__links{ display:flex; align-items:center; gap:1.15rem }
-.nav__links a:not(.btn){
-  font-family:var(--cond); font-size:1rem; letter-spacing:.1em;
-  text-transform:uppercase; color:var(--body-hi); position:relative; padding:.3rem 0;
-  font-weight:600;
-  white-space:nowrap;   /* si no, "El Haras" se parte en dos líneas */
-}
-.nav__links a:not(.btn)::after{
-  content:''; position:absolute; left:0; bottom:0; width:0; height:1px;
-  background:var(--gold); transition:width .35s var(--ease);
-}
-.nav__links a:not(.btn):hover{ color:var(--cream) }
-.nav__links a:not(.btn):hover::after{ width:100% }
-
-.burger{ display:none; background:none; border:0; padding:.5rem; width:44px; height:44px }
-.burger span{ display:block; height:1.5px; background:var(--cream); margin:5px 0; transition:transform .3s var(--ease), opacity .3s var(--ease) }
-.burger[aria-expanded="true"] span:nth-child(1){ transform:translateY(6.5px) rotate(45deg) }
-.burger[aria-expanded="true"] span:nth-child(2){ opacity:0 }
-.burger[aria-expanded="true"] span:nth-child(3){ transform:translateY(-6.5px) rotate(-45deg) }
-
-/* Con nueve secciones el menú horizontal necesita 1285px para entrar entero.
-   Debajo de eso pasa a desplegable: es preferible el botón de hamburguesa a
-   que el último enlace se salga de la pantalla. Medido, no estimado. */
-@media (max-width:1300px){
-  .burger{ display:block }
-  .nav__links{
-    position:fixed; inset:74px 0 auto; flex-direction:column; gap:0;
-    background:rgba(10,17,34,.98); backdrop-filter:blur(18px);
-    border-bottom:1px solid var(--line); padding:1rem var(--pad) 2rem;
-    transform:translateY(-120%); transition:transform .45s var(--ease);
-    max-height:calc(100vh - 74px); overflow-y:auto;
-  }
-  .nav__links.open{ transform:none }
-  .nav__links a:not(.btn){ width:100%; padding:1rem 0; border-bottom:1px solid var(--line-2); font-size:1.15rem }
-  .nav__links .btn{ margin-top:1.2rem; width:100%; justify-content:center }
-}
-
-
-/* ══════════════════ HERO ══════════════════ */
-.hero{
-  position:relative; min-height:100svh; display:flex; align-items:center;
-  padding:120px 0 90px; overflow:hidden; isolation:isolate;
-}
-.hero__bg{ position:absolute; inset:0; z-index:-1 }
-.hero__sky{
-  position:absolute; inset:0;
-  background:
-    radial-gradient(120% 80% at 78% 8%,  rgba(var(--acento-rgb),.28) 0%, transparent 55%),
-    radial-gradient(90%  70% at 20% 92%, rgba(29,58,143,.55)  0%, transparent 60%),
-    linear-gradient(170deg, #0a1122 0%, #16264f 42%, #1d3272 70%, #0a1122 100%);
-}
-/* Foto de los potreros al atardecer. Si el archivo no existe simplemente no
-   se ve nada y queda el degradé: la portada nunca se rompe. */
-.hero__photo{
-  position:absolute; inset:0;
-  /* 58% vertical: deja ver la tranquera y el campo, no solo el cielo.
-     En pantallas angostas la foto se recorta mucho a los lados, así que
-     abajo se la corre hacia la derecha, donde está la tranquera. */
-  background:url('../img/hero.jpg') 50% 58% / cover no-repeat;
-  opacity:.74;
-}
-@media (max-width:760px){ .hero__photo{ background-position:68% 58% } }
-/* Velo que asegura que el título se lea sobre cualquier foto. */
-.hero__scrim{
-  position:absolute; inset:0;
-  background:linear-gradient(102deg,
-    var(--ink) 3%, rgba(10,17,34,.78) 30%, rgba(10,17,34,.22) 64%, rgba(10,17,34,.55) 100%);
-}
-.hero__horse{
-  position:absolute; right:-8%; top:50%; translate:0 -50%;
-  width:min(60vw,660px); height:auto; aspect-ratio:1;
-  fill:rgba(var(--acento-rgb),.09);
-  filter:drop-shadow(0 30px 60px rgba(0,0,0,.5));
-  animation:drift 18s ease-in-out infinite;
-}
-@keyframes drift{ 0%,100%{ transform:translateX(0) } 50%{ transform:translateX(-18px) } }
-@media (max-width:760px){ .hero__horse{ right:-24%; width:96vw } }
-@media (prefers-reduced-motion: reduce){ .hero__horse{ animation:none } }
-
-.hero__ground{
-  position:absolute; inset:auto 0 0; height:34%;
-  background:linear-gradient(to top, var(--ink) 12%, rgba(10,17,34,.75) 45%, transparent 100%);
-}
-.hero__in{ position:relative; z-index:2 }
-.hero__title{ margin:0 0 .6rem; text-shadow:0 4px 40px rgba(0,0,0,.55) }
-/* ═══ EL LEMA — NO CAMBIAR ═══════════════════════════════════════════════
-   El cliente aprobó exactamente este tratamiento. Queda fijado tal cual:
-     Bodoni Moda itálica 500 · color #f2e2b8 · sombra suave
-   El peso va escrito a mano a propósito. Antes heredaba 400 del body y
-   funcionaba sólo porque la única itálica cargada era la 500; si algún día
-   se agrega la itálica 400, el lema cambiaría solo. Así no puede pasar.
-   ════════════════════════════════════════════════════════════════════════ */
-.hero__lema{
-  font-family:var(--serif); font-style:italic; font-weight:500;
-  font-size:clamp(1.15rem,2.6vw,1.9rem);
-  color:var(--gold-2); margin:0 0 .7rem; letter-spacing:.01em;
-  text-shadow:0 2px 24px rgba(0,0,0,.5);
-}
-/* La ubicación va debajo del título, como pie: es un dato, no un rótulo. */
-.hero__sitio{
-  font-family:var(--cond); font-weight:600; font-size:.9rem; letter-spacing:.24em;
-  text-transform:uppercase; color:var(--sand); margin:0 0 1.8rem;
-}
-.hero__sub{
-  max-width:46ch; font-size:clamp(1.02rem,1.5vw,1.28rem);
-  color:var(--body-hi); margin:0 0 2.4rem;
-}
-.hero__sub strong{ color:var(--gold-2); font-weight:600 }
-.hero__cta{ display:flex; flex-wrap:wrap; gap:1rem; margin-bottom:3.2rem }
-
-.countdown{
-  display:inline-block; padding:1.3rem 1.8rem;
-  border:1px solid var(--line); border-radius:var(--r);
-  background:rgba(10,17,34,.5); backdrop-filter:blur(8px);
-}
-.countdown__lbl{
-  font-family:var(--cond); font-weight:600; font-size:.8rem; letter-spacing:.22em;
-  text-transform:uppercase; color:var(--gold); margin:0 0 .8rem;
-}
-.countdown__grid{ display:flex; gap:1.6rem }
-.countdown__grid div{ text-align:center; min-width:52px }
-.countdown__grid b{
-  display:block; font-family:var(--display); font-size:clamp(1.7rem,3.4vw,2.5rem);
-  font-weight:400; line-height:1; color:var(--cream); font-variant-numeric:tabular-nums;
-}
-.countdown__grid span{
-  font-family:var(--cond); font-weight:600; font-size:.72rem; letter-spacing:.18em;
-  text-transform:uppercase; color:var(--muted);
-}
-
-.hero__scroll{
-  position:absolute; left:50%; bottom:2.2rem; translate:-50% 0; z-index:3;
-  width:24px; height:40px; border:1px solid var(--line-2); border-radius:14px;
-}
-.hero__scroll span{
-  position:absolute; left:50%; top:9px; translate:-50% 0;
-  width:3px; height:7px; border-radius:2px; background:var(--gold);
-  animation:wheel 2s infinite;
-}
-@keyframes wheel{ 0%{opacity:0;transform:translateY(0)} 35%{opacity:1} 100%{opacity:0;transform:translateY(14px)} }
-@media (max-width:640px){ .hero__scroll{ display:none } }
-
-
-/* ══════════════════ STATS ══════════════════ */
-.stats{ background:var(--ink-2); border-block:1px solid var(--line) }
-.stats__grid{
-  display:grid; grid-template-columns:repeat(4,1fr);
-  gap:1px; background:var(--line-2); padding-block:0;
-}
-.stat{ background:var(--ink-2); padding:1.7rem 1rem; text-align:center }
-.stat b{
-  display:block; font-family:var(--display); font-size:clamp(2.2rem,4.4vw,3.4rem);
-  font-weight:400; color:var(--gold); line-height:1; margin-bottom:.5rem;
-  font-variant-numeric:tabular-nums;
-}
-.stat span{
-  font-family:var(--cond); font-weight:600; font-size:.86rem; letter-spacing:.17em;
-  text-transform:uppercase; color:var(--muted);
-}
-@media (max-width:760px){
-  .stats__grid{ grid-template-columns:repeat(2,1fr) }
-  .stat{ padding:1.9rem .8rem }
-}
-
-
-/* ══════════════════ SECCIONES ══════════════════ */
-.sec{ padding:clamp(3.2rem,6vw,5.6rem) 0; position:relative }
-.sec--dark{ background:var(--ink-2) }
-.sec--dark + .sec--dark{ border-top:1px solid var(--line-2) }
-
-/* ---------- Secciones sobre papel ----------
-   Redefinen los tokens de color, así los componentes de adentro se invierten
-   solos sin necesidad de escribir reglas nuevas para cada uno. La alternancia
-   claro/oscuro es lo que le saca peso a la página. */
-.sec--light{
-  background:var(--paper);
-  /* Imprescindible: el color se hereda ya resuelto desde <body>, así que
-     redefinir --cream no alcanza. Sin esta línea los títulos quedan blancos
-     sobre papel, es decir invisibles. */
-  color:var(--cream);
-  --cream:   var(--tinta);
-  --body-hi: #2c3a57;
-  --body:    #45536f;
-  /* Estos tonos están elegidos para superar 4.5:1 de contraste sobre papel.
-     Si los aclarás, el texto chico deja de leerse bien. */
-  --muted:   #55627e;
-  --sand:    #55627e;
-  --gold:    #77591a;
-  --gold-2:  #63501f;
-  --sobre-acento: var(--paper);
-  --line:    rgba(17,37,108,.20);
-  --line-2:  rgba(13,23,48,.13);
-  --card:    #ffffff;
-  --card-2:  var(--paper-2);
-}
-.sec--light .prose strong,
-.sec--light .ticks li{ color:var(--tinta) }
-/* Las etiquetas de categoría son colores claros pensados para fondo oscuro:
-   sobre papel hay que bajarles el tono o no se leen. */
-.sec--light .horse__tag[data-c="tambores"]{ color:#28687a }
-.sec--light .horse__tag[data-c="madres"]{ color:#8a4a80 }
-.sec--light .btn--ghost{ border-color:rgba(13,23,48,.28); color:var(--tinta) }
-.sec--light .btn--ghost:hover{ background:var(--tinta); border-color:var(--tinta); color:var(--paper) }
-
-.sechead{ max-width:70ch; margin-bottom:clamp(1.8rem,3.5vw,2.8rem) }
-
-/* En una grilla todas las tarjetas crecen hasta la más alta, así que un solo
-   texto largo agranda toda la fila. Recortar a tres líneas las empareja y
-   mantiene las cajas compactas. */
-.pad__lead, .svc p, .new p{
-  display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:3;
-  overflow:hidden;
-}
-.horse__list, .svc ul, .auction__terms{ line-height:1.5 }
-.sechead__sub{ color:var(--muted); margin:1.2rem 0 0; max-width:52ch }
-
-/* ---------- Split (El Haras) ---------- */
-.split{ display:grid; grid-template-columns:1.1fr .9fr; gap:clamp(2rem,5vw,4.5rem); align-items:center }
-@media (max-width:900px){ .split{ grid-template-columns:1fr } }
-
-.ticks{ list-style:none; margin:2.4rem 0 0; padding:0; display:grid; gap:.85rem }
-.ticks li{ position:relative; padding-left:2rem; color:var(--body-hi) }
-.ticks li::before{
-  content:''; position:absolute; left:0; top:.62em; width:11px; height:6px;
-  border-left:1.5px solid var(--gold); border-bottom:1.5px solid var(--gold);
-  transform:rotate(-45deg);
-}
-.ticks em{ color:var(--gold-2); font-style:italic; font-family:var(--serif); font-weight:500 }
-
-.split__img{ margin:0 }
-.split__img figcaption{
-  font-family:var(--cond); font-weight:600; font-size:.82rem; letter-spacing:.2em;
-  text-transform:uppercase; color:var(--muted); margin-top:1rem; text-align:center;
-}
-
-/* Marco de foto: se ve bien vacío y mejor con foto real */
-.photo{
-  position:relative; overflow:hidden; border-radius:var(--r);
-  border:1px solid var(--line);
-  background:
-    radial-gradient(90% 70% at 70% 15%, rgba(var(--acento-rgb),.16), transparent 60%),
-    linear-gradient(160deg, #1a2542, #0d1730 70%);
-  display:grid; place-items:center; aspect-ratio:4/3;
-}
-/* Cuadrado, no vertical: las fotos del haras son apaisadas o cuadradas, y
-   un marco muy vertical obliga a descartar medio ancho y amplía de más. */
-.photo--square{ aspect-ratio:1/1 }
-.photo > svg{ width:36%; height:auto; aspect-ratio:1; fill:rgba(var(--acento-rgb),.16) }
-
-/* ENCUADRE DE LAS FOTOS
-   La foto se recorta sola para llenar el marco. Si queda mal centrada (por
-   ejemplo, si le corta la cabeza al caballo) no hay que volver a recortar el
-   archivo: alcanza con mover --pos.
-     --pos: 50% 50%   → centro (por defecto)
-     --pos: 65% 50%   → corre el encuadre hacia la derecha
-     --pos: 50% 30%   → corre el encuadre hacia arriba
-   Se escribe en el HTML, por ejemplo: style="--pos:64% 50%"          */
-.photo > img{
-  position:absolute; inset:0; width:100%; height:100%;
-  object-fit:cover; object-position:var(--pos, 50% 50%);
-}
-/* En los padrillos la foto va COMPLETA (contain), nunca recortada: lo que
-   sobra a los costados lo llena el fondo desenfocado de arriba. */
-.pad__img > img,
-.mhead > img{
-  position:absolute; inset:0; width:100%; height:100%;
-  object-fit:contain; object-position:center;
-}
-
-
-/* ══════════════════ PADRILLOS ══════════════════ */
-.padrillos{ display:grid; grid-template-columns:repeat(auto-fit,minmax(215px,1fr)); gap:1rem }
-
-.pad{
-  position:relative; display:flex; flex-direction:column; text-align:left;
-  background:var(--card); border:1px solid var(--line-2); border-radius:var(--r);
-  overflow:hidden; width:100%;
-  transition:transform .3s var(--ease), border-color .3s var(--ease);
-}
-.pad:hover{ transform:translateY(-4px); border-color:var(--gold) }
-.pad--star{ border-color:var(--line) }
-
-/* 4:3 fijo, y el caballo entra ENTERO sobre un fondo hecho con la misma foto
-   ampliada y desenfocada. Es lo que permite que cualquier foto que suban
-   desde el panel quede bien —vertical, apaisada o cuadrada— sin recortarla
-   ni tener que prepararla antes. */
-.pad__img{
-  position:relative; aspect-ratio:4/3; overflow:hidden;
-  background:
-    radial-gradient(80% 70% at 65% 20%, rgba(var(--acento-rgb),.2), transparent 62%),
-    linear-gradient(155deg,#1d2c58,#0d1730 75%);
-  display:grid; place-items:center; isolation:isolate;
-}
-/* El fondo desenfocado. --foto lo escribe main.js con la foto de cada uno. */
-.pad__img::after,
-.mhead::after{
-  content:''; position:absolute; inset:0; z-index:-1;
-  background:var(--foto) center/cover no-repeat;
-  filter:blur(24px) brightness(.55); transform:scale(1.2);
-}
-.pad__img:not([style*="--foto"])::after,
-.mhead:not([style*="--foto"])::after{ display:none }
-.pad__img > svg{ width:38%; height:auto; aspect-ratio:1; fill:rgba(var(--acento-rgb),.2); transition:transform .45s var(--ease) }
-.pad:hover .pad__img > svg{ transform:scale(1.06); fill:rgba(var(--acento-rgb),.3) }
-
-.pad__lot{
-  /* z-index: la foto se inserta después que las etiquetas y, sin esto, las
-     tapa. Solo se nota en los padrillos que ya tienen foto cargada. */
-  position:absolute; top:.9rem; left:.9rem; z-index:2;
-  font-family:var(--cond); font-weight:600; font-size:.74rem; letter-spacing:.16em; text-transform:uppercase;
-  background:rgba(10,17,34,.8); color:var(--gold);
-  border:1px solid var(--line); padding:.28rem .6rem; border-radius:2px;
-}
-.pad__star{
-  position:absolute; top:.9rem; right:.9rem; z-index:2;
-  font-family:var(--cond); font-weight:600; font-size:.72rem; letter-spacing:.16em; text-transform:uppercase;
-  background:var(--gold); color:var(--ink); padding:.28rem .6rem; border-radius:2px;
-}
-
-.pad__body{ padding:1.1rem 1.1rem 1.2rem; display:flex; flex-direction:column; flex:1 }
-.pad__name{ font-family:var(--display); font-size:1.28rem; font-weight:400; margin:0 0 .35rem }
-.pad__idx{
-  font-family:var(--cond); font-weight:600; font-size:.8rem; letter-spacing:.16em; text-transform:uppercase;
-  color:var(--gold); margin:0 0 .9rem;
-}
-.pad__lead{ font-size:.94rem; color:var(--body); margin:0 0 1.2rem; flex:1 }
-.pad__ped{
-  font-family:var(--cond); font-weight:600; font-size:.88rem; letter-spacing:.06em;
-  color:var(--muted); margin:0 0 1.2rem; padding-top:1rem; border-top:1px solid var(--line-2);
-}
-.pad__ped b{ color:var(--cream); font-weight:700 }
-.pad__more{
-  font-family:var(--cond); font-weight:600; font-size:.9rem; letter-spacing:.14em; text-transform:uppercase;
-  color:var(--gold); display:inline-flex; align-items:center; gap:.45rem; margin-top:auto;
-}
-.pad__more::after{ content:'→'; transition:transform .3s var(--ease) }
-.pad:hover .pad__more::after{ transform:translateX(5px) }
-
-
-/* ══════════════════ CABALLOS ══════════════════ */
-.filters{ display:flex; flex-wrap:wrap; gap:.6rem; margin-bottom:2.4rem }
-.chip{
-  font-family:var(--cond); font-weight:600; font-size:.92rem; letter-spacing:.14em; text-transform:uppercase;
-  padding:.55rem 1.25rem; border-radius:100px;
-  border:1px solid var(--line-2); background:transparent; color:var(--muted);
-  transition:color .25s var(--ease), border-color .25s var(--ease), background-color .25s var(--ease);
-}
-.chip:hover{ color:var(--cream); border-color:var(--sand) }
-.chip.is-on{ background:var(--gold); border-color:var(--gold); color:var(--sobre-acento) }
-
-.horses{ display:grid; grid-template-columns:repeat(auto-fill,minmax(235px,1fr)); gap:1rem }
-
-.horse{
-  border:1px solid var(--line-2); border-radius:var(--r);
-  padding:1.2rem 1.2rem; background:var(--card);
-  transition:transform .3s var(--ease), border-color .3s var(--ease);
-  display:flex; flex-direction:column;
-}
-.horse:hover{ border-color:var(--gold); transform:translateY(-4px) }
-.horse.hide{ display:none }
-
-.horse__top{ display:flex; align-items:flex-start; justify-content:space-between; gap:1rem; margin-bottom:.9rem }
-.horse__name{ font-family:var(--display); font-weight:400; font-size:1.15rem; margin:0; line-height:1.15 }
-.horse__tag{
-  font-family:var(--cond); font-weight:600; font-size:.68rem; letter-spacing:.15em; text-transform:uppercase;
-  padding:.24rem .55rem; border-radius:2px; white-space:nowrap; flex-shrink:0;
-  border:1px solid currentColor;
-}
-.horse__tag[data-c="carrera"]{ color:var(--gold) }
-.horse__tag[data-c="tambores"]{ color:#6fb2c4 }
-.horse__tag[data-c="madres"]{ color:#c9a0c4 }
-
-.horse__title{
-  font-family:var(--cond); font-weight:600; font-size:.95rem; letter-spacing:.08em;
-  color:var(--gold-2); margin:0 0 1rem;
-}
-.horse__ped{
-  font-size:.84rem; color:var(--muted); margin:0 0 1.1rem;
-  padding-bottom:1.1rem; border-bottom:1px solid var(--line-2);
-}
-.horse__ped b{ color:var(--body); font-weight:700 }
-.horse__list{ list-style:none; margin:0; padding:0; display:grid; gap:.5rem }
-.horse__list li{ position:relative; padding-left:1.1rem; font-size:.88rem; color:var(--body) }
-.horse__list li::before{ content:''; position:absolute; left:0; top:.62em; width:5px; height:5px; background:var(--gold); border-radius:50% }
-
-
-/* ══════════════════ GALERÍA ══════════════════ */
-.galeria{
-  display:grid; gap:12px;
-  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-}
-.foto{
-  position:relative; padding:0; border:1px solid var(--line-2);
-  border-radius:var(--r); overflow:hidden; background:var(--card-2);
-  aspect-ratio:1; display:block; width:100%;
-  transition:transform .3s var(--ease), border-color .3s var(--ease);
-}
-.foto img{ width:100%; height:100%; object-fit:cover; transition:transform .6s var(--ease) }
-.foto:hover{ border-color:var(--gold); transform:translateY(-3px) }
-.foto:hover img{ transform:scale(1.05) }
-
-/* La primera foto ocupa el doble, para que la grilla no sea monótona. */
-@media (min-width:760px){
-  .foto:first-child{ grid-column:span 2; grid-row:span 2; aspect-ratio:auto }
-}
-
-/* Las que esperan al botón "Ver más". Se generan igual, sólo no se muestran:
-   así aparecen al instante en vez de tener que cargarse recién ahí. */
-.foto--oculta{ display:none }
-
-.galeria__pie{ display:flex; justify-content:center; margin-top:1.5rem }
-
-.foto__lupa{
-  position:absolute; right:.7rem; bottom:.7rem;
-  width:34px; height:34px; display:grid; place-items:center;
-  color:var(--ink); background:var(--gold); border-radius:50%;
-  opacity:0; transform:scale(.7);
-  transition:opacity .28s var(--ease), transform .28s var(--ease);
-}
-.foto:hover .foto__lupa{ opacity:1; transform:none }
-.foto__lupa svg{ width:17px; height:17px }
-
-/* Visor grande */
-.visor{ margin:0 }
-.visor img{ width:100%; height:auto; max-height:76vh; object-fit:contain; background:var(--ink) }
-.visor figcaption{
-  font-family:var(--cond); font-weight:600; font-size:.95rem; letter-spacing:.14em;
-  text-transform:uppercase; color:var(--muted);
-  padding:1.1rem 1.4rem; text-align:center; border-top:1px solid var(--line-2);
-}
-
-
-/* ══════════════════ SERVICIOS ══════════════════ */
-.services{ display:grid; grid-template-columns:repeat(auto-fit,minmax(215px,1fr)); gap:1px; background:var(--line-2); border:1px solid var(--line-2) }
-.svc{ background:var(--card); padding:1.7rem 1.4rem; transition:background-color .3s var(--ease) }
-.svc:hover{ background:var(--card-2) }
-.svc__ico{ width:28px; height:28px; fill:var(--gold); margin-bottom:1rem }
-.svc h3{ margin:0 0 .9rem }
-.svc p{ font-size:.94rem; color:var(--body); margin:0 0 1.3rem }
-.svc ul{ list-style:none; margin:0; padding:1.2rem 0 0; border-top:1px solid var(--line-2); display:grid; gap:.45rem }
-.svc li{
-  font-family:var(--cond); font-weight:600; font-size:.9rem; letter-spacing:.07em; color:var(--muted);
-  position:relative; padding-left:1rem;
-}
-.svc li::before{ content:'—'; position:absolute; left:0; color:var(--gold-dim) }
-
-
-/* ══════════════════ REMATE ══════════════════ */
-.sec--auction{
-  background:
-    radial-gradient(80% 100% at 85% 0%, rgba(var(--acento-rgb),.13), transparent 60%),
-    linear-gradient(165deg,#101d40,#0a1122 65%);
-  border-block:1px solid var(--line);
-}
-.auction{ display:grid; grid-template-columns:1.25fr .75fr; gap:clamp(2rem,5vw,4rem); align-items:start }
-@media (max-width:900px){ .auction{ grid-template-columns:1fr } }
-
-.auction h2{ margin:0 0 .3rem }
-/* En cursiva: Anton no tiene, así que va la itálica de Bodoni, la misma
-   que el lema. Si le pidiera cursiva a Anton, el navegador la inclinaría
-   por software y se vería deformada. */
-.auction__sub{
-  font-family:var(--serif); font-weight:500; font-style:italic; font-size:clamp(1.2rem,2.4vw,1.7rem);
-  color:var(--gold-2); margin:0 0 2.4rem;
-}
-.auction__facts{ display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:1.6rem 2rem; margin:0 0 2.6rem }
-.auction__facts dt{
-  font-family:var(--cond); font-weight:600; font-size:.76rem; letter-spacing:.2em; text-transform:uppercase;
-  color:var(--muted); margin-bottom:.3rem;
-}
-.auction__facts dd{ margin:0; font-size:1.02rem; color:var(--cream) }
-.auction__cta{ display:flex; flex-wrap:wrap; gap:1rem }
-
-.auction__side{
-  border:1px solid var(--line); border-radius:var(--r);
-  background:rgba(10,17,34,.55); padding:1.5rem 1.4rem;
-}
-.auction__side h3{ margin:0 0 1.4rem; color:var(--gold-2) }
-.auction__terms{ margin:0 0 1.6rem; padding-left:1.2rem; display:grid; gap:.75rem }
-.auction__terms li{ font-size:.9rem; color:var(--body); padding-left:.3rem }
-.auction__terms li::marker{ color:var(--gold); font-family:var(--cond) font-weight:600; }
-.auction__note{
-  font-size:.83rem; color:var(--muted); margin:0;
-  padding-top:1.3rem; border-top:1px solid var(--line-2);
-}
-.auction__note strong{ color:var(--body); font-weight:700 }
-
-
-/* ══════════════════ NOVEDADES ══════════════════ */
-.news{ display:grid; grid-template-columns:repeat(auto-fit,minmax(245px,1fr)); gap:1rem }
-.new{
-  border:1px solid var(--line-2); border-radius:var(--r); padding:1.3rem 1.3rem;
-  background:var(--card); display:flex; flex-direction:column;
-  transition:transform .3s var(--ease), border-color .3s var(--ease);
-}
-.new:hover{ border-color:var(--gold); transform:translateY(-4px) }
-.new__meta{ display:flex; align-items:center; gap:.8rem; margin-bottom:1.1rem; flex-wrap:wrap }
-.new__tag{
-  font-family:var(--cond); font-weight:600; font-size:.7rem; letter-spacing:.16em; text-transform:uppercase;
-  background:rgba(var(--acento-rgb),.12); color:var(--gold);
-  border:1px solid var(--line); padding:.22rem .6rem; border-radius:2px;
-}
-.new__date{ font-family:var(--cond); font-weight:600; font-size:.82rem; letter-spacing:.1em; color:var(--muted) }
-.new h3{ margin:0 0 .9rem }
-.new p{ font-size:.92rem; color:var(--body); margin:0 0 1.3rem; flex:1 }
-.new a{
-  font-family:var(--cond); font-weight:600; font-size:.88rem; letter-spacing:.14em; text-transform:uppercase;
-  color:var(--gold); display:inline-flex; gap:.4rem; margin-top:auto;
-}
-.new a:hover{ color:var(--gold-2) }
-
-
-/* ══════════════════ CONTACTO ══════════════════ */
-.contact{ display:grid; grid-template-columns:1fr .85fr; gap:clamp(2rem,5vw,4rem); align-items:start }
-@media (max-width:900px){ .contact{ grid-template-columns:1fr } }
-
-.cards{ display:grid; gap:1rem; margin:2.4rem 0 3rem }
-.card{
-  display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap;
-  border:1px solid var(--line-2); border-radius:var(--r); padding:1rem 1.2rem;
-  background:var(--card); transition:border-color .3s var(--ease);
-}
-.card:hover{ border-color:var(--gold) }
-.card__name{ font-family:var(--display); font-weight:400; font-size:1.15rem; margin:0 }
-.card__rol{
-  font-family:var(--cond); font-weight:600; font-size:.75rem; letter-spacing:.18em; text-transform:uppercase;
-  color:var(--muted); display:block; margin-top:.15rem;
-}
-.card__tel{
-  font-family:var(--cond); font-weight:600; font-size:1.2rem; letter-spacing:.06em; color:var(--gold);
-  display:inline-flex; align-items:center; gap:.5rem;
-}
-.card__tel:hover{ color:var(--gold-2) }
-
-.place h3{ margin:0 0 .6rem }
-.place p{ color:var(--muted); margin:0 0 1.3rem; font-size:.94rem }
-.map{
-  border:1px solid var(--line-2); border-radius:var(--r); overflow:hidden;
-  aspect-ratio:16/10; background:var(--ink-3);
-}
-.map iframe{ width:100%; height:100%; border:0; filter:grayscale(.65) invert(.92) hue-rotate(180deg) contrast(.9) }
-
-/* ---------- Formulario ---------- */
-.form{
-  border:1px solid var(--line); border-radius:var(--r);
-  background:var(--card); padding:1.8rem 1.6rem; display:grid; gap:1rem;
-}
-.form h3{ margin:0 0 .4rem; color:var(--gold-2) }
-.form label{
-  display:grid; gap:.45rem;
-  font-family:var(--cond); font-weight:600; font-size:.86rem; letter-spacing:.16em; text-transform:uppercase; color:var(--muted);
-}
-.form input,.form select,.form textarea{
-  font-family:var(--sans); font-size:.96rem; font-weight:500; color:var(--cream);
-  background:var(--ink-3); border:1px solid var(--line-2); border-radius:var(--r);
-  padding:.85rem 1rem; width:100%;
-  transition:border-color .25s var(--ease), background-color .25s var(--ease); letter-spacing:0; text-transform:none;
-}
-.form input::placeholder,.form textarea::placeholder{ color:#6f7d9c }
-.form input:focus,.form select:focus,.form textarea:focus{ outline:0; border-color:var(--gold); background:#1a2542 }
-.form textarea{ resize:vertical; min-height:96px }
-.form select{ appearance:none; cursor:pointer;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='%23c9a24a'%3E%3Cpath d='M6 8 0 0h12z'/%3E%3C/svg%3E");
-  background-repeat:no-repeat; background-position:right 1rem center;
-}
-.form option{ background:var(--ink-2); font-weight:500 }
-.form__note{ font-size:.8rem; color:var(--muted); margin:0; text-align:center }
-.form .err{ border-color:#c05a4a }
-
-
-/* ══════════════════ PIE ══════════════════ */
-.foot{ background:var(--ink-2); border-top:1px solid var(--line); padding:3.5rem 0 2rem }
-.foot__in{
-  display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap;
-  padding-bottom:2.4rem; border-bottom:1px solid var(--line-2);
-}
-.foot__brand{ display:flex; align-items:center; gap:1.1rem }
-.foot__logo{ height:76px; width:auto; flex-shrink:0 }
-.foot__brand strong{ display:block; font-family:var(--serif); font-style:italic; font-size:1.25rem; font-weight:500; color:var(--gold-2) }
-.foot__brand span{ font-family:var(--cond); font-weight:600; font-size:.82rem; letter-spacing:.12em; color:var(--muted) }
-.foot__nav{ display:flex; flex-wrap:wrap; gap:1.5rem }
-.foot__nav a{
-  font-family:var(--cond); font-weight:600; font-size:.92rem; letter-spacing:.13em; text-transform:uppercase; color:var(--muted);
-}
-.foot__nav a:hover{ color:var(--gold) }
-.foot__social{ display:flex; gap:.7rem }
-.foot__social a{
-  width:40px; height:40px; display:grid; place-items:center;
-  border:1px solid var(--line-2); border-radius:50%;
-  transition:background-color .3s var(--ease), border-color .3s var(--ease);
-}
-.foot__social a:hover{ border-color:var(--gold); background:var(--gold) }
-.foot__social svg{ width:17px; height:17px; fill:var(--muted); transition:fill .3s var(--ease) }
-.foot__social a:hover svg{ fill:var(--ink) }
-
-.foot__legal{
-  display:flex; justify-content:space-between; gap:1rem; flex-wrap:wrap;
-  padding-top:1.8rem; font-size:.8rem; color:#8592ae;
-}
-.foot__legal p{ margin:0 }
-.foot__legal a{ color:var(--sand); border-bottom:1px solid var(--line) }
-.foot__legal a:hover{ color:var(--gold) }
-
-
-/* ══════════════════ MODAL ══════════════════ */
-.modal{
-  position:fixed; inset:0; z-index:150; display:grid; place-items:center; padding:1.2rem;
-  overscroll-behavior:contain;   /* que el scroll no se escape a la página */
-}
-.modal__back{ position:absolute; inset:0; background:rgba(6,10,22,.86); backdrop-filter:blur(6px); animation:fade .3s }
-@keyframes fade{ from{opacity:0} to{opacity:1} }
-.modal__box{
-  position:relative; width:min(720px,100%); max-height:88vh; overflow-y:auto;
-  background:var(--ink-2); border:1px solid var(--line); border-radius:var(--r);
-  animation:pop .4s var(--ease);
-}
-@keyframes pop{ from{opacity:0;transform:translateY(24px) scale(.98)} to{opacity:1;transform:none} }
-.modal__x{
-  position:absolute; top:.7rem; right:.9rem; z-index:2;
-  width:40px; height:40px; font-size:1.9rem; line-height:1;
-  background:rgba(10,17,34,.7); border:1px solid var(--line-2); border-radius:50%;
-  color:var(--cream); transition:color .25s var(--ease), border-color .25s var(--ease);
-}
-.modal__x:hover{ border-color:var(--gold); color:var(--gold) }
-
-.mhead{
-  /* misma proporción que la tarjeta: la foto entra igual de completa */
-  position:relative; aspect-ratio:4/3; display:grid; place-items:center; overflow:hidden;
-  background:
-    radial-gradient(80% 80% at 70% 20%, rgba(var(--acento-rgb),.22), transparent 62%),
-    linear-gradient(150deg,#1d2c58,#0d1730 75%);
-  border-bottom:1px solid var(--line);
-}
-.mhead > svg{ width:24%; height:auto; aspect-ratio:1; fill:rgba(var(--acento-rgb),.22) }
-.mbody{ padding:2rem 2rem 2.4rem }
-.mbody h3{ font-size:clamp(1.7rem,4vw,2.3rem); margin:0 0 .4rem }
-.mbody .pad__idx{ margin-bottom:1.4rem }
-.mbody .lead{ font-size:1.02rem; color:var(--body-hi); margin:0 0 1.8rem }
-.mtable{ display:grid; gap:0; margin:0 0 1.8rem; border-top:1px solid var(--line-2) }
-.mtable > div{
-  display:grid; grid-template-columns:130px 1fr; gap:1rem;
-  padding:.9rem 0; border-bottom:1px solid var(--line-2);
-}
-.mtable dt{
-  font-family:var(--cond); font-weight:600; font-size:.8rem; letter-spacing:.16em; text-transform:uppercase; color:var(--gold);
-}
-.mtable dd{ margin:0; font-size:.92rem; color:var(--body) }
-@media (max-width:560px){ .mtable > div{ grid-template-columns:1fr; gap:.25rem } }
-
-.mkids h4{
-  font-family:var(--cond); font-size:.82rem; letter-spacing:.2em; text-transform:uppercase;
-  color:var(--muted); margin:0 0 .9rem; font-weight:700;
-}
-.mkids ul{ list-style:none; margin:0 0 1.8rem; padding:0; display:flex; flex-wrap:wrap; gap:.5rem }
-.mkids li{
-  font-family:var(--cond); font-weight:600; font-size:.88rem; letter-spacing:.08em;
-  border:1px solid var(--line); color:var(--gold-2);
-  padding:.32rem .8rem; border-radius:100px;
-}
-
-
-/* ══════════════════ CINTA DE NOVEDADES ══════════════════ */
+  font-family:var(--anton); font-weight:400;
+  letter-spacing:-0.02em; margin:0; text-wrap:balance;
+}
+
+.hoja{
+  width:100%; max-width:var(--ancho); margin-inline:auto;
+  padding-inline:var(--borde);
+}
+
+.salto{ position:absolute; left:-9999px; top:0 }
+.salto:focus{ left:0; background:var(--marino); color:var(--txtm-1); padding:var(--e3) var(--e4) }
+
+
+/* ══════════════════════════════════════════════════════════════════════
+   EL CONDUCTOR
+   La línea de puntos que va del nombre al dato, como en el índice de un
+   libro. Reemplaza a la tarjeta: es lo que une dos cosas sin encerrarlas.
+   ══════════════════════════════════════════════════════════════════════ */
+.cond{
+  flex:1 1 auto; min-width:var(--e4);
+  border-bottom:1px dotted var(--capilar);
+  transform:translateY(-.28em);
+}
+
+
+/* ══════════════════════════════════════════════════════════════════════
+   1 · TAPA
+   ══════════════════════════════════════════════════════════════════════ */
+.membrete{
+  background:var(--marino); color:var(--txtm-1);
+  min-height:88px; display:flex; align-items:center;
+  justify-content:space-between; gap:var(--e4);
+}
+.membrete__logo{ height:52px; width:auto }
+.membrete__sitio{ font-size:17px; color:var(--txtm-2); text-align:right }
+
+.tapa{ padding-block:var(--e6) var(--e8) }
+.tapa__nombre{
+  font-size:clamp(56px,13vw,168px); line-height:.88;
+  color:var(--txt-3); margin-left:calc(var(--canal) * -1);
+}
+.tapa__cuerpo{ margin-top:var(--e5) }
+.tapa__lamina{ position:relative; border:3px solid var(--filete) }
+.tapa__lamina img{ width:100%; aspect-ratio:3/2; object-fit:cover }
+
+/* El lema. Lo fijó el cliente y no se rediseña. */
+.tapa__lema{
+  position:absolute; inset:auto var(--e4) var(--e4) var(--e4);
+  font-family:var(--didone); font-style:italic; font-weight:500;
+  font-size:22px; line-height:1.30; color:var(--lema);
+  text-shadow:0 1px 2px rgba(11,20,54,.55);
+  margin:0;
+}
+.tapa__condiciones{
+  margin:var(--e4) 0 0; font-size:17px; color:var(--txt-2);
+}
+.tapa__condiciones b{ color:var(--txt-1); font-weight:600 }
+
+
+/* ══════════════════════════════════════════════════════════════════════
+   2 · ÍNDICE — es toda la navegación del sitio.
+   No hay barra fija arriba, ni hamburguesa, ni folio corrido.
+   ══════════════════════════════════════════════════════════════════════ */
+.indice{ padding-block:var(--e7); border-top:3px solid var(--filete) }
+.indice ol{ list-style:none; margin:0; padding:0 }
+.indice li + li{ margin-top:var(--e1) }
+.indice a{
+  display:flex; align-items:baseline; gap:var(--e3);
+  min-height:44px; font-family:var(--anton); font-size:24px;
+  line-height:1.05; letter-spacing:-0.02em; color:var(--txt-3);
+}
+.indice a:hover .indice__n{ color:var(--txt-1) }
+.indice__n{ font-family:var(--texto); font-size:17px; font-weight:600; color:var(--txt-2) }
+
+
+/* ══════════════════════════════════════════════════════════════════════
+   3 · LOGROS — rompe el molde: un párrafo y nada más.
+   Sin título, sin filete, sin números grandes.
+   ══════════════════════════════════════════════════════════════════════ */
+.logros{ padding-block:var(--e6) var(--e7) }
+.logros p{
+  margin:0; max-width:62ch; font-size:17px; line-height:1.35; text-align:justify;
+  hyphens:auto;
+}
+.logros b{ font-weight:700 }
+
+
+/* ══════════════════════════════════════════════════════════════════════
+   4 · LA VARA — el momento. Ver VERIFICAR.md.
+   La tabla de índice de velocidad convertida en vara de medir, con el
+   hierro del haras quemado sobre el 104.
+   ══════════════════════════════════════════════════════════════════════ */
+.vara{ padding-block:var(--e7); border-top:3px solid var(--filete) }
+.vara__caja{ position:relative; height:260px; margin-top:var(--e6) }
+
+.vara__base{
+  position:absolute; left:0; right:0; top:58%;
+  height:1.5px; background:var(--hilo);
+}
+.vara__patron{
+  position:absolute; top:0; bottom:0; left:50%;
+  width:20px; margin-left:-10px; background:var(--plata);
+}
+.vara__pique{
+  position:absolute; top:58%; width:1px; background:var(--capilar); height:8px;
+}
+.vara__pique--largo{ height:16px; background:var(--hilo) }
+.vara__rot{
+  position:absolute; top:calc(58% + 22px); font-size:16px; color:var(--txt-2);
+  transform:translateX(-50%);
+}
+.vara__banda{
+  position:absolute; top:calc(58% + 52px); height:0;
+  border-top:3px solid var(--filete);
+}
+.vara__banda span{
+  position:absolute; left:0; top:var(--e2);
+  font-size:17px; font-weight:700; color:var(--txt-1);
+}
+.vara__cifra{
+  position:absolute; left:60%; top:0; transform:translateX(-50%);
+  display:flex; align-items:baseline; gap:var(--e2);
+}
+.vara__cifra b{ font-family:var(--anton); font-size:56px; line-height:.85; color:var(--filete) }
+.vara__cifra span{ font-size:18px; font-weight:700; color:var(--txt-1) }
+
+.vara__hierros{
+  position:absolute; left:60%; top:76px; display:flex; flex-direction:column;
+  gap:var(--e3);
+}
+.vara__hierro{
+  display:flex; align-items:center; gap:var(--e2);
+  min-height:44px; color:var(--txt-1);
+}
+/* El hierro va RELLENO y asimétrico: se corta de planchuela y la piel
+   quemada cierra los huecos finos. Nada de trazo de 2px estilo Lucide. */
+.vara__hierro svg{ width:30px; height:30px; fill:var(--filete); flex-shrink:0 }
+.vara__hierro span{ font-size:17px; font-weight:600 }
+
+.vara__sin{ margin:var(--e4) 0 0; font-size:17px; color:var(--txt-2) }
+.vara__vende{
+  margin:var(--e4) 0 0; text-align:right; font-size:17px;
+  font-stretch:78%; color:var(--txt-1);
+}
+.vara__vende b{ font-weight:700 }
+.vara__vende small{ display:block; font-size:16px; color:var(--txt-2) }
+
+
+/* ══════════════════════════════════════════════════════════════════════
+   5 · PADRILLOS — filas regladas, no tarjetas.
+   ══════════════════════════════════════════════════════════════════════ */
+.titulo-seccion{
+  font-size:34px; line-height:.95; color:var(--txt-3);
+  margin:0 0 var(--e5);
+}
+.seccion{ padding-block:var(--e7); border-top:3px solid var(--filete) }
+
+.lote{ border:0; margin:0; padding:0 }
+.lote > summary{
+  display:flex; align-items:baseline; gap:var(--e3);
+  min-height:72px; padding-block:var(--e3); cursor:pointer;
+  border-bottom:1px solid var(--capilar); list-style:none;
+}
+.lote > summary::-webkit-details-marker{ display:none }
+.lote__n{ font-weight:700; font-size:19px; text-transform:uppercase; color:var(--txt-1) }
+.lote__t{ font-size:17px; color:var(--txt-2) }
+.lote__i{ font-size:17px; font-weight:600; color:var(--txt-1); white-space:nowrap }
+
+/* La página de lote. Se abre de golpe: sin transición, como pasar de hoja. */
+.lote__hoja{ padding:var(--e5) 0 var(--e6) }
+.lote__hoja h3{ font-size:30px; color:var(--txt-3); margin-bottom:var(--e4) }
+.lote__foto{ border:3px solid var(--filete); margin-bottom:var(--e4) }
+.lote__foto img{ width:100%; aspect-ratio:4/3; object-fit:cover }
+.lote__resumen{ margin:0 0 var(--e4); max-width:66ch }
+
+/* El pedigrí va en PROSA de stud book, no en árbol de tres columnas:
+   los datos no existen (sólo un padrillo trae abuela). */
+.sangre{
+  margin:0 0 var(--e4); padding-left:1.5em; text-indent:-1.5em;
+  max-width:66ch; color:var(--txt-1);
+}
+.sangre b{ font-weight:600 }
+
+.ficha{ margin:0 0 var(--e4) }
+.ficha div{ display:flex; align-items:baseline; gap:var(--e3); padding-block:var(--e1) }
+.ficha dt{ font-weight:600; white-space:nowrap }
+.ficha dd{ margin:0; font-stretch:78%; text-align:right }
+
+.hijos{ margin:0 0 var(--e5); padding-left:2ch; list-style:none }
+.hijos li{ padding-block:2px }
+
+.wapp{
+  display:flex; align-items:center; justify-content:space-between;
+  gap:var(--e4); min-height:56px; padding-inline:var(--e4);
+  background:var(--marino); color:var(--txtm-1); font-weight:600;
+}
+
+
+/* ══════════════════════════════════════════════════════════════════════
+   6 · EL HARAS — rompe el molde: sin título, asimétrica a propósito.
+   ══════════════════════════════════════════════════════════════════════ */
+.haras{ padding-block:var(--e7) }
+.haras__txt{ max-width:60ch }
+.haras__txt p{ margin:0 0 var(--e4); padding-left:1.5em; text-indent:-1.5em }
+.haras__txt .vers{ font-variant-caps:small-caps; font-weight:600 }
+.haras__foto{ border:3px solid var(--filete); margin-top:var(--e5) }
+.haras__foto img{ width:100%; aspect-ratio:1/1; object-fit:cover; object-position:var(--pos,50% 50%) }
+
+
+/* ══════════════════════════════════════════════════════════════════════
+   7 · PALMARÉS — Carta Clásica. Tabla de verdad, sin filetes internos.
+   ══════════════════════════════════════════════════════════════════════ */
+.filtros{ margin:0 0 var(--e4); font-size:17px; color:var(--txt-2) }
+.filtros button{ min-height:44px; padding-inline:var(--e2); color:var(--txt-2) }
+.filtros button[aria-pressed="true"]{
+  color:var(--txt-1); font-weight:700; border-bottom:3px solid var(--filete);
+}
+
+.carta thead th{
+  background:var(--marino); color:var(--txtm-1);
+  font-weight:600; font-size:17px; text-align:left;
+  padding:var(--e3) var(--e2);
+}
+.carta thead th:first-child{ padding-left:var(--e4) }
+.carta thead .carta__rot{ font-family:var(--anton); font-size:24px; letter-spacing:-0.02em }
+.carta tbody td{
+  padding:var(--e3) var(--e2); font-size:17px; line-height:1.18;
+  vertical-align:baseline; border-bottom:1px solid var(--capilar);
+}
+.carta tbody td:first-child{ padding-left:var(--e4); font-weight:700; text-transform:uppercase }
+.carta .num{ text-align:right; font-stretch:78% }
+.carta .logro{ text-align:right; color:var(--txt-1) }
+.carta .padres{ font-stretch:78%; color:var(--txt-2) }
+/* Convención literal del General Stud Book: las madres en itálica didone. */
+.carta tr[data-cat="madres"] td:first-child{
+  font-family:var(--didone); font-style:italic; font-weight:500; text-transform:none;
+}
+.carta tfoot td{ border-top:8px solid var(--filete); padding:0; height:0 }
+
+
+/* ══════════════════════════════════════════════════════════════════════
+   8 · REPRODUCCIÓN — rompe el molde: campo plata, la separata.
+   ══════════════════════════════════════════════════════════════════════ */
+.repro{ background:var(--plata); color:var(--txtp-1); padding-block:var(--e7) }
+.repro__cab{ display:flex; align-items:center; gap:var(--e4); margin-bottom:var(--e5) }
+.repro__retrato{ width:96px; height:96px; border:3px solid var(--filete); flex-shrink:0 }
+.repro__retrato img{ width:100%; height:100%; object-fit:cover; object-position:var(--pos,50% 35%) }
+.repro__rol{ margin:0; font-size:17px; color:var(--txtp-2) }
+.repro__vet{ margin:0; font-family:var(--anton); font-size:30px; color:var(--txtp-3); letter-spacing:-0.02em }
+.repro__intro{ margin:0 0 var(--e5); max-width:64ch }
+.repro__intro .ital{ font-family:var(--didone); font-style:italic; font-weight:500 }
+
+.planilla{ margin:0 0 var(--e5); list-style:none; padding:0 }
+.planilla li{
+  display:flex; align-items:baseline; gap:var(--e3);
+  min-height:44px; border-bottom:1px solid var(--capilar);
+}
+.recursos{ margin:0 0 var(--e5) }
+.recursos div{ padding-block:var(--e3); border-bottom:1px solid var(--capilar) }
+.recursos dt{ font-weight:600 }
+.recursos dd{ margin:0; color:var(--txtp-2) }
+
+.tira{ display:flex; gap:var(--e4); overflow-x:auto; scroll-snap-type:x mandatory; padding-bottom:var(--e2) }
+.tira figure{ margin:0; flex:0 0 auto; width:78%; max-width:340px; scroll-snap-align:start }
+.tira img{ width:100%; height:220px; object-fit:cover; border:3px solid var(--filete) }
+.tira figcaption{ margin-top:var(--e2); font-size:16px; font-stretch:85%; color:var(--txtp-2) }
+
+
+/* ══════════════════════════════════════════════════════════════════════
+   9 · SERVICIOS — rompe el molde: cuatro renglones, sin grilla ni celdas.
+   ══════════════════════════════════════════════════════════════════════ */
+.servicios{ padding-block:var(--e7); border-top:3px solid var(--filete) }
+.serv{ padding-block:var(--e4); border-bottom:1px solid var(--capilar) }
+.serv__t{ display:flex; align-items:baseline; gap:var(--e3) }
+.serv__t svg{ width:28px; height:28px; fill:var(--filete); flex-shrink:0; align-self:center }
+.serv__t h3{ font-size:24px; color:var(--txt-3) }
+.serv p{ margin:var(--e2) 0 0; max-width:64ch }
+.serv__d{ margin:var(--e2) 0 0; padding-left:2ch; color:var(--txt-2) }
+
+
+/* ══════════════════════════════════════════════════════════════════════
+   10 · EL REMATE — la única sección con campo marino a sangre (1 de 14).
+   ══════════════════════════════════════════════════════════════════════ */
+.remate{ background:var(--marino); color:var(--txtm-1); padding-block:var(--e7) }
+.remate__cab{ display:flex; align-items:center; justify-content:space-between; gap:var(--e4) }
+.remate__caja{ border:1px solid var(--capilar-m); padding:var(--e2) var(--e3); font-size:16px; text-align:center }
+.remate__caja b{ display:block; font-size:19px; font-weight:700 }
+.remate__cab h2{ font-size:34px; color:var(--txtm-1); text-align:center; flex:1 1 auto }
+
+.remate__dia{
+  font-family:var(--anton); font-size:64px; line-height:.85; color:var(--txtm-3);
+  text-align:right; margin:var(--e5) 0 var(--e4);
+}
+.remate__cuenta{ text-align:right; margin:0 0 var(--e6); color:var(--txtm-2); font-size:17px }
+.remate__cuenta b{ color:var(--txtm-1); font-weight:700 }
+
+/* La ÚNICA tabla con filetes en todas las celdas. El programa del hipódromo
+   es el único impreso del rubro que los tiene, y las condiciones de venta
+   son el contrato. */
+.condiciones{ margin:0 0 var(--e5) }
+.condiciones td{
+  border:1px solid var(--capilar-m); padding:var(--e3);
+  font-size:17px; vertical-align:baseline;
+}
+.condiciones td:first-child{ width:2.5em; text-align:right; color:var(--txtm-2) }
+
+.remate__linea{ margin:0 0 var(--e3); font-size:17px; color:var(--txtm-2) }
+.remate__linea b{ color:var(--txtm-1); font-weight:600 }
+
+/* El único relleno dorado del sitio. */
+.remate__ir{
+  display:flex; align-items:center; justify-content:center;
+  min-height:56px; background:var(--dorado); color:var(--tinta);
+  font-weight:700; margin-top:var(--e5);
+}
+
+
+/* ══════════════════════════════════════════════════════════════════════
+   11 · NOVEDADES — rompe el molde: sin cabecera, arranca en una fecha.
+   ══════════════════════════════════════════════════════════════════════ */
+.novedades{ padding-block:var(--e7); border-top:3px solid var(--filete) }
+.nov{ position:relative; padding:var(--e4) 0 var(--e4) var(--canal); border-bottom:1px solid var(--capilar) }
+.nov__f{ font-size:17px; font-stretch:78%; color:var(--txt-2) }
+.nov h3{ font-family:var(--texto); font-size:19px; font-weight:700; margin:var(--e1) 0 var(--e2) }
+.nov p{ margin:0; max-width:62ch }
+.nov__e{ margin:var(--e2) 0 0; font-size:17px; font-weight:700; color:var(--bronce) }
+.nov a{ text-decoration:underline; text-underline-offset:3px }
+/* La única barra de color del sitio, y va FUERA del bloque, en el canalón. */
+.nov--ultima::before{
+  content:''; position:absolute; left:0; top:var(--e4); bottom:var(--e4);
+  width:4px; background:var(--verde);
+}
+
+
+/* ══════════════════════════════════════════════════════════════════════
+   12 · GALERÍA — rompe el molde: sin cabecera, tira de contactos.
+   ══════════════════════════════════════════════════════════════════════ */
+.galeria{ padding-block:var(--e7) }
+.contactos{ display:flex; gap:var(--e4); overflow-x:auto; scroll-snap-type:x mandatory; padding-bottom:var(--e2) }
+.contactos figure{ margin:0; flex:0 0 auto; width:78%; max-width:400px; scroll-snap-align:start }
+.contactos img{ width:100%; height:300px; object-fit:cover; object-position:var(--pos,50% 50%); border:3px solid var(--filete) }
+.contactos figcaption{ margin-top:var(--e2); font-size:16px; font-stretch:85%; color:var(--txt-2) }
+.contactos figcaption b{ font-weight:600; color:var(--txt-1) }
+.galeria__mas{ margin-top:var(--e4); text-decoration:underline; text-underline-offset:3px; min-height:44px; color:var(--txt-3) }
+
+
+/* ══════════════════════════════════════════════════════════════════════
+   13 · CONTACTO — croquis dibujado, no iframe. El iframe son 700 KB.
+   ══════════════════════════════════════════════════════════════════════ */
+.contacto{ padding-block:var(--e7); border-top:3px solid var(--filete) }
+.anclas{ display:flex; justify-content:space-between; gap:var(--e4); flex-wrap:wrap; margin-bottom:var(--e5) }
+.anclas a,.anclas p{ margin:0; min-height:44px; display:flex; align-items:center }
+.anclas b{ font-weight:700 }
+.croquis{ border:3px solid var(--filete); background:var(--papel) }
+.croquis svg{ width:100%; height:auto; display:block }
+.contacto__ir{ display:inline-flex; align-items:center; min-height:44px; margin-top:var(--e3);
+  text-decoration:underline; text-underline-offset:3px; color:var(--txt-3) }
+.contacto__redes{ margin-top:var(--e5) }
+.contacto__redes a{ text-decoration:underline; text-underline-offset:3px; min-height:44px; display:inline-flex; align-items:center }
+
+
+/* ══════════════════════════════════════════════════════════════════════
+   14 · CINTA — el zócalo. Es el ÚNICO movimiento del sitio.
+   ══════════════════════════════════════════════════════════════════════ */
 .cinta{
-  position:fixed; inset:auto 0 0; z-index:95;
-  background:var(--verde); color:#fff;
-  border-top:1px solid var(--gold);
-  /* Finita, como el zócalo de un informativo. */
-  overflow:hidden; height:26px; display:flex; align-items:center;
+  position:fixed; inset:auto 0 0; z-index:10;
+  height:calc(48px + env(safe-area-inset-bottom, 0px));
+  padding-bottom:env(safe-area-inset-bottom, 0px);
+  background:var(--verde); color:#FBFBFD;
+  overflow:hidden; display:flex; align-items:center;
 }
-.cinta__riel{
-  display:flex; flex-shrink:0; white-space:nowrap; will-change:transform;
-  animation:cinta-correr var(--duracion,30s) linear infinite;
-}
-@keyframes cinta-correr{
-  from{ transform:translateX(0) }
-  to  { transform:translateX(calc(var(--recorrido,1000px) * -1)) }
-}
-/* Para poder leer una novedad puntual sin correr detrás de ella. */
-.cinta:hover .cinta__riel,
-.cinta:focus-within .cinta__riel{ animation-play-state:paused }
+.cinta__riel{ display:flex; flex-shrink:0; white-space:nowrap; will-change:transform;
+  animation:cinta var(--dur,38s) linear infinite }
+@keyframes cinta{ from{ transform:translateX(0) } to{ transform:translateX(calc(var(--rec,1000px) * -1)) } }
+.cinta:hover .cinta__riel,.cinta:focus-within .cinta__riel{ animation-play-state:paused }
+.cinta__m{ position:relative; padding:0 var(--e6) 0 var(--e4); font-size:17px; font-weight:600 }
+.cinta__m::before{ content:''; position:absolute; left:0; top:50%; margin-top:-9px; width:4px; height:18px; background:#FBFBFD }
 
-.cinta__item{
-  font-family:var(--cond); font-weight:700; font-size:.76rem;
-  letter-spacing:.12em; text-transform:uppercase; line-height:1;
-  padding:0 1.3rem; display:inline-flex; align-items:center;
-}
-/* El separador entre novedades: un rombo, no un guion. */
-.cinta__item::after{
-  content:''; width:4px; height:4px; margin-left:1.3rem;
-  background:var(--gold); transform:rotate(45deg);
-}
-
-@media (max-width:640px){
-  .cinta{ height:24px }
-  .cinta__item{ font-size:.7rem; padding:0 .9rem }
-  .cinta__item::after{ margin-left:.9rem }
-}
-
-/* Si el sistema pide menos movimiento (muy común en celulares: iPhone →
-   Accesibilidad → Movimiento → Reducir movimiento), la cinta NO se desliza.
-   Pero tampoco se queda muerta: muestra un mensaje por vez y los va
-   turnando. Se respeta la preferencia y las novedades igual se leen. */
 @media (prefers-reduced-motion: reduce){
-  .cinta__riel{ animation:none; transform:none; width:100%; justify-content:center }
-  .cinta__item{ display:none }
-  .cinta__item.turno{ display:inline-flex }
-  .cinta__item::after{ display:none }   /* con uno solo, el rombo sobra */
+  .cinta__riel{ animation:none; transform:none }
 }
 
 
-/* ══════════════════ CENTRO REPRODUCTIVO ══════════════════
-   Tres columnas: quién está a cargo, qué se hace y con qué se cuenta.
-   La primera es la que manda —la veterinaria es la credencial de la
-   sección— así que lleva el dorado y el número grande. */
-.eyebrow{
-  font-family:var(--cond); font-weight:700; font-size:.82rem;
-  letter-spacing:.22em; text-transform:uppercase;
-  color:var(--gold); margin:0 0 .7rem;
+/* ══════════════════════════════════════════════════════════════════════
+   ESCRITORIO — el canalón crece y aparece la asimetría
+   ══════════════════════════════════════════════════════════════════════ */
+@media (min-width:900px){
+  :root{ --canal:72px; --borde:8.5% }
+
+  body{ font-size:17.5px }
+
+  .titulo-seccion{ font-size:60px }
+  .tapa__lema{ font-size:30px }
+  .tapa__cuerpo{ display:flex; gap:var(--e6); align-items:flex-start }
+  .tapa__lamina{ flex:1 1 58% }
+  .tapa__texto{ flex:1 1 42% }
+
+  .indice a{ font-size:28px }
+
+  .vara__caja{ height:260px }
+  .vara__cifra b{ font-size:88px }
+
+  .lote__hoja h3{ font-size:48px }
+  /* Dos columnas con flex y no con grid+minmax: minmax() es la firma de la
+     grilla de tarjetas auto-fit y no entra en esta hoja ni siquiera cuando el
+     uso sería legítimo. La regla es absoluta a propósito. */
+  .lote__hoja{ display:flex; gap:var(--e6); align-items:flex-start }
+  .lote__foto{ margin:0; flex:0 0 42% }
+  .lote__hoja > div:last-child{ flex:1 1 auto; min-width:0 }
+
+  /* El Haras sangra hasta el borde izquierdo del viewport: asimetría real. */
+  .haras{ display:flex; gap:var(--e6); align-items:flex-start }
+  .haras__foto{ flex:0 0 46%; margin:0; margin-left:calc(var(--borde) * -1) }
+  .haras__txt{ flex:1 1 auto; padding-top:var(--e4) }
+
+  .repro__cuerpo{ display:flex; gap:var(--e6); align-items:flex-start }
+  .repro__cuerpo > *{ flex:1 1 0 }
+
+  .remate__dia{ font-size:120px }
+
+  .nov{ display:flex; gap:var(--e5); padding-left:0 }
+  .nov__col{ flex:0 0 72px }
+  .nov__cuerpo{ flex:1 1 auto; max-width:66ch }
+  .nov--ultima::before{ left:calc(var(--e5) * -1) }
 }
 
-/* Fondo propio, para que se lea como sección destacada y no como una más.
-   Es el mismo azul de la casa pero con el brillo dorado entrando por la
-   izquierda: distinto del remate, que lo tiene arriba a la derecha. */
-.sec--dark.repro, .repro{
-  background:
-    radial-gradient(70% 90% at 12% 10%, rgba(var(--acento-rgb),.15), transparent 62%),
-    linear-gradient(200deg,#12203f,#0a1122 68%);
-  border-block:1px solid var(--line);
-}
-.repro__head h2{ font-size:clamp(2.2rem,5.6vw,3.6rem) }
-
-.repro__grid{
-  display:grid; gap:clamp(1.4rem,3vw,2.4rem);
-  grid-template-columns:minmax(280px,.85fr) 1.15fr;
-  align-items:start;
-}
-@media (max-width:900px){ .repro__grid{ grid-template-columns:1fr } }
-
-/* La tarjeta de la veterinaria: borde dorado y fondo propio. Es el ancla
-   visual de la sección y de donde sale la consulta. */
-.repro__firma{
-  background:linear-gradient(170deg, rgba(var(--acento-rgb),.09), rgba(10,17,34,.55));
-  border:1px solid var(--gold-dim);
-  padding:clamp(1.6rem,3vw,2.2rem);
-  display:flex; flex-direction:column; gap:1.5rem;
-}
-.repro__cifra{ margin:0; display:flex; flex-direction:column; gap:.25rem }
-.repro__cifra b{
-  font-family:var(--display); font-weight:400;
-  font-size:clamp(3.4rem,8vw,5rem); line-height:.85;
-  color:var(--gold); letter-spacing:.01em;
-}
-.repro__cifra span{
-  font-family:var(--cond); font-weight:700; font-size:.9rem;
-  letter-spacing:.15em; text-transform:uppercase; color:var(--gold-2);
-}
-
-.repro__vetbox{ padding-top:1.4rem; border-top:1px solid rgba(var(--acento-rgb),.28) }
-
-/* El retrato de quien está a cargo. Cuadrado y recortado al centro, para que
-   cualquier foto que suban desde el panel entre igual. */
-.repro__retrato{
-  margin:0 0 1rem; width:96px; height:96px; overflow:hidden;
-  border-radius:50%; border:2px solid var(--gold-dim);
-}
-.repro__retrato img{
-  width:100%; height:100%; object-fit:cover;
-  object-position:var(--pos, 50% 35%);   /* por defecto un poco arriba: son caras */
-  display:block;
-}
-
-/* La tira de fotos del trabajo. Con separación en vez de la grilla de líneas
-   de 1px: como la cantidad de fotos la decide el panel, la última fila casi
-   nunca queda completa, y con líneas el hueco se ve como un bloque macizo.
-   Así, sobra espacio y no se nota. Es el mismo lenguaje que la galería. */
-.repro__fotos{
-  margin-top:clamp(1.4rem,3vw,2.2rem);
-  display:grid; gap:12px;
-  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-}
-.repro__fotos figure{
-  margin:0; position:relative; overflow:hidden;
-  border:1px solid var(--line-2); border-radius:var(--r);
-  background:var(--card-2);
-}
-.repro__fotos img{
-  display:block; width:100%; aspect-ratio:4/3;
-  object-fit:cover; object-position:var(--pos, 50% 50%);
-}
-.repro__fotos figcaption{
-  position:absolute; inset:auto 0 0; padding:1.4rem .9rem .7rem;
-  background:linear-gradient(transparent, rgba(6,10,22,.88));
-  font-family:var(--cond); font-weight:600; font-size:.88rem;
-  letter-spacing:.06em; color:#f2f5fa;
-}
-.repro__rol{
-  font-family:var(--cond); font-weight:700; font-size:.8rem;
-  letter-spacing:.18em; text-transform:uppercase;
-  color:var(--muted); margin:0 0 .35rem;
-}
-.repro__vet{
-  font-family:var(--display); font-weight:400;
-  font-size:clamp(1.5rem,3vw,2rem); line-height:1.1;
-  color:var(--cream); margin:0;
-}
-
-/* El contacto propio del centro */
-.repro__cta{ display:grid }
-
-/* Las dos listas, al lado de la tarjeta */
-.repro__cols{
-  display:grid; gap:1px; background:var(--line-2);
-  border:1px solid var(--line-2);
-  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
-}
-.repro__col{ background:var(--card); padding:1.9rem 1.6rem }
-
-/* Dorado claro, no el apagado: sobre la tarjeta el apagado daba 3,64:1 y el
-   mínimo legible es 4,5. */
-.repro__h{
-  font-family:var(--cond); font-weight:700; font-size:.84rem;
-  letter-spacing:.18em; text-transform:uppercase;
-  color:var(--gold); margin:0 0 1.2rem;
-  padding-bottom:.9rem; border-bottom:1px solid var(--line-2);
-}
-
-/* Mismo guion dorado que la lista de servicios: es la misma familia de cosas */
-.repro__lista{ list-style:none; margin:0; padding:0; display:grid; gap:.7rem }
-.repro__lista li{
-  position:relative; padding-left:1.35rem;
-  font-size:.96rem; font-weight:500; color:var(--body); line-height:1.45;
-}
-.repro__lista li::before{
-  content:'—'; position:absolute; left:0; color:var(--gold-dim);
-}
-
-.repro__recursos{ margin:0; display:grid; gap:1.15rem }
-.repro__recursos dt{
-  font-family:var(--cond); font-weight:700; font-size:1rem;
-  letter-spacing:.06em; color:var(--cream); margin-bottom:.2rem;
-}
-.repro__recursos dd{
-  margin:0; font-size:.93rem; font-weight:500; color:var(--muted); line-height:1.5;
-}
-
-/* En celular las etiquetas en mayúscula quedaban en 12,8px, por debajo de lo
-   que usa el resto del sitio. Se suben junto con el cuerpo. */
-/* En el celular, apiladas, siete fotos son casi dos mil píxeles de scroll en
-   el medio de la página. Se pasan a una tira que se desliza con el dedo: una
-   sola fila, las fotos siguen grandes y se ve que hay más a la derecha. */
-@media (max-width:760px){
-  .repro__fotos{
-    grid-auto-flow:column; grid-template-columns:none;
-    grid-auto-columns:78%;
-    overflow-x:auto; scroll-snap-type:x mandatory;
-    padding-bottom:.5rem;                 /* aire para la barra de scroll */
-    scrollbar-width:thin;
-  }
-  .repro__fotos figure{ scroll-snap-align:center }
-}
-
-@media (max-width:640px){
-  .repro__firma{ padding:1.5rem 1.25rem }
-  .repro__col{ padding:1.6rem 1.25rem }
-  .repro__lista li{ font-size:1.02rem }
-  .repro__recursos dd{ font-size:1rem }
-  .repro__recursos dt{ font-size:1.05rem }
-  .eyebrow{ font-size:.92rem }
-  .repro__rol{ font-size:.88rem }
-  .repro__h{ font-size:.92rem }
-  .repro__cifra span{ font-size:.95rem }
+@media (min-width:1180px){
+  .tapa__nombre{ margin-left:calc(var(--canal) * -1) }
 }
 
 
-/* ══════════════════ WHATSAPP FLOTANTE ══════════════════ */
-.wa{
-  /* se apoya arriba de la cinta, no encima */
-  position:fixed; right:1.4rem; bottom:calc(26px + 1rem); z-index:96;
-  width:56px; height:56px; display:grid; place-items:center;
-  background:#1f9d55; border-radius:50%;
-  box-shadow:0 10px 30px rgba(0,0,0,.45);
-  transition:opacity .3s var(--ease), transform .3s var(--ease);
-  opacity:0; transform:scale(.6); pointer-events:none;
-}
-.wa.show{ opacity:1; transform:none; pointer-events:auto }
-.wa:hover{ transform:scale(1.08) }
-.wa svg{ width:30px; height:30px; fill:#fff }
-@media (max-width:640px){ .wa{ right:1rem; bottom:calc(24px + .8rem); width:52px; height:52px } }
+/* ══════════════════════════════════════════════════════════════════════
+   CELULAR — la vara se para, el palmarés se apila 2-en-1
+   ══════════════════════════════════════════════════════════════════════ */
+@media (max-width:700px){
+  /* La vara rota a vertical: 120 arriba, 80 abajo. Es la orientación de la
+     tabla de Sorocaba original, así que no se pierde nada. */
+  .vara__caja{ height:300px; width:56px; margin-inline:auto }
+  .vara__base{ left:50%; right:auto; top:0; bottom:0; height:auto; width:1.5px; margin-left:-.75px }
+  .vara__patron{ left:0; right:0; top:50%; width:auto; height:20px; margin:-10px 0 0 }
+  .vara__pique{ left:50%; top:auto; width:8px; height:1px; margin-left:.75px }
+  .vara__pique--largo{ width:16px; height:1px }
+  .vara__rot{ left:calc(50% + 22px); top:auto; transform:translateY(-50%) }
+  .vara__banda{ display:none }
+  .vara__cifra,.vara__hierros{ position:static; transform:none; left:auto }
+  .vara__cifra{ justify-content:center; margin-bottom:var(--e4) }
+  .vara__hierros{ margin-top:var(--e5) }
 
-body.locked{ overflow:hidden }
+  /* Palmarés apilado 2-en-1: los 16 caballos quedan, sin scroll horizontal. */
+  .carta thead{ position:absolute; left:-9999px }
+  .carta tbody td{ display:block; border:0; padding:0 }
+  .carta tbody tr{ display:block; padding:var(--e3) 0; border-bottom:1px solid var(--capilar) }
+  .carta tbody td:first-child{ padding-left:0; display:inline }
+  .carta .num{ text-align:left; display:inline; color:var(--txt-2) }
+  .carta .num::before{ content:' · ' }
+  .carta .padres{ display:block; margin-top:var(--e1) }
+  .carta .logro{ text-align:left; display:block; margin-top:var(--e1); font-weight:600 }
+  .carta .padres:empty,.carta .logro:empty,.carta .num:empty{ display:none }
 
+  .remate__cab{ flex-wrap:wrap }
+  .remate__cab h2{ order:3; flex:1 0 100%; text-align:left; margin-top:var(--e3) }
 
-/* ══════════════════ AJUSTES PARA CELULAR ══════════════════
-   La escala tipográfica está pensada para monitor. En un celular esos
-   mismos tamaños se leen chicos, así que acá se agrandan los textos
-   secundarios y se agrandan las zonas donde hay que tocar.
-   Va al final a propósito: tiene que ganarle a las reglas de arriba. */
-@media (max-width:640px){
+  .condiciones td{ display:block; border:0 }
+  .condiciones tr{ display:block; border:1px solid var(--capilar-m); margin-bottom:var(--e2) }
+  .condiciones td:first-child{ width:auto; text-align:left; padding-bottom:0 }
 
-  /* --- textos que quedaban chicos --- */
-  .pad__lead, .svc p, .new p{ font-size:1rem }
-  .horse__list li, .svc li, .auction__terms li{ font-size:.95rem }
-  .sechead__sub{ font-size:1rem }
-  .horse__title{ font-size:1rem }
-  .pad__idx, .new__date, .card__rol, .split__img figcaption,
-  .countdown__grid span, .stat span{ font-size:.86rem }
-  .pad__ped, .horse__ped{ font-size:.9rem }
-  .auction__facts dt, .mtable dt{ font-size:.84rem }
-  .auction__facts dd, .mtable dd{ font-size:1rem }
-  .foot__nav a, .foot__brand span{ font-size:1rem }
-  .cinta__item{ font-size:.78rem }
-
-  /* --- zonas de toque: mínimo 44px de alto --- */
-  .btn{ font-size:1.02rem; padding:1rem 1.6rem }
-  .btn--sm{ padding:.85rem 1.3rem; font-size:.95rem }
-  .chip{ font-size:1rem; padding:.7rem 1.3rem }
-  .pad__more, .new a{ font-size:.95rem; padding:.55rem 0 }
-  .foot__nav a{ padding:.5rem 0 }
-  .card__tel{ font-size:1.3rem; padding:.4rem 0 }
-  .brand{ padding:.35rem 0 }
-  /* el crédito del pie era un enlace de 17px: imposible de acertar */
-  .foot__legal a{ display:inline-block; padding:.75rem 0 }
-
-  /* --- el formulario: 16px o iOS hace zoom al enfocar --- */
-  .form input, .form select, .form textarea{ font-size:16px }
-  .form label{ font-size:.9rem }
-
-  /* --- un poco más de aire entre secciones --- */
-  .sec{ padding:2.8rem 0 }
-  .horses, .padrillos, .news, .galeria{ gap:.9rem }
+  .anclas{ flex-direction:column; gap:0 }
 }

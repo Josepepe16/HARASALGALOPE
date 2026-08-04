@@ -1,648 +1,350 @@
 /* ==========================================================================
-   HARAS AL GALOPE — lógica del sitio
-   Dibuja la página con el contenido que carga contenido.js. No hace falta
+   HARAS AL GALOPE — render
+
+   Dibuja el catálogo con el contenido que carga contenido.js. No hace falta
    tocar este archivo para actualizar textos ni fotos: eso se hace desde el
-   panel (/admin) o editando los archivos de la carpeta content/.
+   panel (/admin) o editando los archivos de content/.
+
+   DOS REGLAS QUE ATRAVIESAN TODO EL ARCHIVO:
+
+   1. Celda sin dato = celda VACÍA. Nunca un guion, nunca "—", nunca
+      "a confirmar". Es la convención del programa del hipódromo, y además
+      convierte el agujero de datos en información honesta: 3 de los 6
+      padrillos no tienen índice registrado y eso se ve.
+
+   2. Cada sección se construye DISTINTO. No hay un componente de tarjeta ni
+      un encabezado reutilizable. Si aparece la tentación de factorizar dos
+      secciones en una función común, es justamente lo que hay que evitar:
+      la repetición estructural es lo que hace que un sitio se lea como
+      plantilla.
    ========================================================================== */
 window.iniciarSitio = function () {
   'use strict';
 
   const $  = (s, c = document) => c.querySelector(s);
   const $$ = (s, c = document) => [...c.querySelectorAll(s)];
-  const esc = (s) => String(s).replace(/[&<>"']/g, (m) =>
+  const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (m) =>
     ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
-  const horse = '<svg aria-hidden="true"><use href="#i-shoe"/></svg>';
 
-  /* Una ruta relativa metida en una variable CSS la resuelve el navegador
-     contra la HOJA DE ESTILO que la usa, no contra la página. Como --foto se
-     escribe acá pero se usa en style.css, quedaba assets/css/assets/img/...
-     Pasarla a absoluta la vuelve inmune a quién la consuma. */
-  const urlAbs = (u) => (u ? new URL(u, document.baseURI).href : '');
+  const hay = (v) => v != null && String(v).trim() !== '';
 
-
-  /* ─────────────── Navegación ─────────────── */
-  const nav = $('#nav'), burger = $('#burger'), links = $('#navLinks');
-
-  const onScroll = () => nav.classList.toggle('stuck', window.scrollY > 40);
-  addEventListener('scroll', onScroll, { passive: true });
-  onScroll();
-
-  burger.addEventListener('click', () => {
-    const open = links.classList.toggle('open');
-    burger.setAttribute('aria-expanded', String(open));
-  });
-  links.addEventListener('click', (e) => {
-    if (e.target.closest('a')) {
-      links.classList.remove('open');
-      burger.setAttribute('aria-expanded', 'false');
-    }
-  });
-
-
-  /* ─────────────── Aparición al hacer scroll ───────────────
-     A propósito NO se usa IntersectionObserver: el navegador lo throttlea
-     cuando la pestaña no está en primer plano y el contenido puede quedar
-     invisible para siempre. Con scroll + requestAnimationFrame eso no puede
-     pasar: si el elemento está en pantalla, se muestra. */
-  let pendientes = [];
-  let barridoPedido = false;
-
-  const enPantalla = (el) => {
-    const r = el.getBoundingClientRect();
-    return r.top < innerHeight - 40 && r.bottom > 0;
-  };
-
-  const contar = (b) => {
-    const fin = +b.dataset.count;
-    let n = 0;
-    const paso = () => {
-      n += Math.max(1, Math.ceil(fin / 24));
-      if (n >= fin) { b.textContent = fin; return; }
-      b.textContent = n;
-      requestAnimationFrame(paso);
-    };
-    // Si el rAF se pausa a mitad, el número quedaría cortado. Esto lo asegura.
-    setTimeout(() => { b.textContent = fin; }, 1500);
-    paso();
-  };
-
-  const barrer = () => {
-    barridoPedido = false;
-    pendientes = pendientes.filter((el) => {
-      if (!enPantalla(el)) return true;
-      el.classList.add('in');
-      el.querySelectorAll('[data-count]').forEach(contar);
-      return false;
-    });
-  };
-
-  // Throttle por tiempo, no por requestAnimationFrame: el rAF se pausa del
-  // todo cuando la pestaña no está dibujando y el contenido quedaría oculto.
-  let ultimoBarrido = 0;
-  const pedirBarrido = () => {
-    const ahora = Date.now();
-    if (ahora - ultimoBarrido >= 100) { ultimoBarrido = ahora; barrer(); return; }
-    if (barridoPedido) return;
-    barridoPedido = true;
-    setTimeout(() => { ultimoBarrido = Date.now(); barrer(); }, 100);
-  };
-
-  addEventListener('scroll', pedirBarrido, { passive: true });
-  addEventListener('resize', pedirBarrido);
-
-  const watch = (root = document) => {
-    $$('.reveal', root).forEach((el, i) => {
-      // Escalonado corto: con retardos largos la página se siente lenta.
-      el.style.transitionDelay = (Math.min(i, 3) * 28) + 'ms';
-      pendientes.push(el);
-    });
-    barrer();
-    // Reintentos por si el alto cambia al terminar de cargar fuentes o fotos.
-    setTimeout(barrer, 400);
-    setTimeout(barrer, 1500);
-  };
-
-
-  /* ─────────────── Fotos reales con respaldo ───────────────
-     Si existe el archivo indicado en data-photo lo usa; si no,
-     queda el marco con la silueta. Así el sitio nunca se ve roto. */
-  function loadPhotos(root = document) {
-    $$('[data-photo]', root).forEach((box) => {
-      const src = box.dataset.photo;
-      if (!src) return;
-      const img = new Image();
-      img.onload = () => {
-        img.alt = box.dataset.alt || '';
-        // medidas explícitas: el navegador reserva el espacio y no salta el layout
-        img.width = img.naturalWidth; img.height = img.naturalHeight;
-        img.decoding = 'async';
-        box.appendChild(img);
-      };
-      img.src = src;
-    });
-  }
-
-
-  /* El tema que se eligió en el panel. Sólo cambia el acento; el azul del
-     logo queda igual. Si viene un nombre que no existe, se ignora y queda
-     el dorado, que es el que está escrito en el CSS. */
-  (function tema() {
-    const t = String(SITE.tema || '').toLowerCase();
-    const raiz = document.documentElement;
-
-    if (t === 'personalizado' && /^#[0-9a-f]{6}$/i.test(SITE.temaColor || '')) {
-      raiz.dataset.tema = 'personalizado';
-      paletaPropia(SITE.temaColor);
-      return;
-    }
-    if (['verde', 'cobre', 'plata'].indexOf(t) >= 0) raiz.dataset.tema = t;
-    else delete raiz.dataset.tema;
-  })();
-
-  /* ─────────────── Tema propio ───────────────
-     Del color que se elige en el panel se toma sólo el TONO. Las cinco
-     luminosidades que hacen falta no se copian de ese color: se recalculan
-     para que igualen el brillo del dorado original, que ya está verificado.
-
-     Es la parte importante. Si se usara el color tal cual, un amarillo claro
-     sobre papel o un azul oscuro sobre el fondo negro dejarían de leerse. Así
-     el dueño elige cualquier color y el contraste se sostiene solo. */
-  function paletaPropia(hex) {
-    const aRgb = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
-    const lum = (c) => {
-      const a = c.map((v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); });
-      return 0.2126 * a[0] + 0.7152 * a[1] + 0.0722 * a[2];
-    };
-    const aHsl = ([r, g, b]) => {
-      r /= 255; g /= 255; b /= 255;
-      const mx = Math.max(r, g, b), mn = Math.min(r, g, b), l = (mx + mn) / 2;
-      if (mx === mn) return [0, 0, l];
-      const d = mx - mn;
-      const s = d / (1 - Math.abs(2 * l - 1));
-      let h;
-      if (mx === r) h = ((g - b) / d) % 6;
-      else if (mx === g) h = (b - r) / d + 2;
-      else h = (r - g) / d + 4;
-      return [(h * 60 + 360) % 360, s, l];
-    };
-    const aRgbDesdeHsl = (h, s, l) => {
-      const c = (1 - Math.abs(2 * l - 1)) * s, x = c * (1 - Math.abs(((h / 60) % 2) - 1)), m = l - c / 2;
-      const t = h < 60 ? [c, x, 0] : h < 120 ? [x, c, 0] : h < 180 ? [0, c, x]
-              : h < 240 ? [0, x, c] : h < 300 ? [x, 0, c] : [c, 0, x];
-      return t.map((v) => Math.round((v + m) * 255));
-    };
-    const aHex = (c) => '#' + c.map((v) => v.toString(16).padStart(2, '0')).join('');
-
-    // la luminosidad de ese tono que iguala el brillo pedido
-    const conBrillo = (h, s, objetivo) => {
-      let mejor = null, dif = 9;
-      for (let l = 0.02; l < 0.99; l += 0.004) {
-        const c = aRgbDesdeHsl(h, s, l);
-        const d = Math.abs(lum(c) - objetivo);
-        if (d < dif) { dif = d; mejor = c; }
-      }
-      return mejor;
-    };
-
-    const [h, s] = aHsl(aRgb(hex));
-    const sat = Math.max(0.12, Math.min(0.85, s));   // ni gris total ni flúor
-
-    // los brillos del dorado original, ya verificados contra los dos fondos
-    const oscuro   = conBrillo(h, sat, 0.452);
-    const claro    = conBrillo(h, sat * 0.75, 0.767);
-    const apagado  = conBrillo(h, sat * 0.70, 0.171);
-    const papel    = conBrillo(h, sat, 0.111);
-    const papel2   = conBrillo(h, sat, 0.085);
-
-    const hoja = document.createElement('style');
-    hoja.id = 'tema-propio';
-    hoja.textContent =
-      ':root[data-tema="personalizado"]{'
-      + '--acento-rgb:' + oscuro.join(',') + ';'
-      + '--gold:' + aHex(oscuro) + ';'
-      + '--gold-2:' + aHex(claro) + ';'
-      + '--gold-dim:' + aHex(apagado) + '}'
-      + ':root[data-tema="personalizado"] .sec--light{'
-      + '--gold:' + aHex(papel) + ';'
-      + '--gold-2:' + aHex(papel2) + '}';
-    document.head.appendChild(hoja);
-  }
-
-
-  /* ─────────────── Imágenes que manda el panel ───────────────
-     Logo, foto de portada y foto de "El Haras". Si el panel no trae alguna,
-     se deja lo que ya estaba en el HTML y no se rompe nada. */
-  (function imagenesDelPanel() {
-    if (SITE.logo) $$('.brand__logo, .foot__logo').forEach((i) => { i.src = SITE.logo; });
-    if (SITE.fotoPortada) {
-      const p = $('.hero__photo');
-      if (p) p.style.backgroundImage = `url("${SITE.fotoPortada}")`;
-    }
-    if (SITE.fotoHaras) {
-      const h = $('.photo--square');
-      if (h) {
-        h.dataset.photo = SITE.fotoHaras;
-        // El marco es cuadrado: si la foto es vertical hay que decidir qué
-        // parte se ve. Sin esto, una foto nueva puede quedar decapitada.
-        if (SITE.fotoHarasPos) h.style.setProperty('--pos', SITE.fotoHarasPos);
-      }
-    }
-  })();
-
-
-  /* ─────────────── Cuenta regresiva ─────────────── */
-  (function countdown() {
-    const box = $('#countdown');
-    const target = new Date(REMATE.fechaISO).getTime();
-    if (isNaN(target)) return;
-
-    const pad = (n) => String(n).padStart(2, '0');
-    const cells = { d: $('#cdD'), h: $('#cdH'), m: $('#cdM'), s: $('#cdS') };
-
-    const tick = () => {
-      const left = target - Date.now();
-      if (left <= 0) {
-        box.innerHTML = '<p class="countdown__lbl">El remate ya comenzó</p>' +
-          '<p style="margin:0;font-family:var(--serif);font-size:1.4rem">¡Seguilo en vivo!</p>';
-        clearInterval(timer);
-        return;
-      }
-      const s = Math.floor(left / 1000);
-      cells.d.textContent = Math.floor(s / 86400);
-      cells.h.textContent = pad(Math.floor(s / 3600) % 24);
-      cells.m.textContent = pad(Math.floor(s / 60) % 60);
-      cells.s.textContent = pad(s % 60);
-    };
-
-    box.hidden = false;
-    tick();
-    const timer = setInterval(tick, 1000);
-  })();
-
-
-
-  /* ─────────────── Padrillos ─────────────── */
-  $('#padrillosGrid').innerHTML = PADRILLOS.map((p, i) => `
-    <button class="pad${p.destacado ? ' pad--star' : ''}" data-pad="${i}" type="button">
-      <span class="pad__img" data-photo="${esc(p.foto || '')}"
-            ${p.foto ? `style="--foto:url('${esc(urlAbs(p.foto))}')"` : ''}>
-        ${horse}
-        ${p.destacado ? `<span class="pad__star">${esc(p.etiqueta || 'Destacado')}</span>` : ''}
-      </span>
-      <span class="pad__body">
-        <span class="pad__name">${esc(p.nombre)}</span>
-        <span class="pad__idx">${esc(p.indice || p.titular)}</span>
-        <span class="pad__lead">${esc(p.resumen)}</span>
-        ${p.padre ? `<span class="pad__ped"><b>${esc(p.padre)}</b> × ${esc(p.madre || '—')}</span>` : ''}
-        <span class="pad__more">Ver ficha</span>
-      </span>
-    </button>`).join('');
-
-
-  /* ─────────────── Modal de padrillo ─────────────── */
-  const modal = $('#modal'), mbody = $('#modalBody');
-  let lastFocus = null;
-
-  function openPad(i) {
-    const p = PADRILLOS[i];
-    mbody.innerHTML = `
-      <div class="mhead" data-photo="${esc(p.foto || '')}"
-           ${p.foto ? `style="--foto:url('${esc(urlAbs(p.foto))}')"` : ''}>${horse}</div>
-      <div class="mbody">
-        <h3 id="modalTitle">${esc(p.nombre)}</h3>
-        <p class="pad__idx">${esc(p.indice || p.titular || '')}</p>
-        <p class="lead">${esc(p.resumen)}</p>
-        <dl class="mtable">
-          ${p.ficha.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join('')}
-        </dl>
-        ${p.hijos && p.hijos.length ? `
-          <div class="mkids">
-            <h4>Hijos destacados</h4>
-            <ul>${p.hijos.map((h) => `<li>${esc(h)}</li>`).join('')}</ul>
-          </div>` : ''}
-        <a class="btn btn--gold btn--full" href="${waLink('Hola, quiero consultar por el servicio de ' + p.nombre + '.', 'PAD-' + p.nombre)}"
-           target="_blank" rel="noopener">Consultar servicio por WhatsApp</a>
-      </div>`;
-
-    loadPhotos(mbody);
-    lastFocus = document.activeElement;
-    modal.hidden = false;
-    document.body.classList.add('locked');
-    $('.modal__x').focus();
-  }
-
-  function closePad() {
-    modal.hidden = true;
-    document.body.classList.remove('locked');
-    if (lastFocus) lastFocus.focus();
-  }
-
-  /* Visor de la galería: reusa el mismo modal. */
-  function openFoto(i) {
-    const f = GALERIA[i];
-    mbody.innerHTML = `
-      <figure class="visor">
-        <img src="${esc(f.src)}" alt="${esc(f.alt)}">
-        <figcaption id="modalTitle">${esc(f.alt)}</figcaption>
-      </figure>`;
-    lastFocus = document.activeElement;
-    modal.hidden = false;
-    document.body.classList.add('locked');
-    $('.modal__x').focus();
-  }
-
-  document.addEventListener('click', (e) => {
-    const card = e.target.closest('[data-pad]');
-    if (card) return openPad(+card.dataset.pad);
-    const foto = e.target.closest('[data-foto]');
-    if (foto) return openFoto(+foto.dataset.foto);
-    if (e.target.closest('[data-close]')) closePad();
-  });
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && !modal.hidden) closePad();
-  });
-
-
-  /* ─────────────── Caballos + filtros ─────────────── */
-  const LABEL = { carrera: 'Carrera', tambores: 'Tambores', madres: 'Madres' };
-
-  $('#horsesGrid').innerHTML = CABALLOS.map((h) => {
-    const ped = [
-      h.padre ? `<b>${esc(h.padre)}</b>` : '',
-      h.madre ? esc(h.madre) : ''
-    ].filter(Boolean).join(' × ');
-
-    return `
-      <article class="horse" data-cat="${esc(h.cat)}">
-        <div class="horse__top">
-          <h3 class="horse__name">${esc(h.nombre)}</h3>
-          <span class="horse__tag" data-c="${esc(h.cat)}">${esc(LABEL[h.cat] || h.cat)}</span>
-        </div>
-        ${h.titulo ? `<p class="horse__title">${esc(h.titulo)}</p>` : ''}
-        <p class="horse__ped">
-          ${[h.sexo, h.anio].filter(Boolean).join(' · ')}${ped ? '<br>' + ped : ''}
-        </p>
-        <ul class="horse__list">${h.logros.map((l) => `<li>${esc(l)}</li>`).join('')}</ul>
-      </article>`;
-  }).join('');
-
-  $('#filters').addEventListener('click', (e) => {
-    const chip = e.target.closest('.chip');
-    if (!chip) return;
-    $$('.chip').forEach((c) => {
-      const on = c === chip;
-      c.classList.toggle('is-on', on);
-      c.setAttribute('aria-selected', String(on));
-    });
-    const cat = chip.dataset.cat;
-    $$('.horse').forEach((card) => {
-      card.classList.toggle('hide', cat !== 'todos' && card.dataset.cat !== cat);
-    });
-  });
-
-
-  /* ─────────────── Cinta de novedades ───────────────
-     Para que el bucle no tenga saltos, la lista se escribe DOS veces y el
-     riel se desplaza exactamente la mitad: al terminar, la segunda copia
-     está justo donde arrancó la primera. */
-  (function cinta() {
-    const banda = $('#cinta'), riel = $('#cintaRiel');
-    if (!banda || typeof CINTA === 'undefined' || !CINTA.length) return;
-
-    const lista = CINTA.map((t) =>
-      `<span class="cinta__item">${esc(t)}</span>`).join('');
-    banda.hidden = false;
-
-    // El color lo elige el panel. Si no viene, queda el verde del afiche de
-    // Favorito Verde, que es el que está puesto en el CSS.
-    if (typeof CINTA_COLOR === 'string' && /^#[0-9a-f]{3,8}$/i.test(CINTA_COLOR)) {
-      banda.style.setProperty('--verde', CINTA_COLOR);
-    }
-
-    // Si el sistema pide menos movimiento, no se desliza: se van turnando
-    // los mensajes en el lugar. Así la cinta no queda muerta.
-    const quieto = matchMedia('(prefers-reduced-motion: reduce)');
-    let turnos = null;
-
-    const modoQuieto = () => {
-      riel.innerHTML = lista;
-      const items = $$('.cinta__item', riel);
-      let i = 0;
-      const mostrar = () => {
-        items.forEach((el, n) => el.classList.toggle('turno', n === i));
-        i = (i + 1) % items.length;
-      };
-      mostrar();
-      clearInterval(turnos);
-      if (items.length > 1) turnos = setInterval(mostrar, 5000);
-    };
-
-    const armar = () => {
-      if (quieto.matches) { modoQuieto(); return; }
-      clearInterval(turnos);
-
-      // Cuánto mide la lista una sola vez.
-      riel.innerHTML = lista;
-      const unaVuelta = riel.scrollWidth;
-      if (!unaVuelta) return;
-
-      // Con pocas noticias la lista puede ser más angosta que la pantalla, y
-      // entonces el bucle deja un hueco vacío. Se repite hasta cubrirla.
-      const copias = Math.max(1, Math.ceil(innerWidth / unaVuelta) + 1);
-      const grupo = lista.repeat(copias);
-
-      // El grupo va dos veces: al terminar de correr uno, el otro está
-      // exactamente donde arrancó el primero. Por eso no se ve el salto.
-      riel.innerHTML = grupo + grupo;
-      const recorrido = riel.scrollWidth / 2;
-
-      // 95 px por segundo: el paso de un zócalo de informativo. Más lento que
-      // esto, en una pantalla de celular, parece que la cinta está quieta.
-      riel.style.setProperty('--recorrido', recorrido + 'px');
-      riel.style.setProperty('--duracion', Math.max(8, Math.round(recorrido / 95)) + 's');
-    };
-
-    armar();
-    let t;
-    addEventListener('resize', () => { clearTimeout(t); t = setTimeout(armar, 200); });
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(armar);
-    // si el visitante cambia la preferencia sin recargar, la cinta se adapta
-    quieto.addEventListener('change', armar);
-
-    // Deja lugar para que la cinta no tape el final de la página.
-    document.body.style.paddingBottom = banda.offsetHeight + 'px';
-  })();
-
-
-  /* ─────────────── Galería ───────────────
-     Sólo se muestran las primeras (GALERIA_VISIBLES); el resto entra con el
-     botón. Las ocultas igual se generan, así el botón no tiene que esperar a
-     que carguen: aparecen de inmediato. */
-  const VISIBLES = typeof GALERIA_VISIBLES === 'number' ? GALERIA_VISIBLES : GALERIA.length;
-
-  $('#galeriaGrid').innerHTML = GALERIA.map((f, i) => `
-    <button class="foto${i >= VISIBLES ? ' foto--oculta' : ''}" data-foto="${i}" type="button"
-            aria-label="Ampliar: ${esc(f.alt)}">
-      <img src="${esc(f.src)}" alt="${esc(f.alt)}" loading="lazy"
-           width="880" height="880" decoding="async"
-           style="object-position:${esc(f.pos || '50% 50%')}">
-      <span class="foto__lupa" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4.2-4.2"/></svg></span>
-    </button>`).join('');
-
-  const ocultas = GALERIA.length - VISIBLES;
-  const masBtn = $('#galeriaMas');
-  if (ocultas > 0) {
-    masBtn.hidden = false;
-    masBtn.textContent = `Ver ${ocultas} fotos más`;
-    masBtn.addEventListener('click', () => {
-      $$('.foto--oculta').forEach((el) => el.classList.remove('foto--oculta'));
-      masBtn.hidden = true;
-      // el foco salta a la primera foto que acaba de aparecer, para no perderlo
-      const primera = $$('.foto')[VISIBLES];
-      if (primera) primera.focus({ preventScroll: true });
-    });
-  }
-
-
-  /* ─────────────── Servicios ─────────────── */
-  $('#servicesGrid').innerHTML = SERVICIOS.map((s) => `
-    <article class="svc">
-      <svg class="svc__ico" aria-hidden="true"><use href="#i-${esc(s.icono)}"/></svg>
-      <h3>${esc(s.titulo)}</h3>
-      <p>${esc(s.texto)}</p>
-      ${s.detalles && s.detalles.length
-        ? `<ul>${s.detalles.map((d) => `<li>${esc(d)}</li>`).join('')}</ul>` : ''}
-    </article>`).join('');
-
-
-  /* ─────────────── Remate ─────────────── */
-  $('#aucTitle').textContent = REMATE.titulo;
-  $('#aucSub').textContent = REMATE.subtitulo;
-  $('#aucLink').href = REMATE.link;
-
-  $('#aucFacts').innerHTML = [
-    ['Fecha',     REMATE.fechaTexto],
-    ['Hora',      REMATE.hora],
-    ['Modalidad', REMATE.modalidad],
-    ['Lugar',     REMATE.lugar],
-    ['Rematador', REMATE.rematador],
-    ['Transmite', REMATE.transmite.join(' · ')],
-    ['Invitados', (REMATE.invitados || []).join(' · ')],
-    ['Premios',   REMATE.premio]
-  ].filter(([, v]) => v).map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join('');
-
-  $('#aucTerms').innerHTML = REMATE.condiciones.map((c) => `<li>${esc(c)}</li>`).join('');
-
-
-  /* ─────────────── Novedades ─────────────── */
-  const MESES = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'set', 'oct', 'nov', 'dic'];
-  const fecha = (iso) => {
-    const [y, m, d] = iso.split('-').map(Number);
-    return `${d} ${MESES[m - 1]} ${y}`;
-  };
-
-  $('#newsGrid').innerHTML = NOVEDADES.map((n) => `
-    <article class="new">
-      <div class="new__meta">
-        <span class="new__tag">${esc(n.etiqueta)}</span>
-        <time class="new__date" datetime="${esc(n.fecha)}">${esc(fecha(n.fecha))}</time>
-      </div>
-      <h3>${esc(n.titulo)}</h3>
-      <p>${esc(n.texto)}</p>
-      ${n.link ? `<a href="${esc(n.link)}" target="_blank" rel="noopener">${esc(n.linkTexto || 'Ver más')} →</a>` : ''}
-    </article>`).join('');
-
-
-  /* ─────────────── Contacto ───────────────
-     Cada mensaje termina con un código entre corchetes que dice de dónde
-     salió: [WEB-PAD-FAVORITO-VERDE], [WEB-REMATE], [WEB-FORMULARIO]…
-
-     Es la única forma de atribución que este sitio puede tener gratis y que
-     ningún bloqueador de publicidad puede romper: el dato viaja adentro del
-     propio mensaje, así que llega al teléfono aunque no haya ninguna
-     herramienta de medición instalada.
-
-     Va al final y entre corchetes a propósito: se lee como algo del sistema
-     y la gente no lo borra antes de enviar. */
-  // El rango de acentos se arma desde una cadena y no como caracteres sueltos
-  // en el archivo: escritos literalmente son invisibles y se rompen si alguna
-  // herramienta reguarda el archivo con otra codificación.
+  /* Cada mensaje de WhatsApp termina con un código entre corchetes que dice
+     de dónde salió. Es la única atribución gratis que ningún bloqueador puede
+     romper: viaja adentro del propio mensaje. */
   const ACENTOS = new RegExp('[\\u0300-\\u036f]', 'g');
-
   const codigo = (t) => '[WEB-' + String(t || 'SITIO')
-    .toUpperCase()
-    .normalize('NFD').replace(ACENTOS, '')
-    .replace(/[^A-Z0-9]+/g, '-').replace(/^-|-$/g, '')
-    .slice(0, 28) + ']';
+    .toUpperCase().normalize('NFD').replace(ACENTOS, '')
+    .replace(/[^A-Z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 28) + ']';
 
-  function waLink(msg, origen) {
-    const c = SITE.contactos[0];
-    const texto = msg + '\n\n' + codigo(origen);
-    return `https://wa.me/${c.intl}?text=${encodeURIComponent(texto)}`;
-  }
+  const wa = (msg, origen, intl) => {
+    const n = intl || (SITE.contactos[0] || {}).intl;
+    return 'https://wa.me/' + n + '?text=' + encodeURIComponent(msg + '\n\n' + codigo(origen));
+  };
 
-  $('#contactCards').innerHTML = SITE.contactos.map((c) => `
-    <div class="card">
-      <div>
-        <p class="card__name">${esc(c.nombre)}</p>
-        <span class="card__rol">${esc(c.rol)}</span>
-      </div>
-      <a class="card__tel" href="${waLink('Hola ' + SITE.nombre + ', quería hacer una consulta.', 'CONTACTO')}"
-         target="_blank" rel="noopener">
-        ${esc(c.tel)}
-      </a>
-    </div>`).join('');
 
-  /* ─────────────── Centro reproductivo ───────────────
-     Si en el panel se apaga la sección, o no hay contenido, no se dibuja
-     nada: la sección y su enlace del menú quedan ocultos. */
+  /* ═══ 1 · TAPA ═══════════════════════════════════════════════════════ */
+  (function tapa() {
+    $('#membreteSitio').textContent = SITE.ubicacion || '';
+    $('#tapaLema').textContent = SITE.lema || '';
+
+    const f = $('#tapaFoto');
+    if (SITE.fotoPortada) { f.src = SITE.fotoPortada; f.alt = 'Caballos del Haras Al Galope'; }
+    else f.remove();
+
+    if (SITE.logo) $$('.membrete__logo').forEach((i) => { i.src = SITE.logo; });
+
+    // Una sola cadena de condiciones, como el pie de la tapa de un catálogo.
+    const R = REMATE || {};
+    const partes = [R.titulo, R.modalidad, R.fechaTexto, R.hora, R.lugar].filter(hay);
+    $('#tapaCondiciones').innerHTML = partes.map((p, i) =>
+      i === 0 ? '<b>' + esc(p) + '</b>' : esc(p)).join(' · ');
+  })();
+
+
+  /* ═══ 2 · ÍNDICE ═════════════════════════════════════════════════════
+     Es toda la navegación del sitio: no hay barra fija ni hamburguesa.
+     Y es el ÚNICO lugar donde viven los números de recuento — que es donde
+     un catálogo los pone. */
+  (function indice() {
+    const R = REMATE || {}, P = REPRO || {};
+    const filas = [
+      ['Padrillos',      '#padrillos',     PADRILLOS.length],
+      ['El haras',       '#haras',         null],
+      ['Palmarés',       '#caballos',      CABALLOS.length],
+      ['Reproducción',   '#reproduccion',  (P.procedimientos || []).length],
+      ['Servicios',      '#servicios',     SERVICIOS.length],
+      ['El remate',      '#remate',        (R.condiciones || []).length],
+      ['Novedades',      '#novedades',     NOVEDADES.length],
+      ['Galería',        '#galeria',       GALERIA.length],
+      ['Contacto',       '#contacto',      null],
+    ].filter((f) => f[2] === null || f[2] > 0);
+
+    $('#indiceLista').innerHTML = filas.map(([n, href, c]) => `
+      <li><a href="${href}">
+        <span>${esc(n)}</span><span class="cond"></span>
+        ${c === null ? '' : `<span class="indice__n">${c}</span>`}
+      </a></li>`).join('');
+  })();
+
+
+  /* ═══ 3 · LOGROS ═════════════════════════════════════════════════════
+     Un párrafo justificado. Los números viven adentro de la oración, no en
+     una franja de cifras grandes con rótulo chiquito. */
+  (function logros() {
+    const R = REMATE || {}, P = REPRO || {};
+    const nRemate = (R.titulo || '').match(/\d+/);
+    const campeones = CABALLOS.filter((c) => hay(c.titulo)).slice(0, 2);
+
+    let t = `<b>${esc(SITE.nombre)}.</b> ${esc(SITE.ubicacion)}. `;
+    if (nRemate) t += `${esc(nRemate[0])} remates anuales`;
+    if (SITE.desde) t += ` desde ${esc(SITE.desde)}`;
+    t += `, ${PADRILLOS.length} padrillos en servicio`;
+    if (hay(P.cifra)) t += ` y ${esc(P.cifra)} ${esc(P.cifraTexto || 'yeguas por temporada')} en el centro reproductivo`;
+    t += '. ';
+    campeones.forEach((c) => { t += `<b>${esc(c.nombre)}</b>, ${esc(c.titulo)}. `; });
+
+    $('#logrosTexto').innerHTML = t.trim();
+  })();
+
+
+  /* ═══ 4 · LA VARA ════════════════════════════════════════════════════
+     La tabla de índice de velocidad convertida en vara de medir, con el
+     hierro del haras quemado sobre el índice de los padrillos.
+
+     Los piques se dibujan como <span> reales, uno por punto de índice: con
+     un gradiente repetido quedaría más corto de escribir, pero el gradiente
+     es justamente uno de los tics que hay que evitar, y además así cada
+     pique es un elemento inspeccionable.
+
+     No se anima nada. Está impreso. */
+  (function laVara() {
+    const MIN = 80, MAX = 120;
+    const num = (s) => { const m = String(s || '').match(/(\d+(?:[.,]\d+)?)/); return m ? parseFloat(m[1].replace(',', '.')) : null; };
+
+    const con = PADRILLOS.map((p) => ({ nombre: p.nombre, iv: num(p.indice) })).filter((p) => p.iv);
+    const sin = PADRILLOS.filter((p) => !num(p.indice)).map((p) => p.nombre);
+    const caja = $('#varaCaja');
+
+    if (!con.length) { $('#vara').hidden = true; return; }
+
+    const pos = (iv) => ((iv - MIN) / (MAX - MIN)) * 100;
+    let h = '<div class="vara__base"></div><div class="vara__patron"></div>';
+
+    for (let iv = MIN; iv <= MAX; iv++) {
+      const largo = iv % 5 === 0;
+      h += `<span class="vara__pique${largo ? ' vara__pique--largo' : ''}" style="left:${pos(iv)}%"></span>`;
+      if (iv % 10 === 0) h += `<span class="vara__rot" style="left:${pos(iv)}%">${iv}</span>`;
+    }
+
+    // Las bandas de mérito de la tabla original.
+    [['AA', 80, 89], ['AAA', 90, 99], ['AAAT', 100, 120]].forEach(([et, a, b]) => {
+      h += `<span class="vara__banda" style="left:${pos(a)}%;width:${pos(b) - pos(a)}%"><span>${et}</span></span>`;
+    });
+
+    // Los padrillos que comparten índice se apilan sobre el mismo punto: que
+    // los tres den 104 no es un defecto del gráfico, es el dato.
+    const grupos = {};
+    con.forEach((p) => { (grupos[p.iv] = grupos[p.iv] || []).push(p.nombre); });
+
+    Object.keys(grupos).forEach((iv) => {
+      const x = pos(parseFloat(iv));
+      h += `<span class="vara__cifra" style="left:${x}%">
+              <b>${esc(iv)}</b><span>AAAT</span>
+            </span>
+            <span class="vara__hierros" style="left:${x}%">
+              ${grupos[iv].map((n) => `
+                <a class="vara__hierro" href="#padrillos">
+                  <svg aria-hidden="true"><use href="#h-haras"/></svg>
+                  <span>${esc(n)}</span>
+                </a>`).join('')}
+            </span>`;
+    });
+
+    caja.innerHTML = h;
+
+    $('#varaSin').textContent = sin.length
+      ? 'Sin índice registrado: ' + sin.join(' · ')
+      : '';
+
+    /* La línea de cierre.
+
+       ACÁ NO SE INVENTAN NÚMEROS. La tentación es traducir el índice a
+       segundos y metros ("índice 104 = tantas centésimas = un cuerpo"), pero
+       la equivalencia depende de la tabla oficial de la asociación y de la
+       distancia, y no la tenemos a mano. Un número de rendimiento inventado
+       en el sitio de un haras que vende genética es un problema serio, no un
+       detalle de redacción.
+
+       Lo que se dice acá sale sólo de los datos del panel: cuántos padrillos
+       hay, qué índice tienen y qué categoría les corresponde. Si el haras
+       pasa la tabla oficial, se agrega la línea de equivalencia. */
+    const mejor = Math.max(...con.map((p) => p.iv));
+    const cat = mejor >= 100 ? 'AAAT' : mejor >= 90 ? 'AAA' : 'AA';
+    const cuantos = con.filter((p) => p.iv === mejor).length;
+    $('#varaVende').innerHTML =
+      `${cuantos === 1 ? 'Un padrillo del haras alcanza' : `${cuantos} padrillos del haras alcanzan`} ` +
+      `índice <b>${mejor}</b>, categoría <b>${cat}</b>. ` +
+      `El patrón de la escala es 100.` +
+      `<small>Índice de velocidad sobre la escala de 80 a 120.</small>`;
+  })();
+
+
+  /* ═══ 5 · PADRILLOS ══════════════════════════════════════════════════
+     Filas regladas con conductor. Al tocar se abre la página de lote.
+     Los tres sin índice dejan la celda vacía. */
+  (function padrillos() {
+    $('#padrillosLista').innerHTML = PADRILLOS.map((p) => {
+      // El pedigrí va en prosa de stud book: los datos para un árbol de tres
+      // generaciones no existen (sólo un padrillo trae abuela).
+      const sangre = [];
+      if (hay(p.padre)) sangre.push(`<b>Padre:</b> ${esc(p.padre)}`);
+      if (hay(p.madre)) sangre.push(`<b>Madre:</b> ${esc(p.madre)}`);
+      (p.ficha || []).forEach(([d, v]) => {
+        if (/abuel|linea|línea/i.test(d) && hay(v)) sangre.push(`<b>${esc(d)}:</b> ${esc(v)}`);
+      });
+
+      const resto = (p.ficha || []).filter(([d, v]) => hay(v) && !/abuel|linea|línea/i.test(d));
+
+      return `
+      <details class="lote">
+        <summary>
+          <span class="lote__n">${esc(p.nombre)}</span>
+          ${hay(p.titular) ? `<span class="lote__t">${esc(p.titular)}</span>` : ''}
+          <span class="cond"></span>
+          ${hay(p.indice) ? `<span class="lote__i">${esc(p.indice)}</span>` : ''}
+        </summary>
+
+        <div class="lote__hoja">
+          ${p.foto ? `<figure class="lote__foto" style="margin:0">
+            <img src="${esc(p.foto)}" alt="${esc(p.nombre)}" loading="lazy" decoding="async" width="1200" height="900">
+          </figure>` : '<div></div>'}
+
+          <div>
+            <h3>${esc(p.nombre)}</h3>
+            ${hay(p.resumen) ? `<p class="lote__resumen">${esc(p.resumen)}</p>` : ''}
+            ${sangre.length ? `<p class="sangre">${sangre.join(' — ')}</p>` : ''}
+
+            ${resto.length ? `<dl class="ficha">${resto.map(([d, v]) => `
+              <div><dt>${esc(d)}:</dt><span class="cond"></span><dd>${esc(v)}</dd></div>`).join('')}</dl>` : ''}
+
+            ${(p.hijos || []).length ? `<ul class="hijos">${p.hijos.map((x) =>
+              `<li>${esc(x)}</li>`).join('')}</ul>` : ''}
+
+            <a class="wapp" href="${wa('Hola, quiero consultar por el servicio de ' + p.nombre + '.', 'PAD-' + p.nombre)}"
+               target="_blank" rel="noopener">
+              <span>Consultar el servicio</span><span>WhatsApp →</span>
+            </a>
+          </div>
+        </div>
+      </details>`;
+    }).join('');
+  })();
+
+
+  /* ═══ 6 · EL HARAS ═══════════════════════════════════════════════════ */
+  (function elHaras() {
+    const f = $('#harasFoto');
+    if (SITE.fotoHaras) {
+      f.src = SITE.fotoHaras;
+      f.alt = 'El establecimiento del Haras Al Galope';
+      if (SITE.fotoHarasPos) f.style.setProperty('--pos', SITE.fotoHarasPos);
+    } else { f.closest('figure').remove(); }
+
+    const p = SITE.contactos[0] || {};
+    $('#harasTexto').innerHTML = `
+      <p>Haras Al Galope cría y selecciona Cuarto de Milla de carrera en
+         ${esc(SITE.ubicacion || '')}${SITE.desde ? `, desde ${esc(SITE.desde)}` : ''}.
+         ${p.nombre ? `Al frente, <span class="vers">${esc(p.nombre)}</span>.` : ''}</p>
+      <p>La cría apunta a la velocidad en distancia corta y a los tambores.
+         Los productos del haras corren en Maroñas y se venden en el remate
+         anual del establecimiento.</p>`;
+  })();
+
+
+  /* ═══ 7 · PALMARÉS ═══════════════════════════════════════════════════
+     Carta Clásica: tabla de verdad, sin filetes internos ni zebra.
+     Diez de dieciséis caballos no tienen año y siete no tienen madre: esas
+     celdas quedan en blanco, y está bien que se vea. */
+  (function palmares() {
+    const cuerpo = $('#cartaCuerpo');
+    const cats = [['todos', 'Todos'], ['carrera', 'Carrera'], ['tambores', 'Tambores'], ['madres', 'Madres']];
+
+    const pintar = (cat) => {
+      const lista = cat === 'todos' ? CABALLOS : CABALLOS.filter((c) => c.cat === cat);
+      let ultimoAnio = null;
+      cuerpo.innerHTML = lista.map((c) => {
+        // Supresión de repetición: el año se escribe una vez por grupo.
+        const anio = hay(c.anio) && c.anio !== ultimoAnio ? c.anio : '';
+        if (hay(c.anio)) ultimoAnio = c.anio;
+        const padres = [c.padre, c.madre].filter(hay).join(' × ');
+        return `<tr data-cat="${esc(c.cat)}">
+          <td>${esc(c.nombre)}</td>
+          <td>${esc(c.sexo || '')}</td>
+          <td class="num">${esc(anio)}</td>
+          <td class="padres">${esc(padres)}</td>
+          <td class="logro">${esc(c.titulo || '')}</td>
+        </tr>`;
+      }).join('');
+    };
+
+    $('#filtros').innerHTML = cats.map(([v, n]) => {
+      const n2 = v === 'todos' ? CABALLOS.length : CABALLOS.filter((c) => c.cat === v).length;
+      return n2 ? `<button type="button" data-cat="${v}" aria-pressed="${v === 'todos'}">${n} ${n2}</button>` : '';
+    }).filter(Boolean).join(' · ');
+
+    $('#filtros').addEventListener('click', (e) => {
+      const b = e.target.closest('button'); if (!b) return;
+      $$('#filtros button').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+      pintar(b.dataset.cat);
+    });
+
+    pintar('todos');
+  })();
+
+
+  /* ═══ 8 · REPRODUCCIÓN ═══════════════════════════════════════════════ */
   (function reproduccion() {
     const sec = $('#reproduccion');
-    if (!sec) return;
     const R = typeof REPRO === 'object' && REPRO ? REPRO : null;
-    if (!R || R.activa === false || !(R.procedimientos || []).length) return;
+    if (!sec || !R || R.activa === false || !(R.procedimientos || []).length) return;
 
-    const poner = (id, txt) => { const e = $(id); if (e) e.textContent = txt || ''; };
+    $('#reproRol').textContent = R.rol || '';
+    $('#reproVet').textContent = R.responsable || '';
 
-    poner('#reproEyebrow', R.eyebrow);
-    poner('#reproIntro', R.intro);
-    poner('#reproRol', R.rol);
-    poner('#reproVet', R.responsable);
-    poner('#reproCifra', R.cifra);
-    poner('#reproCifraTxt', R.cifraTexto);
-    poner('#reproTitLista', R.tituloProcedimientos || 'Lo que hacemos');
-    poner('#reproTitRecursos', R.tituloRecursos || 'Con qué contamos');
+    // El campo eyebrow existe en el JSON y NO se renderiza a propósito: si se
+    // renderizara, la volanta en mayúscula volvería a entrar por el panel.
+    $('#reproIntro').innerHTML = esc(R.intro || '')
+      + (hay(R.cifra) ? ` <b>${esc(R.cifra)} ${esc(R.cifraTexto || '')}</b>.` : '');
 
-    $('#reproTitulo').innerHTML = R.tituloItalica
-      ? `${esc(R.titulo)} <span class="ital">${esc(R.tituloItalica)}</span>`
-      : esc(R.titulo || '');
-
-    $('#reproProcedimientos').innerHTML = (R.procedimientos || [])
-      .map((p) => `<li>${esc(p)}</li>`).join('');
-
-    $('#reproRecursos').innerHTML = (R.recursos || []).map((r) => `
-      <div>
-        <dt>${esc(r.titulo)}</dt>
-        <dd>${esc(r.texto)}</dd>
-      </div>`).join('');
-
-    /* Contacto propio del centro. Si todavía no se cargó un número para la
-       veterinaria, la consulta va al teléfono del haras — pero con el mensaje
-       ya escrito, así quien la recibe sabe que es por reproducción. */
-    /* Borrar una foto de la biblioteca del panel NO la saca de acá: la ficha
-       sigue apuntando a un archivo que ya no existe. En vez de mostrar el
-       cuadrito roto, se esconde. */
-    const siFalta = (img, quitar) => {
-      img.addEventListener('error', () => { quitar.hidden = true; }, { once: true });
-    };
-
-    // Retrato de quien está a cargo, si se cargó uno en el panel
     if (R.fotoResponsable) {
       const rt = $('#reproRetrato');
       rt.innerHTML = `<img src="${esc(R.fotoResponsable)}" alt="${esc(R.responsable || '')}"
-        loading="lazy" decoding="async" width="96" height="96"
+        loading="lazy" decoding="async" width="400" height="400"
         ${R.fotoResponsablePos ? `style="--pos:${esc(R.fotoResponsablePos)}"` : ''}>`;
       rt.hidden = false;
-      siFalta(rt.querySelector('img'), rt);
+      rt.querySelector('img').addEventListener('error', () => { rt.hidden = true; }, { once: true });
     }
 
-    // Las fotos del trabajo en el centro
+    $('#reproProcedimientos').innerHTML = (R.procedimientos || []).map((p) =>
+      `<li><span>${esc(p)}</span><span class="cond"></span></li>`).join('');
+
+    $('#reproRecursos').innerHTML = (R.recursos || []).map((r) =>
+      `<div><dt>${esc(r.titulo)}</dt><dd>${esc(r.texto)}</dd></div>`).join('');
+
     const fotos = (R.fotos || []).filter((f) => f && f.foto);
     if (fotos.length) {
       const caja = $('#reproFotos');
-      caja.innerHTML = fotos.map((f) => `
+      caja.innerHTML = fotos.map((f, i) => `
         <figure>
           <img src="${esc(f.foto)}" alt="${esc(f.alt || '')}" loading="lazy" decoding="async"
-               ${f.pos ? `style="--pos:${esc(f.pos)}"` : ''}>
-          ${f.pie ? `<figcaption>${esc(f.pie)}</figcaption>` : ''}
+               width="1100" height="800" ${f.pos ? `style="--pos:${esc(f.pos)}"` : ''}>
+          <figcaption>${i + 1} · ${esc(f.pie || f.alt || '')}</figcaption>
         </figure>`).join('');
       caja.hidden = false;
-
-      // Cada foto que no exista se esconde sola; si no queda ninguna, se
-      // esconde la tira entera para no dejar un espacio vacío.
+      // Borrar una foto de la biblioteca del panel no la saca de la ficha:
+      // si el archivo ya no existe, se esconde sola en vez del cuadro roto.
       $$('figure', caja).forEach((fig) => {
-        const img = fig.querySelector('img');
-        img.addEventListener('error', () => {
+        fig.querySelector('img').addEventListener('error', () => {
           fig.hidden = true;
           if (!$$('figure:not([hidden])', caja).length) caja.hidden = true;
         }, { once: true });
@@ -652,96 +354,194 @@ window.iniciarSitio = function () {
     const k = R.contacto || {};
     const intl = k.intl || (SITE.contactos[0] || {}).intl;
     if (intl) {
-      // Arma la URL aparte de waLink() porque puede ir a otro teléfono —el de
-      // la veterinaria—, pero lleva el mismo código de origen que el resto.
-      const msg = (k.mensaje || `Hola ${SITE.nombre}, quería consultar por el centro reproductivo.`)
-        + '\n\n' + codigo('REPRODUCCION');
-      $('#reproCta').innerHTML = `
-        <a class="btn btn--gold btn--full" href="https://wa.me/${esc(intl)}?text=${encodeURIComponent(msg)}"
-           target="_blank" rel="noopener">${esc(k.textoBoton || 'Consultar por el centro')}</a>`;
+      $('#reproCta').innerHTML = `<a class="wapp" href="${wa(
+        k.mensaje || 'Hola, quería consultar por el centro reproductivo.', 'REPRODUCCION', intl)}"
+        target="_blank" rel="noopener">
+        <span>${esc(k.textoBoton || 'Consultar por el centro')}</span><span>WhatsApp →</span></a>`;
     }
 
     sec.hidden = false;
-    $$('[data-repro-nav]').forEach((a) => { a.hidden = false; });
   })();
 
 
-  $('#placeTxt').textContent = SITE.direccion;
-
-  /* El mapa se pide por recuadro (bbox), no por zoom, así que hay que
-     traducirlo. Antes el recuadro estaba fijo en ±0.35°, unos 64 km de ancho:
-     el campo "Zoom" del panel no hacía nada.
-
-     En Mercator, a zoom Z el mundo mide 256·2^Z píxeles y abarca 360°. De ahí
-     salen los grados por píxel; la latitud además se comprime con el coseno. */
-  (function mapa() {
-    const caja = $('#map');
-    if (!caja || !SITE.mapa) return;
-
-    const { lat, lng } = SITE.mapa;
-    const z = Math.min(18, Math.max(5, SITE.mapa.zoom || 13));
-    const ancho = Math.max(320, caja.clientWidth || 640);
-    const alto = Math.max(220, caja.clientHeight || 420);
-    const grados = 360 / (256 * Math.pow(2, z));
-
-    const dLng = (ancho * grados) / 2;
-    const dLat = (alto * grados * Math.cos((lat * Math.PI) / 180)) / 2;
-    const bbox = [lng - dLng, lat - dLat, lng + dLng, lat + dLat].join(',');
-
-    caja.innerHTML =
-      `<iframe title="Ubicación de ${esc(SITE.nombre)}" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
-        src="https://www.openstreetmap.org/export/embed.html?bbox=${encodeURIComponent(bbox)}&layer=mapnik&marker=${encodeURIComponent(lat + ',' + lng)}"></iframe>`;
+  /* ═══ 9 · SERVICIOS ══════════════════════════════════════════════════
+     Cuatro renglones. El texto del primero mide 165 caracteres y tiene seis
+     detalles: en una celda cuadrada de grilla no entraba. */
+  (function servicios() {
+    const HIERRO = { stallion: 'h-padrillo', gavel: 'h-martillo', trophy: 'h-copa', clipboard: 'h-planilla' };
+    $('#serviciosLista').innerHTML = SERVICIOS.map((s) => `
+      <article class="serv">
+        <div class="serv__t">
+          <svg aria-hidden="true"><use href="#${HIERRO[s.icono] || 'h-planilla'}"/></svg>
+          <h3>${esc(s.titulo)}</h3>
+          <span class="cond"></span>
+        </div>
+        ${hay(s.texto) ? `<p>${esc(s.texto)}</p>` : ''}
+        ${(s.detalles || []).length ? `<p class="serv__d">${s.detalles.map(esc).join(' · ')}</p>` : ''}
+      </article>`).join('');
   })();
 
-  // WhatsApp flotante
-  const wa = $('#waFloat');
-  wa.href = waLink(`Hola ${SITE.nombre}, quería hacer una consulta.`, 'FLOTANTE');
-  addEventListener('scroll', () => wa.classList.toggle('show', window.scrollY > 600), { passive: true });
 
-  // Redes en el pie
-  const ICON = {
-    instagram: 'M12 2.2c3.2 0 3.6 0 4.9.1 3.3.1 4.8 1.7 4.9 4.9.1 1.3.1 1.6.1 4.8s0 3.6-.1 4.9c-.1 3.2-1.6 4.8-4.9 4.9-1.3.1-1.6.1-4.9.1s-3.6 0-4.9-.1c-3.3-.2-4.8-1.7-4.9-4.9-.1-1.3-.1-1.6-.1-4.9s0-3.6.1-4.9C2.3 3.9 3.8 2.4 7.1 2.3c1.3 0 1.7-.1 4.9-.1zm0 5.4a4.4 4.4 0 1 0 0 8.8 4.4 4.4 0 0 0 0-8.8zm0 7.2a2.9 2.9 0 1 1 0-5.8 2.9 2.9 0 0 1 0 5.8zm5.6-7.4a1 1 0 1 1-2 0 1 1 0 0 1 2 0z',
-    facebook:  'M22 12a10 10 0 1 0-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.4 2.9h-2.3v7A10 10 0 0 0 22 12z',
-    youtube:   'M23 12s0-3.2-.4-4.7a2.5 2.5 0 0 0-1.8-1.8C19.3 5 12 5 12 5s-7.3 0-8.8.5A2.5 2.5 0 0 0 1.4 7.3C1 8.8 1 12 1 12s0 3.2.4 4.7a2.5 2.5 0 0 0 1.8 1.8C4.7 19 12 19 12 19s7.3 0 8.8-.5a2.5 2.5 0 0 0 1.8-1.8C23 15.2 23 12 23 12zM9.8 15.2V8.8l6.1 3.2-6.1 3.2z'
-  };
-  $('#footSocial').innerHTML = Object.entries(SITE.redes)
-    .filter(([, url]) => url)
-    .map(([red, url]) => `
-      <a href="${esc(url)}" target="_blank" rel="noopener" aria-label="${esc(red)}">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="${ICON[red]}"/></svg>
-      </a>`).join('');
+  /* ═══ 10 · EL REMATE ═════════════════════════════════════════════════ */
+  (function remate() {
+    const R = REMATE || {};
+    const n = (R.titulo || '').match(/\d+/);
+    $('#remateN').innerHTML = n ? `<b>${esc(n[0])}°</b>Remate` : `<b>—</b>Remate`;
+    $('#remateHora').innerHTML = R.hora ? `<b>${esc(R.hora)}</b>Hora` : '';
+    $('#remateTitulo').textContent = (R.subtitulo || R.titulo || '').toUpperCase();
 
-  $('#year').textContent = new Date().getFullYear();
+    const d = new Date(R.fechaISO);
+    if (!isNaN(d)) $('#remateDia').textContent = d.getDate();
 
+    $('#remateCondiciones').innerHTML = (R.condiciones || []).map((c, i) =>
+      `<tr><td>${i + 1}</td><td>${esc(c)}</td></tr>`).join('');
 
-  /* ─────────────── Formulario → WhatsApp ─────────────── */
-  $('#form').addEventListener('submit', (e) => {
-    e.preventDefault();
-    const f = e.target;
-    let ok = true;
+    if ((R.invitados || []).length)
+      $('#remateInvitados').innerHTML = '<b>Invitados:</b> ' + R.invitados.map(esc).join(' · ');
+    if ((R.transmite || []).length)
+      $('#remateTransmite').innerHTML = '<b>Transmite:</b> ' + R.transmite.map(esc).join(' · ');
 
-    ['nombre', 'medio'].forEach((n) => {
-      const field = f.elements[n];
-      const bad = !field.value.trim();
-      field.classList.toggle('err', bad);
-      if (bad) ok = false;
-    });
-    if (!ok) return f.elements.nombre.focus();
+    const ir = $('#remateIr');
+    if (hay(R.link)) { ir.href = R.link; ir.textContent = 'Ver el remate →'; }
+    else ir.remove();
 
-    const msg =
-      `Hola ${SITE.nombre}!\n\n` +
-      `Nombre: ${f.elements.nombre.value.trim()}\n` +
-      `Contacto: ${f.elements.medio.value.trim()}\n` +
-      `Consulta por: ${f.elements.tema.value}\n\n` +
-      (f.elements.msg.value.trim() || '(sin mensaje)');
-
-    window.open(waLink(msg, 'FORM-' + f.elements.tema.value), '_blank', 'noopener');
-  });
-
-  $('#form').addEventListener('input', (e) => e.target.classList.remove('err'));
+    // La cuenta regresiva repinta una vez por minuto, no por segundo: es una
+    // fecha a semanas de distancia y los segundos sólo gastan batería.
+    const cuenta = $('#remateCuenta');
+    const tic = () => {
+      const falta = d - Date.now();
+      if (isNaN(d)) { cuenta.textContent = ''; return; }
+      if (falta <= 0) { cuenta.innerHTML = '<b>El remate ya comenzó</b>'; return; }
+      const dias = Math.floor(falta / 86400000);
+      const hs = Math.floor((falta % 86400000) / 3600000);
+      cuenta.innerHTML = dias > 0
+        ? `faltan <b>${dias}</b> ${dias === 1 ? 'día' : 'días'}`
+        : `faltan <b>${hs}</b> ${hs === 1 ? 'hora' : 'horas'}`;
+    };
+    tic();
+    setInterval(tic, 60000);
+  })();
 
 
-  /* ─────────────── Arranque ─────────────── */
-  watch();
-  loadPhotos();
+  /* ═══ 11 · NOVEDADES ═════════════════════════════════════════════════
+     El array del panel NO viene ordenado, así que se ordena acá. */
+  (function novedades() {
+    const hoy = Date.now();
+    const lista = NOVEDADES.slice().sort((a, b) => String(b.fecha).localeCompare(String(a.fecha)));
+    const pasadas = lista.filter((n) => new Date(n.fecha) <= hoy);
+    const ultima = pasadas.length ? pasadas[0] : null;
+
+    const mes = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'set', 'oct', 'nov', 'dic'];
+    let ultimoAnio = null;
+
+    $('#novedadesLista').innerHTML = lista.map((n) => {
+      const d = new Date(n.fecha + 'T12:00:00');
+      const futura = d > hoy;
+      let fecha = '';
+      if (!isNaN(d)) {
+        const a = d.getFullYear();
+        fecha = `${d.getDate()} ${mes[d.getMonth()]}` + (a !== ultimoAnio ? ` ${a}` : '');
+        ultimoAnio = a;
+      }
+      return `<article class="nov${n === ultima ? ' nov--ultima' : ''}">
+        <div class="nov__col"><p class="nov__f">${futura ? 'Próximo · ' : ''}${esc(fecha)}</p></div>
+        <div class="nov__cuerpo">
+          <h3>${esc(n.titulo)}</h3>
+          <p>${esc(n.texto)}</p>
+          ${hay(n.link) ? `<p><a href="${esc(n.link)}" target="_blank" rel="noopener">${esc(n.linkTexto || 'Ver más')} →</a></p>` : ''}
+          ${hay(n.etiqueta) ? `<p class="nov__e">${esc(n.etiqueta)}</p>` : ''}
+        </div>
+      </article>`;
+    }).join('');
+  })();
+
+
+  /* ═══ 12 · GALERÍA ═══════════════════════════════════════════════════ */
+  (function galeria() {
+    const tira = $('#galeriaTira'), boton = $('#galeriaMas');
+    const visibles = typeof GALERIA_VISIBLES === 'number' ? GALERIA_VISIBLES : GALERIA.length;
+
+    const pintar = (n) => {
+      tira.innerHTML = GALERIA.slice(0, n).map((f, i) => `
+        <figure>
+          <img src="${esc(f.src)}" alt="${esc(f.alt)}" loading="lazy" decoding="async"
+               width="880" height="660" ${f.pos ? `style="--pos:${esc(f.pos)}"` : ''}>
+          <figcaption><b>${i + 1}</b> · ${esc(f.alt)}</figcaption>
+        </figure>`).join('');
+    };
+
+    pintar(visibles);
+    if (GALERIA.length > visibles) {
+      boton.hidden = false;
+      boton.textContent = `Ver las ${GALERIA.length} fotos →`;
+      boton.addEventListener('click', () => { pintar(GALERIA.length); boton.hidden = true; }, { once: true });
+    }
+  })();
+
+
+  /* ═══ 13 · CONTACTO ══════════════════════════════════════════════════ */
+  (function contacto() {
+    $('#anclas').innerHTML = SITE.contactos.map((c) => `
+      <a href="${wa('Hola ' + SITE.nombre + ', quería hacer una consulta.', 'CONTACTO', c.intl)}"
+         target="_blank" rel="noopener"><b>${esc(c.nombre)}</b>&nbsp;· ${esc(c.tel)}</a>`).join('')
+      + `<p>${esc(SITE.direccion || SITE.ubicacion || '')}</p>`;
+
+    const m = SITE.mapa || {};
+    const ir = $('#contactoMapa');
+    if (m.lat && m.lng) ir.href = `https://www.google.com/maps/search/?api=1&query=${m.lat},${m.lng}`;
+    else ir.remove();
+
+    const redes = Object.entries(SITE.redes || {}).filter(([, v]) => hay(v));
+    $('#contactoRedes').innerHTML = redes.length
+      ? redes.map(([n, v]) => `<a href="${esc(v)}" target="_blank" rel="noopener">${n[0].toUpperCase() + n.slice(1)} →</a>`).join(' · ')
+      : '';
+  })();
+
+
+  /* ═══ 14 · CINTA ═════════════════════════════════════════════════════
+     El único movimiento del sitio. */
+  (function cinta() {
+    const banda = $('#cinta'), riel = $('#cintaRiel');
+    if (!banda || typeof CINTA === 'undefined' || !CINTA.length) return;
+
+    if (typeof CINTA_COLOR === 'string' && /^#[0-9a-f]{3,8}$/i.test(CINTA_COLOR))
+      banda.style.setProperty('--verde', CINTA_COLOR);
+
+    const lista = CINTA.map((t) => `<span class="cinta__m">${esc(t)}</span>`).join('');
+    banda.hidden = false;
+
+    const quieto = matchMedia('(prefers-reduced-motion: reduce)');
+    let turnos = null;
+
+    const armar = () => {
+      clearInterval(turnos);
+      if (quieto.matches) {
+        // Sin movimiento: se muestran los mensajes concatenados y se turnan.
+        riel.innerHTML = lista;
+        const items = $$('.cinta__m', riel);
+        if (items.length < 2) return;
+        let i = 0;
+        const mostrar = () => { items.forEach((el, n) => { el.hidden = n !== i; }); i = (i + 1) % items.length; };
+        mostrar(); turnos = setInterval(mostrar, 5000);
+        return;
+      }
+      riel.innerHTML = lista;
+      const una = riel.scrollWidth;
+      if (!una) return;
+      // Se repite hasta cubrir el ancho de la pantalla: con dos mensajes cortos
+      // el bucle dejaría un hueco vacío.
+      const copias = Math.max(1, Math.ceil(innerWidth / una) + 1);
+      const grupo = lista.repeat(copias);
+      riel.innerHTML = grupo + grupo;
+      const rec = riel.scrollWidth / 2;
+      riel.style.setProperty('--rec', rec + 'px');
+      riel.style.setProperty('--dur', Math.max(8, Math.round(rec / 95)) + 's');
+    };
+
+    armar();
+    let t;
+    addEventListener('resize', () => { clearTimeout(t); t = setTimeout(armar, 200); });
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(armar);
+    quieto.addEventListener('change', armar);
+  })();
 };
