@@ -272,7 +272,7 @@ window.iniciarSitio = function () {
       <span class="pad__body">
         <span class="pad__name">${esc(p.nombre)}</span>
         <span class="pad__idx">${esc(p.indice || p.titular)}</span>
-        <span class="pad__lead">${esc(p.resumen)}</span>
+        <span class="pad__lead"><span>${esc(p.resumen)}</span></span>
         ${p.padre ? `<span class="pad__ped"><b>${esc(p.padre)}</b> × ${esc(p.madre || '—')}</span>` : ''}
         <span class="pad__more">Ver ficha</span>
       </span>
@@ -489,7 +489,7 @@ window.iniciarSitio = function () {
     <article class="svc">
       <svg class="svc__ico" aria-hidden="true"><use href="#i-${esc(s.icono)}"/></svg>
       <h3>${esc(s.titulo)}</h3>
-      <p>${esc(s.texto)}</p>
+      <p><span>${esc(s.texto)}</span></p>
       ${s.detalles && s.detalles.length
         ? `<ul>${s.detalles.map((d) => `<li>${esc(d)}</li>`).join('')}</ul>` : ''}
     </article>`).join('');
@@ -528,7 +528,7 @@ window.iniciarSitio = function () {
         <time class="new__date" datetime="${esc(n.fecha)}">${esc(fecha(n.fecha))}</time>
       </div>
       <h3>${esc(n.titulo)}</h3>
-      <p>${esc(n.texto)}</p>
+      <p><span>${esc(n.texto)}</span></p>
       ${n.link ? `<a href="${esc(n.link)}" target="_blank" rel="noopener">${esc(n.linkTexto || 'Ver más')} →</a>` : ''}
     </article>`).join('');
 

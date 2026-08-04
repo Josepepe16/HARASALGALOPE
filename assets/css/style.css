@@ -409,8 +409,15 @@ h3{ font-size:clamp(1.05rem,1.6vw,1.25rem); line-height:1.25 }
 
 /* En una grilla todas las tarjetas crecen hasta la más alta, así que un solo
    texto largo agranda toda la fila. Recortar a tres líneas las empareja y
-   mantiene las cajas compactas. */
-.pad__lead, .svc p, .new p{
+   mantiene las cajas compactas.
+
+   OJO CON EL FLEX. Estos párrafos son hijos de una tarjeta en columna, y si
+   además llevan flex:1, el navegador los "blockifica": display:-webkit-box
+   pasa a flow-root y el recorte por líneas DEJA DE FUNCIONAR sin avisar. El
+   texto queda cortado a lo bruto, sin puntos suspensivos y a distinta altura
+   en cada tarjeta. No devolver el flex acá: el enlace del pie ya se ancla
+   solo con margin-top:auto. */
+.pad__lead > span, .svc p > span, .new p > span{
   display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:3;
   overflow:hidden;
 }
@@ -588,7 +595,10 @@ h3{ font-size:clamp(1.05rem,1.6vw,1.25rem); line-height:1.25 }
 .horse__ped b{ color:var(--body); font-weight:700 }
 .horse__list{ list-style:none; margin:0; padding:0; display:grid; gap:.5rem }
 .horse__list li{ position:relative; padding-left:1.1rem; font-size:.88rem; color:var(--body) }
-.horse__list li::before{ content:''; position:absolute; left:0; top:.62em; width:5px; height:5px; background:var(--gold); border-radius:50% }
+/* Guion largo, igual que las listas de servicios y las condiciones del
+   remate. Antes acá había un círculo de 5px y en las otras un guion: dos
+   convenciones distintas para la misma cosa en el mismo sitio. */
+.horse__list li::before{ content:'—'; position:absolute; left:0; color:var(--gold-dim) }
 
 
 /* ══════════════════ GALERÍA ══════════════════ */
