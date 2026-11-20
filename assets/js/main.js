@@ -239,13 +239,23 @@ window.iniciarSitio = function () {
     const pad = (n) => String(n).padStart(2, '0');
     const cells = { d: $('#cdD'), h: $('#cdH'), m: $('#cdM'), s: $('#cdS') };
 
+    // Pasado un día del remate, el aviso "ya comenzó" deja de ser cierto:
+    // la cuenta regresiva se oculta hasta que se cargue la fecha del próximo.
+    const UN_DIA = 24 * 60 * 60 * 1000;
+    if (Date.now() - target > UN_DIA) { box.hidden = true; return; }
+
+    // Se declara antes de tick(): si el remate ya empezó, la primera llamada
+    // a tick() la detiene, y con `const` más abajo eso cortaba todo el sitio.
+    let timer = null;
+
     const tick = () => {
       const left = target - Date.now();
       if (left <= 0) {
         box.innerHTML = '<p class="countdown__lbl">El remate ya comenzó</p>' +
           '<p style="margin:0;font-family:var(--serif);font-size:1.4rem">¡Seguilo en vivo!</p>';
         clearInterval(timer);
-        return;
+        timer = null;
+        return true;
       }
       const s = Math.floor(left / 1000);
       cells.d.textContent = Math.floor(s / 86400);
@@ -255,8 +265,8 @@ window.iniciarSitio = function () {
     };
 
     box.hidden = false;
-    tick();
-    const timer = setInterval(tick, 1000);
+    if (tick()) return;
+    timer = setInterval(tick, 1000);
   })();
 
 

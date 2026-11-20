@@ -89,7 +89,8 @@ regresiva de la portada. Formato: `"2026-08-14T19:00:00-03:00"`
 (año-mes-díaThora, y `-03:00` es la hora de Uruguay).
 
 Cuando pasa la fecha, la cuenta regresiva se cambia sola por
-"El remate ya comenzó".
+"El remate ya comenzó". Un día después desaparece, hasta que se cargue la
+fecha del próximo remate.
 
 ---
 
