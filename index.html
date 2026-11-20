@@ -12,7 +12,11 @@
 <meta property="og:title" content="Haras Al Galope — Cuarto de Milla de carrera">
 <meta property="og:description" content="Criamos para llegar primero. Cría y selección de Cuarto de Milla de carrera en Libertad, San José, Uruguay.">
 <meta property="og:locale" content="es_UY">
-<meta property="og:image" content="assets/img/og.jpg">
+<meta property="og:url" content="https://josepepe16.github.io/HARASALGALOPE/">
+<meta property="og:image" content="https://josepepe16.github.io/HARASALGALOPE/assets/img/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
 
 <!-- El logo sin fondo. Como es transparente, la tinta tiene que cambiar según
      dónde se apoye: el azul se pierde en una pestaña oscura y el blanco en una
@@ -105,8 +109,10 @@
     </p>
 
     <div class="hero__cta reveal">
-      <a class="btn btn--gold" href="#remate">7° Remate Anual →</a>
-      <a class="btn btn--ghost" href="#padrillos">Ver padrillos</a>
+      <!-- Con el remate ya hecho, main.js da vuelta los dos botones:
+           los padrillos pasan adelante y el remate queda como "Último remate". -->
+      <a class="btn btn--gold" id="heroRemate" href="#remate">7° Remate Anual →</a>
+      <a class="btn btn--ghost" id="heroPadrillos" href="#padrillos">Ver padrillos</a>
     </div>
 
     <!-- Cuenta regresiva al remate -->
@@ -317,11 +323,12 @@
 
         <div class="auction__cta">
           <a class="btn btn--gold" id="aucLink" href="#" target="_blank" rel="noopener">Ver el remate en JFCH →</a>
-          <a class="btn btn--ghost" href="#contacto">Consultar por un lote</a>
+          <a class="btn btn--ghost" id="aucConsulta" href="#contacto">Consultar por un lote</a>
         </div>
       </div>
 
-      <aside class="auction__side">
+      <!-- Con el remate ya hecho se oculta: las condiciones eran de esa venta -->
+      <aside class="auction__side" id="aucSide">
         <h3>Condiciones de venta</h3>
         <ol class="auction__terms" id="aucTerms"><!-- render: main.js --></ol>
         <p class="auction__note">

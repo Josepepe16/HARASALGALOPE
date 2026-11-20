@@ -303,7 +303,10 @@ window.iniciarSitio = function () {
         <p class="pad__idx">${esc(p.indice || p.titular || '')}</p>
         <p class="lead">${esc(p.resumen)}</p>
         <dl class="mtable">
-          ${p.ficha.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join('')}
+          ${p.ficha
+            // un "A confirmar" a la vista del criador resta más de lo que aporta
+            .filter(([, v]) => !/^\s*a confirmar\s*$/i.test(v))
+            .map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join('')}
         </dl>
         ${p.hijos && p.hijos.length ? `
           <div class="mkids">
@@ -506,20 +509,42 @@ window.iniciarSitio = function () {
 
 
   /* ─────────────── Remate ─────────────── */
+  // Pasado un día de la fecha, el remate se muestra como el último que se
+  // hizo y no como el próximo: hasta que en el panel se cargue el siguiente.
+  const inicioRemate = new Date(REMATE.fechaISO).getTime();
+  const remateHecho = !isNaN(inicioRemate) && Date.now() - inicioRemate > 24 * 60 * 60 * 1000;
+
   $('#aucTitle').textContent = REMATE.titulo;
-  $('#aucSub').textContent = REMATE.subtitulo;
+  $('#aucSub').textContent = remateHecho && REMATE.fechaTexto
+    ? `${REMATE.subtitulo} · se hizo el ${REMATE.fechaTexto.toLowerCase()}`
+    : REMATE.subtitulo;
   $('#aucLink').href = REMATE.link;
 
   $('#aucFacts').innerHTML = [
-    ['Fecha',     REMATE.fechaTexto],
-    ['Hora',      REMATE.hora],
+    ['Fecha',     remateHecho ? '' : REMATE.fechaTexto],
+    ['Hora',      remateHecho ? '' : REMATE.hora],
     ['Modalidad', REMATE.modalidad],
     ['Lugar',     REMATE.lugar],
     ['Rematador', REMATE.rematador],
-    ['Transmite', REMATE.transmite.join(' · ')],
+    ['Transmite', remateHecho ? '' : REMATE.transmite.join(' · ')],
     ['Invitados', (REMATE.invitados || []).join(' · ')],
     ['Premios',   REMATE.premio]
   ].filter(([, v]) => v).map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join('');
+
+  if (remateHecho) {
+    $('.auction').classList.add('auction--hecho');
+    $('#aucSide').hidden = true;
+    $('#aucConsulta').hidden = true;
+    // En la portada, los padrillos pasan a ser el botón principal
+    const btnRemate = $('#heroRemate'), btnPadrillos = $('#heroPadrillos');
+    if (btnRemate && btnPadrillos) {
+      btnPadrillos.className = 'btn btn--gold';
+      btnPadrillos.textContent = 'Ver padrillos →';
+      btnRemate.className = 'btn btn--ghost';
+      btnRemate.textContent = 'Último remate';
+      btnPadrillos.after(btnRemate);
+    }
+  }
 
   $('#aucTerms').innerHTML = REMATE.condiciones.map((c) => `<li>${esc(c)}</li>`).join('');
 
