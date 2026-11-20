@@ -698,12 +698,62 @@ h3{ font-size:clamp(1.05rem,1.6vw,1.25rem); line-height:1.25 }
 .auction__terms li::marker{ color:var(--gold); font-family:var(--cond); font-weight:600; }
 /* Remate ya hecho: sin la columna de condiciones, el bloque va a lo ancho */
 .auction--hecho{ grid-template-columns:1fr }
+/* Sin esto, la grilla de datos estira la columna más allá del celular */
+.auction > *{ min-width:0 }
 .auction--hecho .auction__facts{ max-width:820px }
 .auction__note{
   font-size:.83rem; color:var(--muted); margin:0;
   padding-top:1.3rem; border-top:1px solid var(--line-2);
 }
 .auction__note strong{ color:var(--body); font-weight:700 }
+
+/* Lotes del haras en el remate: renglones de catálogo, no tarjetas.
+   Nombre en la letra del logo, la sangre en una línea y la nota debajo. */
+.lotes{ margin-top:clamp(2.6rem,6vw,4rem) }
+.lotes__tit{
+  font-family:var(--serif); font-style:italic; font-weight:500;
+  font-size:clamp(1.3rem,2.6vw,1.75rem); color:var(--gold-2); margin:0 0 1.2rem;
+}
+.lotes__lista{
+  list-style:none; margin:0; padding:0;
+  columns:2 360px; column-gap:clamp(2rem,5vw,4rem);
+  counter-reset:lote;
+}
+.lote{
+  break-inside:avoid; counter-increment:lote;
+  padding:.95rem 0 1rem 2.4rem; position:relative;
+  border-top:1px solid var(--line-2);
+}
+.lote::before{
+  content:counter(lote, decimal-leading-zero);
+  position:absolute; left:0; top:1.05rem;
+  font-family:var(--cond); font-weight:600; font-size:.95rem; color:var(--gold-dim);
+}
+.lote p{ margin:0 }
+.lote__nom{ font-family:var(--display); font-size:1.3rem; line-height:1.15; color:var(--cream) }
+.lote__nom small{
+  font-family:var(--sans); font-size:.78rem; font-weight:500; color:var(--muted);
+  margin-left:.4rem; white-space:nowrap;
+}
+.lote__sangre{ font-size:.95rem; color:var(--body-hi); margin-top:.25rem !important }
+.lote__sangre i{ font-family:var(--serif); color:var(--gold); padding:0 .1rem }
+.lote__nota{ font-size:.88rem; color:var(--muted); margin-top:.2rem !important; line-height:1.45 }
+
+/* Videos verticales del remate, de a tres; en celular se deslizan de costado */
+.aucvid{
+  display:grid; grid-auto-flow:column; grid-auto-columns:minmax(200px,1fr);
+  gap:1rem; margin-top:clamp(2.4rem,5vw,3.4rem);
+  overflow-x:auto; scroll-snap-type:x mandatory; padding-bottom:.4rem;
+}
+.aucvid__item{ margin:0; scroll-snap-align:start; max-width:340px }
+.aucvid__item video{
+  display:block; width:100%; aspect-ratio:9/16; object-fit:cover;
+  background:#000; border-radius:var(--r);
+}
+.aucvid__item figcaption{ font-size:.85rem; color:var(--body); margin-top:.5rem }
+@media (max-width:640px){
+  .aucvid{ grid-auto-columns:72% }
+}
 
 
 /* ══════════════════ NOVEDADES ══════════════════ */

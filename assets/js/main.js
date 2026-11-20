@@ -244,6 +244,11 @@ window.iniciarSitio = function () {
     const UN_DIA = 24 * 60 * 60 * 1000;
     if (Date.now() - target > UN_DIA) { box.hidden = true; return; }
 
+    // Sin hora confirmada no hay cuenta regresiva: contaría hacia una hora inventada
+    if (!String(REMATE.hora || '').trim()) { box.hidden = true; return; }
+    const lbl = $('#cdLbl');
+    if (lbl && REMATE.titulo) lbl.textContent = `Faltan para el ${REMATE.titulo}`;
+
     // Se declara antes de tick(): si el remate ya empezó, la primera llamada
     // a tick() la detiene, y con `const` más abajo eso cortaba todo el sitio.
     let timer = null;
@@ -252,7 +257,8 @@ window.iniciarSitio = function () {
       const left = target - Date.now();
       if (left <= 0) {
         box.innerHTML = '<p class="countdown__lbl">El remate ya comenzó</p>' +
-          '<p style="margin:0;font-family:var(--serif);font-size:1.4rem">¡Seguilo en vivo!</p>';
+          (REMATE.transmite && REMATE.transmite.length
+            ? '<p style="margin:0;font-family:var(--serif);font-size:1.4rem">¡Seguilo en vivo!</p>' : '');
         clearInterval(timer);
         timer = null;
         return true;
@@ -519,17 +525,64 @@ window.iniciarSitio = function () {
     ? `${REMATE.subtitulo} · se hizo el ${REMATE.fechaTexto.toLowerCase()}`
     : REMATE.subtitulo;
   $('#aucLink').href = REMATE.link;
+  if (REMATE.linkTexto) $('#aucLink').textContent = `${REMATE.linkTexto} →`;
+  if (!REMATE.link) $('#aucLink').hidden = true;
+
+  // El botón de la portada lleva el nombre del remate que esté cargado
+  const heroRemate = $('#heroRemate');
+  if (heroRemate && REMATE.titulo) heroRemate.textContent = `${REMATE.titulo} →`;
 
   $('#aucFacts').innerHTML = [
-    ['Fecha',     remateHecho ? '' : REMATE.fechaTexto],
-    ['Hora',      remateHecho ? '' : REMATE.hora],
-    ['Modalidad', REMATE.modalidad],
-    ['Lugar',     REMATE.lugar],
-    ['Rematador', REMATE.rematador],
-    ['Transmite', remateHecho ? '' : REMATE.transmite.join(' · ')],
-    ['Invitados', (REMATE.invitados || []).join(' · ')],
-    ['Premios',   REMATE.premio]
+    ['Fecha',      remateHecho ? '' : REMATE.fechaTexto],
+    ['Hora',       remateHecho ? '' : REMATE.hora],
+    ['Modalidad',  REMATE.modalidad],
+    ['Lugar',      REMATE.lugar],
+    ['Rematador',  REMATE.rematador],
+    ['Transmite',  remateHecho ? '' : REMATE.transmite.join(' · ')],
+    ['Preofertas', remateHecho ? '' : REMATE.preofertas],
+    ['Invitados',  (REMATE.invitados || []).join(' · ')],
+    ['Premios',    REMATE.premio]
   ].filter(([, v]) => v).map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join('');
+
+  // Sin condiciones cargadas, la columna de la derecha no tiene nada que decir
+  if (!REMATE.condiciones.length) {
+    $('.auction').classList.add('auction--hecho');
+    $('#aucSide').hidden = true;
+  }
+
+  // Los potrillos del haras en ese remate
+  if (REMATE.lotes.length) {
+    $('#aucLotes').hidden = false;
+    $('#aucLotesTit').textContent = remateHecho
+      ? 'Lo que llevó Haras Al Galope' : 'Lo que lleva Haras Al Galope';
+    $('#aucLotesLista').innerHTML = REMATE.lotes.map((l) => {
+      const sangre = [l.padre, l.madre].filter(Boolean).map(esc).join(' <i>en</i> ');
+      const marca = [l.sexo, l.raza].filter(Boolean).map(esc).join(' · ');
+      return `
+        <li class="lote">
+          <p class="lote__nom">${esc(l.nombre)}${marca ? ` <small>${marca}</small>` : ''}</p>
+          ${sangre ? `<p class="lote__sangre">${sangre}</p>` : ''}
+          ${l.nota ? `<p class="lote__nota">${esc(l.nota)}</p>` : ''}
+        </li>`;
+    }).join('');
+  }
+
+  // Videos: con portada y sin precarga, para no bajar megas que nadie mira
+  if (REMATE.videos.length) {
+    const box = $('#aucVideos');
+    box.hidden = false;
+    box.innerHTML = REMATE.videos.map((v) => `
+      <figure class="aucvid__item">
+        <video controls playsinline preload="none"
+               ${v.portada ? `poster="${esc(v.portada)}"` : ''}
+               src="${esc(v.archivo)}"></video>
+        ${v.titulo ? `<figcaption>${esc(v.titulo)}</figcaption>` : ''}
+      </figure>`).join('');
+    // Que suene uno solo a la vez
+    box.addEventListener('play', (e) => {
+      $$('video', box).forEach((o) => { if (o !== e.target) o.pause(); });
+    }, true);
+  }
 
   if (remateHecho) {
     $('.auction').classList.add('auction--hecho');
@@ -564,7 +617,7 @@ window.iniciarSitio = function () {
       </div>
       <h3>${esc(n.titulo)}</h3>
       <p><span>${esc(n.texto)}</span></p>
-      ${n.link ? `<a href="${esc(n.link)}" target="_blank" rel="noopener">${esc(n.linkTexto || 'Ver más')} →</a>` : ''}
+      ${n.link ? `<a href="${esc(n.link)}"${n.link.startsWith('#') ? '' : ' target="_blank" rel="noopener"'}>${esc(n.linkTexto || 'Ver más')} →</a>` : ''}
     </article>`).join('');
 
 

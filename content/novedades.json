@@ -1,20 +1,60 @@
 {
   "items": [
     {
+      "fecha": "2026-11-19",
+      "etiqueta": "Remate",
+      "titulo": "Haras Al Galope vende en La Milagrosa",
+      "texto": "El sábado 21 de noviembre llevamos al 7° Remate de La Milagrosa lo mejor de nuestra cría, en Cuarto de Milla y en Paint Horse: catorce potrillos hijos de Fuego Fling Fame, Calcol 36, Breeze Winner y otros padres probados. Corren en 2027 por U$S 40.000 en premios.",
+      "link": "#remate",
+      "linkTexto": "Ver los lotes"
+    },
+    {
+      "fecha": "2026-11-04",
+      "etiqueta": "Pruebas",
+      "titulo": "Galope Loly Pop y Galope Cautiva, otra vez en el podio",
+      "texto": "Las dos hermanas enteras volvieron a consagrarse en las pruebas de la Sociedad de Criadores de Cuarto de Milla: Galope Loly Pop fue campeona del Gran Prix y Galope Cautiva, segunda en la Toti Bonomi.",
+      "link": "",
+      "linkTexto": ""
+    },
+    {
+      "fecha": "2026-09-29",
+      "etiqueta": "Barriles",
+      "titulo": "Un hijo de Calcol 36, tercero entre 179 en Batoví",
+      "texto": "Un hijo de Calcol 36 en una yegua de La Milonga terminó tercero entre 179 caballos. Calcol 36 vuelve a mostrar por qué es nuestro padre de punta en barriles.",
+      "link": "",
+      "linkTexto": ""
+    },
+    {
+      "fecha": "2026-09-11",
+      "etiqueta": "Reproducción",
+      "titulo": "Empezó la temporada reproductiva",
+      "texto": "Inseminación, transferencia de embriones, colecta de semen, envío de semen fresco y congelado a todo el país, banco de receptoras y recibimos tu yegua. Escribinos y te contamos todo lo que ofrecemos.",
+      "link": "#reproduccion",
+      "linkTexto": "Ver el centro reproductivo"
+    },
+    {
+      "fecha": "2026-09-01",
+      "etiqueta": "Polla",
+      "titulo": "7ª Polla de Potrillos: 6 y 7 de marzo de 2027",
+      "texto": "En el Hipódromo de Trinidad, a 365 metros, para debutantes absolutos de la generación 2024 vendidos en el 7° Remate. Clasificatorias el sábado y final el domingo, con U$S 10.000 en premios: 7.000 al primero, 1.500 al segundo, 500 al tercero y 1.000 al entrenador.",
+      "link": "",
+      "linkTexto": ""
+    },
+    {
+      "fecha": "2026-08-15",
+      "etiqueta": "Remate",
+      "titulo": "Gracias por el 7° Remate Anual",
+      "texto": "El 14 de agosto se hizo nuestro 7° Remate Anual. Gracias a los clientes que eligieron nuestra genética, a todo el equipo y a los amigos que acompañaron una vez más.",
+      "link": "",
+      "linkTexto": ""
+    },
+    {
       "fecha": "2026-08-14",
       "etiqueta": "Remate",
       "titulo": "7° Remate Anual — Haras Al Galope e Invitados",
-      "texto": "Séptima edición de nuestro remate anual, en formato virtual desde San José, junto a Haras La Manada, El Josefino, El Mayoral, Don Segundo y PT La Aurora. Todos los potrillos rematados corren por U$S 10.000 en premios.",
+      "texto": "Séptima edición de nuestro remate anual, en formato virtual desde San José, junto a Haras La Manada, El Josefino, El Mayoral, Don Segundo y RT La Aurora. Todos los potrillos rematados corren por U$S 10.000 en premios.",
       "link": "https://jfchiruchi.com/remate/30808",
       "linkTexto": "Ver el remate"
-    },
-    {
-      "fecha": "2026-07-07",
-      "etiqueta": "Padrillos",
-      "titulo": "Favorito Verde, disponible para servicios",
-      "texto": "Hijo de Favorito Cartel AAAT 104 sobre Yashira Vista AAAT 104. Se suma a la nómina de padrillos del haras con servicios disponibles para criadores.",
-      "link": "",
-      "linkTexto": ""
     },
     {
       "fecha": "2026-07-26",
@@ -25,12 +65,28 @@
       "linkTexto": ""
     },
     {
+      "fecha": "2026-07-07",
+      "etiqueta": "Padrillos",
+      "titulo": "Favorito Verde, disponible para servicios",
+      "texto": "Hijo de Favorito Cartel AAAT 104 sobre Yashira Vista AAAT 104. Se suma a la nómina de padrillos del haras con servicios disponibles para criadores.",
+      "link": "",
+      "linkTexto": ""
+    },
+    {
       "fecha": "2026-03-08",
       "etiqueta": "Polla",
       "titulo": "Galope Gran Cañón ganó la 6ª Polla de Potrillos",
       "texto": "Sexta edición de la Polla que organizamos con Haras La Manada, con U$S 10.000 en premios. Los ocho finalistas fueron productos de los dos criaderos.",
       "link": "",
       "linkTexto": ""
+    },
+    {
+      "fecha": "2026-03-08",
+      "etiqueta": "Prensa",
+      "titulo": "Ignacio Bidegain en Enlazando Tradiciones",
+      "texto": "El programa de Campo TV visitó el haras: cómo se crían en Uruguay caballos con reconocimiento mundial.",
+      "link": "https://www.youtube.com/watch?v=jEStkErgQ8Y",
+      "linkTexto": "Ver el programa"
     },
     {
       "fecha": "2026-02-01",

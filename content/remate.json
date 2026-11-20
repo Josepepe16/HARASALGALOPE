@@ -1,60 +1,152 @@
 {
-  "titulo": "7° Remate Anual",
-  "subtitulo": "Haras Al Galope e Invitados",
-  "fechaISO": "2026-08-14T19:00:00-03:00",
-  "fechaTexto": "Jueves 14 de agosto de 2026",
-  "hora": "19:00 h",
-  "modalidad": "Remate virtual",
-  "lugar": "San José, Uruguay",
-  "rematador": "Juan Francisco Chiruchi — Escritorio Rural",
-  "link": "https://jfchiruchi.com/remate/30808",
-  "premio": "U$S 10.000 en premios para los potrillos rematados",
-  "transmite": [
-    {
-      "nombre": "Campo TV"
-    },
-    {
-      "nombre": "DirecTV"
-    },
-    {
-      "nombre": "jfchiruchi.com/vivo"
-    }
-  ],
+  "titulo": "7° Remate de La Milagrosa",
+  "subtitulo": "La Milagrosa e Invitados · con la selección de Haras Al Galope",
+  "fechaISO": "2026-11-21T12:00:00-03:00",
+  "fechaTexto": "Sábado 21 de noviembre de 2026",
+  "hora": "",
+  "modalidad": "Remate en la cabaña",
+  "lugar": "Cabaña La Milagrosa · Costas del Pavón, San José",
+  "rematador": "",
+  "link": "https://www.instagram.com/harasalgalope/",
+  "linkTexto": "Ver los lotes en Instagram",
+  "premio": "Los potrillos corren en 2027 por U$S 40.000 en premios",
+  "preofertas": "Por WhatsApp, en el grupo de La Milagrosa: 099 526 660",
+  "transmite": [],
   "invitados": [
     {
-      "nombre": "Haras La Manada"
-    },
-    {
-      "nombre": "El Josefino"
-    },
-    {
-      "nombre": "El Mayoral"
-    },
-    {
-      "nombre": "Don Segundo"
-    },
-    {
-      "nombre": "RT La Aurora"
+      "nombre": "Haras Al Galope"
     }
   ],
-  "condiciones": [
+  "condiciones": [],
+  "lotes": [
     {
-      "texto": "Venta por cuota: plazo de 18 cuotas, con los gastos pagos junto a la primera."
+      "nombre": "Galope Original",
+      "sexo": "Macho",
+      "raza": "",
+      "padre": "Fuego Fling Fame",
+      "madre": "LM Lovely Jet",
+      "nota": "Hijo del campeón de Potros por un Sueño, en la madre de Galope Loly Pop y Galope Cautiva."
     },
     {
-      "texto": "Descuento de 1 cuota para pagos al contado."
+      "nombre": "Galope Cuba Libre",
+      "sexo": "Macho",
+      "raza": "",
+      "padre": "Fuego Fling Fame",
+      "madre": "LM Champagne Juice",
+      "nota": "Rosillo. Primer hijo de LM Champagne Juice, campeona de la prueba de La Milagrosa por U$S 35.000 en 2021."
     },
     {
-      "texto": "Quienes ganen la preoferta y compren, la última cuota va de regalo."
+      "nombre": "Galope Simpático",
+      "sexo": "Macho",
+      "raza": "",
+      "padre": "Fuego Fling Fame",
+      "madre": "Hija de Calcol 36",
+      "nota": "Un campeón cruzado con un productor de campeones."
     },
     {
-      "texto": "Comisión del comprador: 10% más impuestos."
+      "nombre": "Galope Porteña",
+      "sexo": "Hembra",
+      "raza": "",
+      "padre": "Fuego Fling Fame",
+      "madre": "Hija de Calcol 36",
+      "nota": "La misma cruza que Galope Simpático."
     },
     {
-      "texto": "El flete corre por cuenta del comprador."
+      "nombre": "Galope Magistral",
+      "sexo": "Macho",
+      "raza": "",
+      "padre": "Calcol 36",
+      "madre": "Importada de Brasil, hija de El Shady Zorrero",
+      "nota": "Madre hija de uno de los grandes productores de la ABQM."
     },
     {
-      "texto": "Pasados los 12 días del remate, la mantención es de U$S 14 por día."
+      "nombre": "Galope Calavera",
+      "sexo": "Hembra",
+      "raza": "",
+      "padre": "Calcol 36",
+      "madre": "Importada de Brasil, hija de El Shady Zorrero",
+      "nota": "Pedigrí para barriles y pruebas de velocidad."
+    },
+    {
+      "nombre": "Galope Ilusión",
+      "sexo": "Hembra",
+      "raza": "",
+      "padre": "Calcol 36",
+      "madre": "Madre Noble Jet",
+      "nota": "Hermana entera de Galope Cascabel."
+    },
+    {
+      "nombre": "Galope Cascabel",
+      "sexo": "Hembra",
+      "raza": "",
+      "padre": "Calcol 36",
+      "madre": "Madre Noble Jet",
+      "nota": "Hermana entera de Galope Ilusión."
+    },
+    {
+      "nombre": "Galope Bomba",
+      "sexo": "Hembra",
+      "raza": "",
+      "padre": "Calcol 36",
+      "madre": "Con Jem Streakin Blaze en la línea materna",
+      "nota": "Zaina."
+    },
+    {
+      "nombre": "Galope Melodía",
+      "sexo": "Hembra",
+      "raza": "",
+      "padre": "Got Lucky Lena",
+      "madre": "Solo Ruidosa",
+      "nota": "Baya, de muy buena morfología y desarrollo."
+    },
+    {
+      "nombre": "Galope Tato",
+      "sexo": "Macho",
+      "raza": "",
+      "padre": "007 The Best Play DGN-TE",
+      "madre": "Madre Spirit Zorrero",
+      "nota": "Vino en el vientre de su madre. Buen cuerpo, bien desarrollado."
+    },
+    {
+      "nombre": "Galope Chapalefu 36",
+      "sexo": "Macho",
+      "raza": "Paint Horse",
+      "padre": "Calcol 36",
+      "madre": "Importada de Brasil, madre de Galope Guillotina",
+      "nota": "De los pocos Paint Horse hijos de Calcol 36."
+    },
+    {
+      "nombre": "Galope Bikini",
+      "sexo": "Hembra",
+      "raza": "Paint Horse",
+      "padre": "Calcol 36",
+      "madre": "Importada de Brasil, con Trinity River Tari en la línea alta",
+      "nota": "Hermana paterna de Galope Loly Pop, Galope Cautiva y Galope Gatillo."
+    },
+    {
+      "nombre": "Galope Capuchino",
+      "sexo": "Macho",
+      "raza": "",
+      "padre": "Breeze Winner",
+      "madre": "Importada de Brasil, con A Delta Out Of Dixie en la línea alta",
+      "nota": "De gran porte, pronto para domar."
+    }
+  ],
+  "videos": [
+    {
+      "archivo": "assets/video/milagrosa-destaque.mp4",
+      "portada": "assets/video/milagrosa-destaque.jpg",
+      "titulo": "Un destaque: sangre de campeones"
+    },
+    {
+      "archivo": "assets/video/milagrosa-preofertas.mp4",
+      "portada": "assets/video/milagrosa-preofertas.jpg",
+      "titulo": "Arrancaron las preofertas"
+    },
+    {
+      "archivo": "assets/video/milagrosa-2026.mp4",
+      "portada": "assets/video/milagrosa-2026.jpg",
+      "titulo": "Milagrosa 2026"
     }
   ]
 }

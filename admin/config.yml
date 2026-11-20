@@ -144,8 +144,39 @@ singletons:
       - label: 'Condiciones de venta'
         name: condiciones
         widget: list
+        required: false
         summary: '{{fields.texto}}'
+        hint: 'Si se deja vacío, la columna de condiciones no aparece.'
         fields: [{ label: 'Condición', name: texto, widget: text }]
+      - { label: 'Texto del botón del link', name: linkTexto, widget: string, required: false,
+          hint: 'Por ejemplo: Ver el remate en JFCH. Vacío dice "Ver el remate en JFCH".' }
+      - { label: 'Preofertas', name: preofertas, widget: string, required: false,
+          hint: 'Cómo se preoferta. Se deja de mostrar cuando pasa el remate.' }
+      - label: 'Lotes del haras en este remate'
+        name: lotes
+        widget: list
+        required: false
+        summary: '{{fields.nombre}}'
+        hint: 'Se muestran como renglones de catálogo, en este orden.'
+        fields:
+          - { label: 'Nombre', name: nombre, widget: string }
+          - { label: 'Sexo', name: sexo, widget: select, options: ['Macho', 'Hembra'], required: false }
+          - { label: 'Raza', name: raza, widget: string, required: false,
+              hint: 'Por ejemplo: Paint Horse. Vacío no muestra nada.' }
+          - { label: 'Padre', name: padre, widget: string, required: false }
+          - { label: 'Madre', name: madre, widget: string, required: false }
+          - { label: 'Nota', name: nota, widget: text, required: false,
+              hint: 'Una o dos líneas: por qué mirarlo.' }
+      - label: 'Videos del remate'
+        name: videos
+        widget: list
+        required: false
+        summary: '{{fields.titulo}}'
+        hint: 'Videos verticales, como los reels. Conviene que pesen menos de 8 MB.'
+        fields:
+          - { label: 'Video (.mp4)', name: archivo, widget: file }
+          - { label: 'Portada', name: portada, widget: image, required: false }
+          - { label: 'Título', name: titulo, widget: string, required: false }
 
   - divider: true
 

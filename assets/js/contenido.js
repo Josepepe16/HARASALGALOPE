@@ -25,8 +25,8 @@
   function ruta(v) {
     if (typeof v !== 'string' || !v) return v;
     if (/^(data:|https?:|\/\/)/.test(v)) return v;      // ya es absoluta o embebida
-    var m = v.match(/(?:^|\/)assets\/img\/([^/?#]+)$/);
-    return m ? 'assets/img/' + m[1] : v;
+    var m = v.match(/(?:^|\/)assets\/(img|video)\/([^/?#]+)$/);
+    return m ? 'assets/' + m[1] + '/' + m[2] : v;
   }
 
   // El panel guarda las listas como objetos ({texto: '...'}) porque así puede
@@ -62,7 +62,11 @@
     window.REMATE = Object.assign({}, r, {
       transmite: planas(r.transmite, 'nombre'),
       invitados: planas(r.invitados, 'nombre'),
-      condiciones: planas(r.condiciones, 'texto')
+      condiciones: planas(r.condiciones, 'texto'),
+      lotes: (r.lotes || []).filter(function (l) { return l && l.nombre; }),
+      videos: (r.videos || []).filter(function (v) { return v && v.archivo; }).map(function (v) {
+        return { archivo: ruta(v.archivo), portada: ruta(v.portada), titulo: v.titulo || '' };
+      })
     });
 
     var cn = c.cinta || {};

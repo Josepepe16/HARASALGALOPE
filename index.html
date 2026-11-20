@@ -104,7 +104,7 @@
     <p class="hero__lema reveal">Criamos para llegar primero</p>
     <p class="hero__sitio reveal">Libertad · San José · Uruguay</p>
     <p class="hero__sub reveal">
-      Cría y selección de <strong>Cuarto de Milla de carrera</strong>. Sangre elegida para
+      Cría y selección de <strong>Cuarto de Milla de carrera</strong> y Paint Horse. Sangre elegida para
       la velocidad corta, probada en las pistas del Uruguay.
     </p>
 
@@ -117,7 +117,7 @@
 
     <!-- Cuenta regresiva al remate -->
     <div class="countdown reveal" id="countdown" hidden>
-      <p class="countdown__lbl">Faltan para el 7° Remate Anual</p>
+      <p class="countdown__lbl" id="cdLbl">Faltan para el remate</p>
       <div class="countdown__grid">
         <div><b id="cdD">--</b><span>días</span></div>
         <div><b id="cdH">--</b><span>horas</span></div>
@@ -332,11 +332,21 @@
         <h3>Condiciones de venta</h3>
         <ol class="auction__terms" id="aucTerms"><!-- render: main.js --></ol>
         <p class="auction__note">
-          Organiza y administra <strong>Juan Francisco Chiruchi — Escritorio Rural</strong>.
           La palabra del rematador prevalece sobre lo publicado.
         </p>
       </aside>
     </div>
+
+    <!-- Los potrillos que lleva el haras a ese remate, como renglones de un
+         catálogo: nombre, padre y madre, y una línea de por qué mirarlo.
+         Lo dibuja main.js desde "lotes" en content/remate.json. -->
+    <div class="lotes" id="aucLotes" hidden>
+      <h3 class="lotes__tit" id="aucLotesTit">Lo que lleva Haras Al Galope</h3>
+      <ol class="lotes__lista" id="aucLotesLista"></ol>
+    </div>
+
+    <!-- Videos del remate (los reels del haras). Sin precarga: se bajan al tocar play. -->
+    <div class="aucvid" id="aucVideos" hidden></div>
   </div>
 </section>
 
